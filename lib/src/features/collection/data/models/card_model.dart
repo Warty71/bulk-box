@@ -15,7 +15,8 @@ class CardModel with _$CardModel {
     int? level,
     int? atk,
     int? def,
-    required List<CardImageModel> cardImages,
+    @JsonKey(name: 'card_images') required List<CardImageModel> cardImages,
+    @JsonKey(name: 'card_sets', defaultValue: [])
     required List<CardSetModel> cardSets,
   }) = _CardModel;
 
@@ -29,8 +30,8 @@ class CardModel with _$CardModel {
 class CardImageModel with _$CardImageModel {
   const factory CardImageModel({
     required int id,
-    required String imageUrl,
-    required String imageUrlSmall,
+    @JsonKey(name: 'image_url') required String imageUrl,
+    @JsonKey(name: 'image_url_small') required String imageUrlSmall,
   }) = _CardImageModel;
 
   factory CardImageModel.fromJson(Map<String, dynamic> json) =>
@@ -40,10 +41,10 @@ class CardImageModel with _$CardImageModel {
 @freezed
 class CardSetModel with _$CardSetModel {
   const factory CardSetModel({
-    required String setName,
-    required String setCode,
-    required String setRarity,
-    required String setPrice,
+    @JsonKey(name: 'set_name') required String setName,
+    @JsonKey(name: 'set_code') required String setCode,
+    @JsonKey(name: 'set_rarity') required String setRarity,
+    @JsonKey(name: 'set_price') required String setPrice,
   }) = _CardSetModel;
 
   factory CardSetModel.fromJson(Map<String, dynamic> json) =>

@@ -1,164 +1,108 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
-import 'package:ygo_collector/src/core/constants/dimensions.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:ygo_collector/src/features/collection/domain/repositories/card_repository.dart';
+import '../cubit/collection_cubit.dart';
+import '../cubit/collection_state.dart';
+import '../../domain/entities/card.dart' as entities;
 
 class CollectionScreen extends StatelessWidget {
   const CollectionScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+    return BlocProvider(
+      create: (context) => CollectionCubit(context.read<CardRepository>()),
+      child: const CollectionView(),
+    );
+  }
+}
 
+class CollectionView extends StatelessWidget {
+  const CollectionView({super.key});
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('My Collection', style: theme.textTheme.titleLarge),
+        title: Text(
+          'My Collection',
+          style: Theme.of(context).textTheme.titleLarge,
+        ),
         actions: [
           IconButton(
             icon: const Icon(Icons.filter_list),
-            onPressed: () {
-              // TODO: Implement filters
-            },
+            onPressed: () {},
           ),
           IconButton(
             icon: const Icon(Icons.sort),
-            onPressed: () {
-              // TODO: Implement sorting
-            },
+            onPressed: () {},
           ),
         ],
       ),
-      body: Column(
-        children: [
-          // Search Bar
-          Padding(
-            padding: const EdgeInsets.all(Dimensions.md),
-            child: TextField(
-              decoration: InputDecoration(
-                hintText: 'Search your collection...',
-                prefixIcon: const Icon(Icons.search),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(Dimensions.radiusMd),
-                ),
-                contentPadding: const EdgeInsets.symmetric(
-                  horizontal: Dimensions.md,
-                  vertical: Dimensions.sm,
-                ),
-                filled: true,
-                fillColor: theme.colorScheme.surfaceVariant.withOpacity(0.3),
-              ),
-            ),
-          ),
-
-          // Filter Chips
-          SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            padding: const EdgeInsets.symmetric(horizontal: Dimensions.md),
-            child: Row(
-              children: [
-                _buildFilterChip(context, 'All Cards', true),
-                const SizedBox(width: Dimensions.sm),
-                _buildFilterChip(context, 'Monster', false),
-                const SizedBox(width: Dimensions.sm),
-                _buildFilterChip(context, 'Spell', false),
-                const SizedBox(width: Dimensions.sm),
-                _buildFilterChip(context, 'Trap', false),
-              ],
-            ),
-          ),
-
-          const SizedBox(height: Dimensions.md),
-
-          // Cards Grid
-          Expanded(
-            child: GridView.builder(
-              padding: const EdgeInsets.all(Dimensions.md),
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                childAspectRatio: 0.7,
-                crossAxisSpacing: Dimensions.md,
-                mainAxisSpacing: Dimensions.md,
-              ),
-              itemCount: 10, // Example count
-              itemBuilder: (context, index) {
-                return _buildCardItem(context);
-              },
-            ),
-          ),
-        ],
+      body: BlocBuilder<CollectionCubit, CollectionState>(
+        builder: (context, state) {
+          return state.when(
+            initial: () => const Center(child: Text('Search for cards')),
+            loading: () => const Center(child: CircularProgressIndicator()),
+            loaded: (cards, hasReachedMax) => _buildCardGrid(context, cards),
+            error: (message) => Center(child: Text('Error: $message')),
+          );
+        },
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          // TODO: Implement add card
-        },
+        onPressed: () {},
         child: const Icon(Icons.add),
       ),
     );
   }
 
-  Widget _buildFilterChip(BuildContext context, String label, bool isSelected) {
-    final theme = Theme.of(context);
-
-    return FilterChip(
-      label: Text(label),
-      selected: isSelected,
-      onSelected: (bool selected) {
-        // TODO: Implement filter selection
-      },
-      labelStyle: theme.textTheme.labelLarge?.copyWith(
-        color: isSelected
-            ? theme.colorScheme.onPrimary
-            : theme.colorScheme.onSurface,
+  Widget _buildCardGrid(BuildContext context, List<entities.Card> cards) {
+    return GridView.builder(
+      padding: const EdgeInsets.all(8),
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2,
+        childAspectRatio: 0.7,
+        crossAxisSpacing: 8,
+        mainAxisSpacing: 8,
       ),
-      backgroundColor: theme.colorScheme.surfaceVariant,
-      selectedColor: theme.colorScheme.primary,
-      padding: const EdgeInsets.symmetric(horizontal: Dimensions.sm),
+      itemCount: cards.length,
+      itemBuilder: (context, index) {
+        final card = cards[index];
+        return _CardItem(card: card);
+      },
     );
   }
+}
 
-  Widget _buildCardItem(BuildContext context) {
-    final theme = Theme.of(context);
+class _CardItem extends StatelessWidget {
+  final entities.Card card;
 
+  const _CardItem({required this.card});
+
+  @override
+  Widget build(BuildContext context) {
     return Card(
       margin: EdgeInsets.zero,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Card Image
-          Container(
-            height: 180,
-            decoration: BoxDecoration(
-              color: theme.colorScheme.surfaceVariant,
-              borderRadius: BorderRadius.vertical(
-                top: Radius.circular(Dimensions.radiusMd),
-              ),
-            ),
-            child: Center(
-              child: Icon(
-                Icons.image_outlined,
-                size: Dimensions.iconXl,
-                color: theme.colorScheme.onSurfaceVariant,
-              ),
+          Expanded(
+            child: Image.file(
+              File(card.isLocalImageAvailable
+                  ? card.imageUrl
+                  : 'assets/placeholder.png'),
+              fit: BoxFit.cover,
             ),
           ),
-          // Card Details
           Padding(
-            padding: const EdgeInsets.all(Dimensions.sm),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Blue-Eyes White Dragon',
-                  style: theme.textTheme.titleSmall,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                const SizedBox(height: Dimensions.xs),
-                Text(
-                  'LOB-001',
-                  style: theme.textTheme.bodySmall?.copyWith(
-                    color: theme.colorScheme.onSurfaceVariant,
-                  ),
-                ),
-              ],
+            padding: const EdgeInsets.all(8.0),
+            child: Text(
+              card.name,
+              style: Theme.of(context).textTheme.titleSmall,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
             ),
           ),
         ],

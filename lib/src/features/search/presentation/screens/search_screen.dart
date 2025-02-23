@@ -1,8 +1,40 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ygo_collector/src/core/constants/dimensions.dart';
+import 'package:ygo_collector/src/core/widgets/debouncer.dart';
+import 'package:ygo_collector/src/features/collection/presentation/cubit/collection_cubit.dart';
+import 'package:ygo_collector/src/features/collection/presentation/cubit/collection_state.dart';
+import 'package:ygo_collector/src/features/collection/domain/entities/card.dart'
+    as entities;
 
 class SearchScreen extends StatelessWidget {
   const SearchScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocProvider.value(
+      value: context.read<CollectionCubit>(),
+      child: const SearchView(),
+    );
+  }
+}
+
+class SearchView extends StatefulWidget {
+  const SearchView({super.key});
+
+  @override
+  State<SearchView> createState() => _SearchViewState();
+}
+
+class _SearchViewState extends State<SearchView> {
+  final _searchController = TextEditingController();
+  final _debounce = Debouncer(milliseconds: 500);
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -14,17 +46,18 @@ class SearchScreen extends StatelessWidget {
       ),
       body: Column(
         children: [
-          // Search Bar
           Padding(
             padding: const EdgeInsets.all(Dimensions.md),
             child: TextField(
+              controller: _searchController,
               decoration: InputDecoration(
                 hintText: 'Search by card name...',
                 prefixIcon: const Icon(Icons.search),
                 suffixIcon: IconButton(
-                  icon: const Icon(Icons.tune),
+                  icon: const Icon(Icons.clear),
                   onPressed: () {
-                    // TODO: Show advanced search options
+                    _searchController.clear();
+                    context.read<CollectionCubit>().searchCards('');
                   },
                 ),
                 border: OutlineInputBorder(
@@ -33,107 +66,99 @@ class SearchScreen extends StatelessWidget {
                 filled: true,
                 fillColor: theme.colorScheme.surfaceVariant.withOpacity(0.3),
               ),
+              onChanged: (query) {
+                _debounce.run(() {
+                  context.read<CollectionCubit>().searchCards(query);
+                });
+              },
             ),
           ),
-
-          // Filter Chips
-          SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            padding: const EdgeInsets.symmetric(horizontal: Dimensions.md),
-            child: Row(
-              children: [
-                _buildFilterChip(context, 'Monster Cards', false),
-                const SizedBox(width: Dimensions.sm),
-                _buildFilterChip(context, 'Spell Cards', false),
-                const SizedBox(width: Dimensions.sm),
-                _buildFilterChip(context, 'Trap Cards', false),
-                const SizedBox(width: Dimensions.sm),
-                _buildFilterChip(context, 'Extra Deck', false),
-              ],
-            ),
-          ),
-
-          const SizedBox(height: Dimensions.md),
-
-          // Recent Searches
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: Dimensions.md),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Recent Searches',
-                  style: theme.textTheme.titleMedium,
-                ),
-                const SizedBox(height: Dimensions.sm),
-                Card(
-                  margin: EdgeInsets.zero,
-                  child: ListView.separated(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemCount: 5,
-                    separatorBuilder: (context, index) => const Divider(),
-                    itemBuilder: (context, index) {
-                      return _buildRecentSearchItem(
-                        context,
-                        'Dark Magician',
-                        'Yesterday',
-                      );
-                    },
+          Expanded(
+            child: BlocBuilder<CollectionCubit, CollectionState>(
+              builder: (context, state) {
+                return state.when(
+                  initial: () => const Center(
+                    child: Text('Search for Yu-Gi-Oh! cards'),
                   ),
-                ),
-              ],
+                  loading: () => const Center(
+                    child: CircularProgressIndicator(),
+                  ),
+                  loaded: (cards, hasReachedMax) => cards.isEmpty
+                      ? const Center(
+                          child: Text('No cards found'),
+                        )
+                      : GridView.builder(
+                          padding: const EdgeInsets.all(Dimensions.md),
+                          gridDelegate:
+                              const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2,
+                            childAspectRatio: 0.7,
+                            crossAxisSpacing: 8,
+                            mainAxisSpacing: 8,
+                          ),
+                          itemCount: cards.length,
+                          itemBuilder: (context, index) {
+                            final card = cards[index];
+                            return _SearchCardItem(card: card);
+                          },
+                        ),
+                  error: (message) => Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text('Error: $message'),
+                        const SizedBox(height: Dimensions.md),
+                        ElevatedButton(
+                          onPressed: () {
+                            context
+                                .read<CollectionCubit>()
+                                .searchCards(_searchController.text);
+                          },
+                          child: const Text('Retry'),
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              },
             ),
           ),
         ],
       ),
     );
   }
+}
 
-  Widget _buildFilterChip(BuildContext context, String label, bool isSelected) {
-    final theme = Theme.of(context);
+class _SearchCardItem extends StatelessWidget {
+  final entities.Card card;
 
-    return FilterChip(
-      label: Text(label),
-      selected: isSelected,
-      onSelected: (bool selected) {
-        // TODO: Implement filter selection
-      },
-      labelStyle: theme.textTheme.labelLarge?.copyWith(
-        color: isSelected
-            ? theme.colorScheme.onPrimary
-            : theme.colorScheme.onSurface,
-      ),
-      backgroundColor: theme.colorScheme.surfaceVariant,
-      selectedColor: theme.colorScheme.primary,
-      padding: const EdgeInsets.symmetric(horizontal: Dimensions.sm),
-    );
-  }
+  const _SearchCardItem({required this.card});
 
-  Widget _buildRecentSearchItem(
-    BuildContext context,
-    String searchTerm,
-    String time,
-  ) {
-    final theme = Theme.of(context);
-
-    return ListTile(
-      leading: const Icon(Icons.history),
-      title: Text(
-        searchTerm,
-        style: theme.textTheme.bodyLarge,
-      ),
-      subtitle: Text(
-        time,
-        style: theme.textTheme.bodySmall?.copyWith(
-          color: theme.colorScheme.onSurfaceVariant,
-        ),
-      ),
-      trailing: IconButton(
-        icon: const Icon(Icons.close),
-        onPressed: () {
-          // TODO: Remove from recent searches
-        },
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      margin: EdgeInsets.zero,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Expanded(
+            child: Image.asset(
+              card.isLocalImageAvailable
+                  ? card.imageUrl
+                  : 'assets/images/ygo_placeholder.jpg',
+              fit: BoxFit.cover,
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text(
+              card.name,
+              style: Theme.of(context).textTheme.titleSmall,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+        ],
       ),
     );
   }

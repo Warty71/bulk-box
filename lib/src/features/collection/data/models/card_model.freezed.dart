@@ -31,7 +31,7 @@ mixin _$CardModel {
   int? get def => throw _privateConstructorUsedError;
   @JsonKey(name: 'card_images')
   List<CardImageModel> get cardImages => throw _privateConstructorUsedError;
-  @JsonKey(name: 'card_sets')
+  @JsonKey(name: 'card_sets', defaultValue: [])
   List<CardSetModel> get cardSets => throw _privateConstructorUsedError;
 
   /// Serializes this CardModel to a JSON map.
@@ -60,7 +60,8 @@ abstract class $CardModelCopyWith<$Res> {
       int? atk,
       int? def,
       @JsonKey(name: 'card_images') List<CardImageModel> cardImages,
-      @JsonKey(name: 'card_sets') List<CardSetModel> cardSets});
+      @JsonKey(name: 'card_sets', defaultValue: [])
+      List<CardSetModel> cardSets});
 }
 
 /// @nodoc
@@ -158,7 +159,8 @@ abstract class _$$CardModelImplCopyWith<$Res>
       int? atk,
       int? def,
       @JsonKey(name: 'card_images') List<CardImageModel> cardImages,
-      @JsonKey(name: 'card_sets') List<CardSetModel> cardSets});
+      @JsonKey(name: 'card_sets', defaultValue: [])
+      List<CardSetModel> cardSets});
 }
 
 /// @nodoc
@@ -250,7 +252,8 @@ class _$CardModelImpl implements _CardModel {
       this.def,
       @JsonKey(name: 'card_images')
       required final List<CardImageModel> cardImages,
-      @JsonKey(name: 'card_sets') required final List<CardSetModel> cardSets})
+      @JsonKey(name: 'card_sets', defaultValue: [])
+      required final List<CardSetModel> cardSets})
       : _cardImages = cardImages,
         _cardSets = cardSets;
 
@@ -286,7 +289,7 @@ class _$CardModelImpl implements _CardModel {
 
   final List<CardSetModel> _cardSets;
   @override
-  @JsonKey(name: 'card_sets')
+  @JsonKey(name: 'card_sets', defaultValue: [])
   List<CardSetModel> get cardSets {
     if (_cardSets is EqualUnmodifiableListView) return _cardSets;
     // ignore: implicit_dynamic_type
@@ -363,7 +366,7 @@ abstract class _CardModel implements CardModel {
       final int? def,
       @JsonKey(name: 'card_images')
       required final List<CardImageModel> cardImages,
-      @JsonKey(name: 'card_sets')
+      @JsonKey(name: 'card_sets', defaultValue: [])
       required final List<CardSetModel> cardSets}) = _$CardModelImpl;
 
   factory _CardModel.fromJson(Map<String, dynamic> json) =
@@ -391,7 +394,7 @@ abstract class _CardModel implements CardModel {
   @JsonKey(name: 'card_images')
   List<CardImageModel> get cardImages;
   @override
-  @JsonKey(name: 'card_sets')
+  @JsonKey(name: 'card_sets', defaultValue: [])
   List<CardSetModel> get cardSets;
 
   /// Create a copy of CardModel

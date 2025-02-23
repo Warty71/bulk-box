@@ -20,9 +20,10 @@ _$CardModelImpl _$$CardModelImplFromJson(Map<String, dynamic> json) =>
       cardImages: (json['card_images'] as List<dynamic>)
           .map((e) => CardImageModel.fromJson(e as Map<String, dynamic>))
           .toList(),
-      cardSets: (json['card_sets'] as List<dynamic>)
-          .map((e) => CardSetModel.fromJson(e as Map<String, dynamic>))
-          .toList(),
+      cardSets: (json['card_sets'] as List<dynamic>?)
+              ?.map((e) => CardSetModel.fromJson(e as Map<String, dynamic>))
+              .toList() ??
+          [],
     );
 
 Map<String, dynamic> _$$CardModelImplToJson(_$CardModelImpl instance) =>
