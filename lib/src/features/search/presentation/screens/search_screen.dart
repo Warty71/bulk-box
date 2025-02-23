@@ -1,19 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:ygo_collector/src/core/constants/dimensions.dart';
 
 class SearchScreen extends StatelessWidget {
   const SearchScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Search Cards'),
+        title: Text('Search Cards', style: theme.textTheme.titleLarge),
       ),
       body: Column(
         children: [
           // Search Bar
           Padding(
-            padding: const EdgeInsets.all(16.0),
+            padding: const EdgeInsets.all(Dimensions.md),
             child: TextField(
               decoration: InputDecoration(
                 hintText: 'Search by card name...',
@@ -25,8 +28,10 @@ class SearchScreen extends StatelessWidget {
                   },
                 ),
                 border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8),
+                  borderRadius: BorderRadius.circular(Dimensions.radiusMd),
                 ),
+                filled: true,
+                fillColor: theme.colorScheme.surfaceVariant.withOpacity(0.3),
               ),
             ),
           ),
@@ -34,44 +39,50 @@ class SearchScreen extends StatelessWidget {
           // Filter Chips
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
-            padding: const EdgeInsets.symmetric(horizontal: 16),
+            padding: const EdgeInsets.symmetric(horizontal: Dimensions.md),
             child: Row(
               children: [
-                _buildFilterChip('Monster Cards'),
-                _buildFilterChip('Spell Cards'),
-                _buildFilterChip('Trap Cards'),
-                _buildFilterChip('Extra Deck'),
+                _buildFilterChip(context, 'Monster Cards', false),
+                const SizedBox(width: Dimensions.sm),
+                _buildFilterChip(context, 'Spell Cards', false),
+                const SizedBox(width: Dimensions.sm),
+                _buildFilterChip(context, 'Trap Cards', false),
+                const SizedBox(width: Dimensions.sm),
+                _buildFilterChip(context, 'Extra Deck', false),
               ],
             ),
           ),
 
-          const SizedBox(height: 16),
+          const SizedBox(height: Dimensions.md),
 
-          // Recent Searches and Results
-          Expanded(
-            child: DefaultTabController(
-              length: 2,
-              child: Column(
-                children: [
-                  const TabBar(
-                    tabs: [
-                      Tab(text: 'Recent Searches'),
-                      Tab(text: 'Popular Cards'),
-                    ],
+          // Recent Searches
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: Dimensions.md),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Recent Searches',
+                  style: theme.textTheme.titleMedium,
+                ),
+                const SizedBox(height: Dimensions.sm),
+                Card(
+                  margin: EdgeInsets.zero,
+                  child: ListView.separated(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: 5,
+                    separatorBuilder: (context, index) => const Divider(),
+                    itemBuilder: (context, index) {
+                      return _buildRecentSearchItem(
+                        context,
+                        'Dark Magician',
+                        'Yesterday',
+                      );
+                    },
                   ),
-                  Expanded(
-                    child: TabBarView(
-                      children: [
-                        // Recent Searches Tab
-                        _buildRecentSearches(),
-
-                        // Popular Cards Tab
-                        _buildPopularCards(),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
         ],
@@ -79,87 +90,51 @@ class SearchScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildFilterChip(String label) {
-    return Padding(
-      padding: const EdgeInsets.only(right: 8.0),
-      child: FilterChip(
-        label: Text(label),
-        onSelected: (bool selected) {
-          // TODO: Implement filter selection
+  Widget _buildFilterChip(BuildContext context, String label, bool isSelected) {
+    final theme = Theme.of(context);
+
+    return FilterChip(
+      label: Text(label),
+      selected: isSelected,
+      onSelected: (bool selected) {
+        // TODO: Implement filter selection
+      },
+      labelStyle: theme.textTheme.labelLarge?.copyWith(
+        color: isSelected
+            ? theme.colorScheme.onPrimary
+            : theme.colorScheme.onSurface,
+      ),
+      backgroundColor: theme.colorScheme.surfaceVariant,
+      selectedColor: theme.colorScheme.primary,
+      padding: const EdgeInsets.symmetric(horizontal: Dimensions.sm),
+    );
+  }
+
+  Widget _buildRecentSearchItem(
+    BuildContext context,
+    String searchTerm,
+    String time,
+  ) {
+    final theme = Theme.of(context);
+
+    return ListTile(
+      leading: const Icon(Icons.history),
+      title: Text(
+        searchTerm,
+        style: theme.textTheme.bodyLarge,
+      ),
+      subtitle: Text(
+        time,
+        style: theme.textTheme.bodySmall?.copyWith(
+          color: theme.colorScheme.onSurfaceVariant,
+        ),
+      ),
+      trailing: IconButton(
+        icon: const Icon(Icons.close),
+        onPressed: () {
+          // TODO: Remove from recent searches
         },
       ),
-    );
-  }
-
-  Widget _buildRecentSearches() {
-    return ListView.builder(
-      padding: const EdgeInsets.all(16),
-      itemCount: 10,
-      itemBuilder: (context, index) {
-        return ListTile(
-          leading: const Icon(Icons.history),
-          title: Text('Recent Search ${index + 1}'),
-          trailing: const Icon(Icons.north_west),
-          onTap: () {
-            // TODO: Handle recent search tap
-          },
-        );
-      },
-    );
-  }
-
-  Widget _buildPopularCards() {
-    return GridView.builder(
-      padding: const EdgeInsets.all(16),
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2,
-        childAspectRatio: 0.75,
-        crossAxisSpacing: 16,
-        mainAxisSpacing: 16,
-      ),
-      itemCount: 10,
-      itemBuilder: (context, index) {
-        return Card(
-          clipBehavior: Clip.antiAlias,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Expanded(
-                child: Container(
-                  color: Colors.grey[200],
-                  child: const Center(
-                    child: Icon(Icons.image_outlined, size: 48),
-                  ),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Popular Card ${index + 1}',
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                      ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      'Type • Attribute',
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: Colors.grey[600],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        );
-      },
     );
   }
 }

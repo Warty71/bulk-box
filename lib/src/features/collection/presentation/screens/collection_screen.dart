@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:ygo_collector/src/core/constants/dimensions.dart';
 
 class CollectionScreen extends StatelessWidget {
   const CollectionScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text('My Collection'),
+        title: Text('My Collection', style: theme.textTheme.titleLarge),
         actions: [
           IconButton(
             icon: const Icon(Icons.filter_list),
@@ -25,61 +28,58 @@ class CollectionScreen extends StatelessWidget {
       ),
       body: Column(
         children: [
-          // Search and Filter Bar
+          // Search Bar
           Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Row(
-              children: [
-                Expanded(
-                  child: TextField(
-                    decoration: InputDecoration(
-                      hintText: 'Search cards...',
-                      prefixIcon: const Icon(Icons.search),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      contentPadding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 8,
-                      ),
-                    ),
-                  ),
+            padding: const EdgeInsets.all(Dimensions.md),
+            child: TextField(
+              decoration: InputDecoration(
+                hintText: 'Search your collection...',
+                prefixIcon: const Icon(Icons.search),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(Dimensions.radiusMd),
                 ),
-              ],
+                contentPadding: const EdgeInsets.symmetric(
+                  horizontal: Dimensions.md,
+                  vertical: Dimensions.sm,
+                ),
+                filled: true,
+                fillColor: theme.colorScheme.surfaceVariant.withOpacity(0.3),
+              ),
             ),
           ),
 
           // Filter Chips
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
-            padding: const EdgeInsets.symmetric(horizontal: 16),
+            padding: const EdgeInsets.symmetric(horizontal: Dimensions.md),
             child: Row(
               children: [
-                _buildFilterChip('All Cards', true),
-                _buildFilterChip('Monster', false),
-                _buildFilterChip('Spell', false),
-                _buildFilterChip('Trap', false),
-                _buildFilterChip('Extra Deck', false),
-                _buildFilterChip('Favorites', false),
+                _buildFilterChip(context, 'All Cards', true),
+                const SizedBox(width: Dimensions.sm),
+                _buildFilterChip(context, 'Monster', false),
+                const SizedBox(width: Dimensions.sm),
+                _buildFilterChip(context, 'Spell', false),
+                const SizedBox(width: Dimensions.sm),
+                _buildFilterChip(context, 'Trap', false),
               ],
             ),
           ),
 
-          const SizedBox(height: 8),
+          const SizedBox(height: Dimensions.md),
 
           // Cards Grid
           Expanded(
             child: GridView.builder(
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.all(Dimensions.md),
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 2,
                 childAspectRatio: 0.7,
-                crossAxisSpacing: 16,
-                mainAxisSpacing: 16,
+                crossAxisSpacing: Dimensions.md,
+                mainAxisSpacing: Dimensions.md,
               ),
-              itemCount: 20, // Placeholder count
+              itemCount: 10, // Example count
               itemBuilder: (context, index) {
-                return _buildCardItem('Card ${index + 1}');
+                return _buildCardItem(context);
               },
             ),
           ),
@@ -94,85 +94,74 @@ class CollectionScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildFilterChip(String label, bool selected) {
-    return Padding(
-      padding: const EdgeInsets.only(right: 8.0),
-      child: FilterChip(
-        selected: selected,
-        label: Text(label),
-        onSelected: (bool selected) {
-          // TODO: Implement filter selection
-        },
+  Widget _buildFilterChip(BuildContext context, String label, bool isSelected) {
+    final theme = Theme.of(context);
+
+    return FilterChip(
+      label: Text(label),
+      selected: isSelected,
+      onSelected: (bool selected) {
+        // TODO: Implement filter selection
+      },
+      labelStyle: theme.textTheme.labelLarge?.copyWith(
+        color: isSelected
+            ? theme.colorScheme.onPrimary
+            : theme.colorScheme.onSurface,
       ),
+      backgroundColor: theme.colorScheme.surfaceVariant,
+      selectedColor: theme.colorScheme.primary,
+      padding: const EdgeInsets.symmetric(horizontal: Dimensions.sm),
     );
   }
 
-  Widget _buildCardItem(String cardName) {
+  Widget _buildCardItem(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Card(
-      clipBehavior: Clip.antiAlias,
+      margin: EdgeInsets.zero,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Card Image
-          Expanded(
-            child: Container(
-              color: Colors.grey[200],
-              child: const Center(
-                child: Icon(Icons.image_outlined, size: 48),
+          Container(
+            height: 180,
+            decoration: BoxDecoration(
+              color: theme.colorScheme.surfaceVariant,
+              borderRadius: BorderRadius.vertical(
+                top: Radius.circular(Dimensions.radiusMd),
+              ),
+            ),
+            child: Center(
+              child: Icon(
+                Icons.image_outlined,
+                size: Dimensions.iconXl,
+                color: theme.colorScheme.onSurfaceVariant,
               ),
             ),
           ),
           // Card Details
           Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: const EdgeInsets.all(Dimensions.sm),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  cardName,
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                  ),
+                  'Blue-Eyes White Dragon',
+                  style: theme.textTheme.titleSmall,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
-                const SizedBox(height: 4),
-                Row(
-                  children: [
-                    _buildCardTag('Ultra Rare'),
-                    const Spacer(),
-                    IconButton(
-                      icon: const Icon(Icons.more_vert),
-                      onPressed: () {
-                        // TODO: Implement card options
-                      },
-                      padding: EdgeInsets.zero,
-                      constraints: const BoxConstraints(),
-                    ),
-                  ],
+                const SizedBox(height: Dimensions.xs),
+                Text(
+                  'LOB-001',
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    color: theme.colorScheme.onSurfaceVariant,
+                  ),
                 ),
               ],
             ),
           ),
         ],
-      ),
-    );
-  }
-
-  Widget _buildCardTag(String label) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-      decoration: BoxDecoration(
-        color: Colors.grey[200],
-        borderRadius: BorderRadius.circular(4),
-      ),
-      child: Text(
-        label,
-        style: TextStyle(
-          fontSize: 12,
-          color: Colors.grey[700],
-        ),
       ),
     );
   }

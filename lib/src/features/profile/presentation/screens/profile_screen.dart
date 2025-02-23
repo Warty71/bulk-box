@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:ygo_collector/src/core/constants/dimensions.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Profile'),
+        title: Text('Profile', style: theme.textTheme.titleLarge),
         actions: [
           IconButton(
             icon: const Icon(Icons.settings),
@@ -16,35 +19,82 @@ class ProfileScreen extends StatelessWidget {
         ],
       ),
       body: ListView(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(Dimensions.md),
         children: [
-          // Profile Header
-          const Card(
+          // Profile Header Card
+          Card(
+            margin: EdgeInsets.zero,
             child: Padding(
-              padding: EdgeInsets.all(16.0),
+              padding: const EdgeInsets.all(Dimensions.md),
               child: Row(
                 children: [
                   CircleAvatar(
                     radius: 40,
-                    backgroundColor: Colors.grey,
-                    child: Icon(Icons.person, size: 40),
+                    backgroundColor: theme.colorScheme.surfaceVariant,
+                    child: Icon(
+                      Icons.person,
+                      size: 40,
+                      color: theme.colorScheme.onSurfaceVariant,
+                    ),
                   ),
-                  SizedBox(width: 16),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                  const SizedBox(width: Dimensions.md),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'John Doe',
+                          style: theme.textTheme.headlineSmall,
+                        ),
+                        Text(
+                          'Collector since 2023',
+                          style: theme.textTheme.bodyMedium?.copyWith(
+                            color: theme.colorScheme.onSurfaceVariant,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+
+          const SizedBox(height: Dimensions.md),
+
+          // Collection Stats Card
+          Card(
+            margin: EdgeInsets.zero,
+            child: Padding(
+              padding: const EdgeInsets.all(Dimensions.md),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Collection Overview',
+                    style: theme.textTheme.titleMedium,
+                  ),
+                  const SizedBox(height: Dimensions.md),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
-                      Text(
-                        'John Doe',
-                        style: TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
-                        ),
+                      _buildStatItem(
+                        context,
+                        'Cards',
+                        '1,234',
+                        Icons.style,
                       ),
-                      Text(
-                        'Collector since 2023',
-                        style: TextStyle(
-                          color: Colors.grey,
-                        ),
+                      _buildStatItem(
+                        context,
+                        'Sets',
+                        '45',
+                        Icons.grid_view,
+                      ),
+                      _buildStatItem(
+                        context,
+                        'Value',
+                        '\$2.5K',
+                        Icons.attach_money,
                       ),
                     ],
                   ),
@@ -53,94 +103,75 @@ class ProfileScreen extends StatelessWidget {
             ),
           ),
 
-          const SizedBox(height: 16),
+          const SizedBox(height: Dimensions.md),
 
-          // Collection Stats
+          // Recent Activity Card
           Card(
-            child: Column(
-              children: [
-                const Padding(
-                  padding: EdgeInsets.all(16.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        'Collection Stats',
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      Icon(Icons.arrow_forward_ios, size: 16),
-                    ],
-                  ),
-                ),
-                const Divider(height: 0),
-                _buildStatTile('Total Cards', '1,234'),
-                const Divider(height: 0),
-                _buildStatTile('Complete Sets', '3'),
-                const Divider(height: 0),
-                _buildStatTile('Wish List Items', '25'),
-              ],
-            ),
-          ),
-
-          const SizedBox(height: 16),
-
-          // Quick Actions
-          Card(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Padding(
-                  padding: EdgeInsets.all(16.0),
-                  child: Text(
-                    'Quick Actions',
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-                _buildActionTile('Export Collection', Icons.file_download),
-                _buildActionTile('Share Profile', Icons.share),
-                _buildActionTile('Scan Card', Icons.qr_code_scanner),
-                _buildActionTile('View Wishlist', Icons.favorite),
-              ],
-            ),
-          ),
-
-          const SizedBox(height: 16),
-
-          // Recent Activity
-          Card(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Padding(
-                  padding: EdgeInsets.all(16.0),
-                  child: Text(
+            margin: EdgeInsets.zero,
+            child: Padding(
+              padding: const EdgeInsets.all(Dimensions.md),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
                     'Recent Activity',
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                    ),
+                    style: theme.textTheme.titleMedium,
                   ),
+                  const SizedBox(height: Dimensions.md),
+                  _buildActivityItem(
+                    context,
+                    'Added new card',
+                    'Blue-Eyes White Dragon',
+                    '2 hours ago',
+                    Icons.add_circle_outline,
+                  ),
+                  const Divider(),
+                  _buildActivityItem(
+                    context,
+                    'Updated condition',
+                    'Dark Magician',
+                    '5 hours ago',
+                    Icons.edit_outlined,
+                  ),
+                  const Divider(),
+                  _buildActivityItem(
+                    context,
+                    'Sold card',
+                    'Red-Eyes Black Dragon',
+                    'Yesterday',
+                    Icons.sell_outlined,
+                  ),
+                ],
+              ),
+            ),
+          ),
+
+          const SizedBox(height: Dimensions.md),
+
+          // Settings Section
+          Card(
+            margin: EdgeInsets.zero,
+            child: Column(
+              children: [
+                _buildSettingsItem(
+                  context,
+                  'Account Settings',
+                  Icons.manage_accounts,
+                  onTap: () {},
                 ),
-                _buildActivityTile(
-                  'Added Blue-Eyes White Dragon',
-                  '2 hours ago',
-                  Icons.add_circle_outline,
+                const Divider(height: 1),
+                _buildSettingsItem(
+                  context,
+                  'Notifications',
+                  Icons.notifications_outlined,
+                  onTap: () {},
                 ),
-                _buildActivityTile(
-                  'Updated Dark Magician condition',
-                  '5 hours ago',
-                  Icons.edit_outlined,
-                ),
-                _buildActivityTile(
-                  'Removed Kuriboh',
-                  'Yesterday',
-                  Icons.remove_circle_outline,
+                const Divider(height: 1),
+                _buildSettingsItem(
+                  context,
+                  'Privacy',
+                  Icons.privacy_tip_outlined,
+                  onTap: () {},
                 ),
               ],
             ),
@@ -150,17 +181,76 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 
-  static Widget _buildStatTile(String label, String value) {
+  Widget _buildStatItem(
+    BuildContext context,
+    String label,
+    String value,
+    IconData icon,
+  ) {
+    final theme = Theme.of(context);
+
+    return Column(
+      children: [
+        Icon(
+          icon,
+          size: Dimensions.iconLg,
+          color: theme.colorScheme.primary,
+        ),
+        const SizedBox(height: Dimensions.xs),
+        Text(
+          value,
+          style: theme.textTheme.titleLarge,
+        ),
+        Text(
+          label,
+          style: theme.textTheme.bodyMedium?.copyWith(
+            color: theme.colorScheme.onSurfaceVariant,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildActivityItem(
+    BuildContext context,
+    String action,
+    String cardName,
+    String time,
+    IconData icon,
+  ) {
+    final theme = Theme.of(context);
+
     return Padding(
-      padding: const EdgeInsets.all(16.0),
+      padding: const EdgeInsets.symmetric(vertical: Dimensions.sm),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(label),
+          Icon(
+            icon,
+            size: Dimensions.iconMd,
+            color: theme.colorScheme.primary,
+          ),
+          const SizedBox(width: Dimensions.md),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  action,
+                  style: theme.textTheme.bodyLarge,
+                ),
+                Text(
+                  cardName,
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    color: theme.colorScheme.onSurfaceVariant,
+                  ),
+                ),
+              ],
+            ),
+          ),
           Text(
-            value,
-            style: const TextStyle(
-              fontWeight: FontWeight.bold,
+            time,
+            style: theme.textTheme.bodySmall?.copyWith(
+              color: theme.colorScheme.onSurfaceVariant,
             ),
           ),
         ],
@@ -168,23 +258,28 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 
-  static Widget _buildActionTile(String title, IconData icon) {
-    return ListTile(
-      leading: Icon(icon),
-      title: Text(title),
-      trailing: const Icon(Icons.arrow_forward_ios, size: 16),
-      onTap: () {
-        // TODO: Implement action
-      },
-    );
-  }
+  Widget _buildSettingsItem(
+    BuildContext context,
+    String title,
+    IconData icon, {
+    required VoidCallback onTap,
+  }) {
+    final theme = Theme.of(context);
 
-  static Widget _buildActivityTile(String title, String time, IconData icon) {
     return ListTile(
-      leading: Icon(icon),
-      title: Text(title),
-      subtitle: Text(time),
-      dense: true,
+      leading: Icon(
+        icon,
+        color: theme.colorScheme.onSurfaceVariant,
+      ),
+      title: Text(
+        title,
+        style: theme.textTheme.bodyLarge,
+      ),
+      trailing: Icon(
+        Icons.chevron_right,
+        color: theme.colorScheme.onSurfaceVariant,
+      ),
+      onTap: onTap,
     );
   }
 }

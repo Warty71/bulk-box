@@ -1,13 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:ygo_collector/src/core/constants/dimensions.dart';
+import 'package:ygo_collector/src/core/theme/theme_extensions.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final cardStyles = theme.extension<CardStyles>()!;
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text('YGO Collector'),
+        title: Text('YGO Collector', style: theme.textTheme.titleLarge),
         actions: [
           IconButton(
             icon: const Icon(Icons.notifications_outlined),
@@ -16,30 +21,30 @@ class HomeScreen extends StatelessWidget {
         ],
       ),
       body: ListView(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(Dimensions.md),
         children: [
           // Recent Activity Card
           Card(
+            margin: EdgeInsets.zero,
             child: Padding(
-              padding: const EdgeInsets.all(16.0),
+              padding: cardStyles.cardPadding,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
+                  Text(
                     'Recent Activity',
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                    ),
+                    style: theme.textTheme.titleMedium,
                   ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: Dimensions.md),
                   _buildActivityItem(
+                    context,
                     'Added Blue-Eyes White Dragon',
                     '2 hours ago',
                     Icons.add_circle_outline,
                   ),
                   const Divider(),
                   _buildActivityItem(
+                    context,
                     'Updated Dark Magician condition',
                     '5 hours ago',
                     Icons.edit_outlined,
@@ -48,61 +53,57 @@ class HomeScreen extends StatelessWidget {
               ),
             ),
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: Dimensions.md),
 
           // Collection Stats Card
           Card(
+            margin: EdgeInsets.zero,
             child: Padding(
-              padding: const EdgeInsets.all(16.0),
+              padding: cardStyles.cardPadding,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
+                  Text(
                     'Collection Stats',
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                    ),
+                    style: theme.textTheme.titleMedium,
                   ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: Dimensions.md),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
-                      _buildStatItem('Total Cards', '1,234'),
-                      _buildStatItem('Sets Complete', '3'),
-                      _buildStatItem('Wish List', '25'),
+                      _buildStatItem(context, 'Total Cards', '1,234'),
+                      _buildStatItem(context, 'Sets Complete', '3'),
+                      _buildStatItem(context, 'Wish List', '25'),
                     ],
                   ),
                 ],
               ),
             ),
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: Dimensions.md),
 
           // Latest Sets Card
           Card(
+            margin: EdgeInsets.zero,
             child: Padding(
-              padding: const EdgeInsets.all(16.0),
+              padding: cardStyles.cardPadding,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
+                  Text(
                     'Latest Sets',
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                    ),
+                    style: theme.textTheme.titleMedium,
                   ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: Dimensions.md),
                   SizedBox(
                     height: 180,
                     child: ListView.separated(
                       scrollDirection: Axis.horizontal,
                       itemCount: 5,
                       separatorBuilder: (context, index) =>
-                          const SizedBox(width: 16),
+                          const SizedBox(width: Dimensions.md),
                       itemBuilder: (context, index) {
-                        return _buildSetCard('Set ${index + 1}');
+                        return _buildSetCard(context, 'Set ${index + 1}');
                       },
                     ),
                   ),
@@ -115,29 +116,32 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildActivityItem(String title, String time, IconData icon) {
+  Widget _buildActivityItem(
+    BuildContext context,
+    String title,
+    String time,
+    IconData icon,
+  ) {
+    final theme = Theme.of(context);
+
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      padding: const EdgeInsets.symmetric(vertical: Dimensions.sm),
       child: Row(
         children: [
-          Icon(icon, size: 24),
-          const SizedBox(width: 16),
+          Icon(icon, size: Dimensions.iconMd),
+          const SizedBox(width: Dimensions.md),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   title,
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w500,
-                  ),
+                  style: theme.textTheme.bodyLarge,
                 ),
                 Text(
                   time,
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: Colors.grey[600],
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    color: theme.colorScheme.onSurfaceVariant,
                   ),
                 ),
               ],
@@ -148,55 +152,55 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildStatItem(String label, String value) {
+  Widget _buildStatItem(BuildContext context, String label, String value) {
+    final theme = Theme.of(context);
+
     return Column(
       children: [
         Text(
           value,
-          style: const TextStyle(
-            fontSize: 24,
-            fontWeight: FontWeight.bold,
-          ),
+          style: theme.textTheme.headlineLarge,
         ),
         Text(
           label,
-          style: TextStyle(
-            fontSize: 14,
-            color: Colors.grey[600],
+          style: theme.textTheme.bodyMedium?.copyWith(
+            color: theme.colorScheme.onSurfaceVariant,
           ),
         ),
       ],
     );
   }
 
-  Widget _buildSetCard(String setName) {
+  Widget _buildSetCard(BuildContext context, String setName) {
+    final theme = Theme.of(context);
+    final cardStyles = theme.extension<CardStyles>()!;
+
     return Container(
       width: 120,
-      decoration: BoxDecoration(
-        border: Border.all(color: Colors.grey[300]!),
-        borderRadius: BorderRadius.circular(8),
-      ),
+      decoration: cardStyles.cardDecoration,
       child: Column(
         children: [
           Container(
             height: 120,
             decoration: BoxDecoration(
-              color: Colors.grey[200],
-              borderRadius:
-                  const BorderRadius.vertical(top: Radius.circular(8)),
+              color: theme.colorScheme.surfaceVariant,
+              borderRadius: BorderRadius.vertical(
+                top: Radius.circular(Dimensions.radiusMd),
+              ),
             ),
-            child: const Center(
-              child: Icon(Icons.image_outlined, size: 48),
+            child: Center(
+              child: Icon(
+                Icons.image_outlined,
+                size: Dimensions.iconXl,
+                color: theme.colorScheme.onSurfaceVariant,
+              ),
             ),
           ),
           Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: const EdgeInsets.all(Dimensions.sm),
             child: Text(
               setName,
-              style: const TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.w500,
-              ),
+              style: theme.textTheme.labelLarge,
               textAlign: TextAlign.center,
             ),
           ),
