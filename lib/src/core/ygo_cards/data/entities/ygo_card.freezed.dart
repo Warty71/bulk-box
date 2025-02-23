@@ -3,7 +3,7 @@
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
-part of 'card.dart';
+part of 'ygo_card.dart';
 
 // **************************************************************************
 // FreezedGenerator
@@ -14,12 +14,12 @@ T _$identity<T>(T value) => value;
 final _privateConstructorUsedError = UnsupportedError(
     'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
 
-Card _$CardFromJson(Map<String, dynamic> json) {
-  return _Card.fromJson(json);
+YgoCard _$YgoCardFromJson(Map<String, dynamic> json) {
+  return _YgoCard.fromJson(json);
 }
 
 /// @nodoc
-mixin _$Card {
+mixin _$YgoCard {
   int get id => throw _privateConstructorUsedError;
   String get name => throw _privateConstructorUsedError;
   String get type => throw _privateConstructorUsedError;
@@ -34,19 +34,19 @@ mixin _$Card {
   String get setRarity => throw _privateConstructorUsedError;
   bool get isLocalImageAvailable => throw _privateConstructorUsedError;
 
-  /// Serializes this Card to a JSON map.
+  /// Serializes this YgoCard to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
 
-  /// Create a copy of Card
+  /// Create a copy of YgoCard
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
-  $CardCopyWith<Card> get copyWith => throw _privateConstructorUsedError;
+  $YgoCardCopyWith<YgoCard> get copyWith => throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class $CardCopyWith<$Res> {
-  factory $CardCopyWith(Card value, $Res Function(Card) then) =
-      _$CardCopyWithImpl<$Res, Card>;
+abstract class $YgoCardCopyWith<$Res> {
+  factory $YgoCardCopyWith(YgoCard value, $Res Function(YgoCard) then) =
+      _$YgoCardCopyWithImpl<$Res, YgoCard>;
   @useResult
   $Res call(
       {int id,
@@ -65,16 +65,16 @@ abstract class $CardCopyWith<$Res> {
 }
 
 /// @nodoc
-class _$CardCopyWithImpl<$Res, $Val extends Card>
-    implements $CardCopyWith<$Res> {
-  _$CardCopyWithImpl(this._value, this._then);
+class _$YgoCardCopyWithImpl<$Res, $Val extends YgoCard>
+    implements $YgoCardCopyWith<$Res> {
+  _$YgoCardCopyWithImpl(this._value, this._then);
 
   // ignore: unused_field
   final $Val _value;
   // ignore: unused_field
   final $Res Function($Val) _then;
 
-  /// Create a copy of Card
+  /// Create a copy of YgoCard
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
@@ -151,10 +151,10 @@ class _$CardCopyWithImpl<$Res, $Val extends Card>
 }
 
 /// @nodoc
-abstract class _$$CardImplCopyWith<$Res> implements $CardCopyWith<$Res> {
-  factory _$$CardImplCopyWith(
-          _$CardImpl value, $Res Function(_$CardImpl) then) =
-      __$$CardImplCopyWithImpl<$Res>;
+abstract class _$$YgoCardImplCopyWith<$Res> implements $YgoCardCopyWith<$Res> {
+  factory _$$YgoCardImplCopyWith(
+          _$YgoCardImpl value, $Res Function(_$YgoCardImpl) then) =
+      __$$YgoCardImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call(
@@ -174,13 +174,14 @@ abstract class _$$CardImplCopyWith<$Res> implements $CardCopyWith<$Res> {
 }
 
 /// @nodoc
-class __$$CardImplCopyWithImpl<$Res>
-    extends _$CardCopyWithImpl<$Res, _$CardImpl>
-    implements _$$CardImplCopyWith<$Res> {
-  __$$CardImplCopyWithImpl(_$CardImpl _value, $Res Function(_$CardImpl) _then)
+class __$$YgoCardImplCopyWithImpl<$Res>
+    extends _$YgoCardCopyWithImpl<$Res, _$YgoCardImpl>
+    implements _$$YgoCardImplCopyWith<$Res> {
+  __$$YgoCardImplCopyWithImpl(
+      _$YgoCardImpl _value, $Res Function(_$YgoCardImpl) _then)
       : super(_value, _then);
 
-  /// Create a copy of Card
+  /// Create a copy of YgoCard
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
@@ -199,7 +200,7 @@ class __$$CardImplCopyWithImpl<$Res>
     Object? setRarity = null,
     Object? isLocalImageAvailable = null,
   }) {
-    return _then(_$CardImpl(
+    return _then(_$YgoCardImpl(
       id: null == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
@@ -258,8 +259,8 @@ class __$$CardImplCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$CardImpl implements _Card {
-  const _$CardImpl(
+class _$YgoCardImpl implements _YgoCard {
+  const _$YgoCardImpl(
       {required this.id,
       required this.name,
       required this.type,
@@ -274,8 +275,8 @@ class _$CardImpl implements _Card {
       required this.setRarity,
       this.isLocalImageAvailable = false});
 
-  factory _$CardImpl.fromJson(Map<String, dynamic> json) =>
-      _$$CardImplFromJson(json);
+  factory _$YgoCardImpl.fromJson(Map<String, dynamic> json) =>
+      _$$YgoCardImplFromJson(json);
 
   @override
   final int id;
@@ -307,14 +308,14 @@ class _$CardImpl implements _Card {
 
   @override
   String toString() {
-    return 'Card(id: $id, name: $name, type: $type, description: $description, race: $race, attribute: $attribute, level: $level, atk: $atk, def: $def, imageUrl: $imageUrl, setCode: $setCode, setRarity: $setRarity, isLocalImageAvailable: $isLocalImageAvailable)';
+    return 'YgoCard(id: $id, name: $name, type: $type, description: $description, race: $race, attribute: $attribute, level: $level, atk: $atk, def: $def, imageUrl: $imageUrl, setCode: $setCode, setRarity: $setRarity, isLocalImageAvailable: $isLocalImageAvailable)';
   }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$CardImpl &&
+            other is _$YgoCardImpl &&
             (identical(other.id, id) || other.id == id) &&
             (identical(other.name, name) || other.name == name) &&
             (identical(other.type, type) || other.type == type) &&
@@ -353,24 +354,24 @@ class _$CardImpl implements _Card {
       setRarity,
       isLocalImageAvailable);
 
-  /// Create a copy of Card
+  /// Create a copy of YgoCard
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
-  _$$CardImplCopyWith<_$CardImpl> get copyWith =>
-      __$$CardImplCopyWithImpl<_$CardImpl>(this, _$identity);
+  _$$YgoCardImplCopyWith<_$YgoCardImpl> get copyWith =>
+      __$$YgoCardImplCopyWithImpl<_$YgoCardImpl>(this, _$identity);
 
   @override
   Map<String, dynamic> toJson() {
-    return _$$CardImplToJson(
+    return _$$YgoCardImplToJson(
       this,
     );
   }
 }
 
-abstract class _Card implements Card {
-  const factory _Card(
+abstract class _YgoCard implements YgoCard {
+  const factory _YgoCard(
       {required final int id,
       required final String name,
       required final String type,
@@ -383,9 +384,9 @@ abstract class _Card implements Card {
       required final String imageUrl,
       required final String setCode,
       required final String setRarity,
-      final bool isLocalImageAvailable}) = _$CardImpl;
+      final bool isLocalImageAvailable}) = _$YgoCardImpl;
 
-  factory _Card.fromJson(Map<String, dynamic> json) = _$CardImpl.fromJson;
+  factory _YgoCard.fromJson(Map<String, dynamic> json) = _$YgoCardImpl.fromJson;
 
   @override
   int get id;
@@ -414,10 +415,10 @@ abstract class _Card implements Card {
   @override
   bool get isLocalImageAvailable;
 
-  /// Create a copy of Card
+  /// Create a copy of YgoCard
   /// with the given fields replaced by the non-null parameter values.
   @override
   @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$CardImplCopyWith<_$CardImpl> get copyWith =>
+  _$$YgoCardImplCopyWith<_$YgoCardImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

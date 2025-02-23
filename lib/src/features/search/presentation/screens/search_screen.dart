@@ -2,10 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ygo_collector/src/core/constants/dimensions.dart';
 import 'package:ygo_collector/src/core/widgets/debouncer.dart';
-import 'package:ygo_collector/src/features/collection/presentation/cubit/collection_cubit.dart';
-import 'package:ygo_collector/src/features/collection/presentation/cubit/collection_state.dart';
-import 'package:ygo_collector/src/features/collection/domain/entities/card.dart'
-    as entities;
+import 'package:ygo_collector/src/core/ygo_cards/data/entities/ygo_card.dart';
+import 'package:ygo_collector/src/features/search/presentation/cubit/search_cubit.dart';
+import 'package:ygo_collector/src/features/search/presentation/cubit/search_state.dart';
 import 'dart:io';
 
 class SearchScreen extends StatelessWidget {
@@ -13,8 +12,8 @@ class SearchScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider.value(
-      value: context.read<CollectionCubit>(),
+    return BlocProvider(
+      create: (context) => SearchCubit(context.read()),
       child: const SearchView(),
     );
   }
@@ -58,7 +57,7 @@ class _SearchViewState extends State<SearchView> {
                   icon: const Icon(Icons.clear),
                   onPressed: () {
                     _searchController.clear();
-                    context.read<CollectionCubit>().searchCards('');
+                    context.read<SearchCubit>().searchCards('');
                   },
                 ),
                 border: OutlineInputBorder(
@@ -69,13 +68,13 @@ class _SearchViewState extends State<SearchView> {
               ),
               onChanged: (query) {
                 _debounce.run(() {
-                  context.read<CollectionCubit>().searchCards(query);
+                  context.read<SearchCubit>().searchCards(query);
                 });
               },
             ),
           ),
           Expanded(
-            child: BlocBuilder<CollectionCubit, CollectionState>(
+            child: BlocBuilder<SearchCubit, SearchState>(
               builder: (context, state) {
                 return state.when(
                   initial: () => const Center(
@@ -132,7 +131,7 @@ class _SearchViewState extends State<SearchView> {
                         ElevatedButton(
                           onPressed: () {
                             context
-                                .read<CollectionCubit>()
+                                .read<SearchCubit>()
                                 .searchCards(_searchController.text);
                           },
                           child: const Text('Retry'),
@@ -151,7 +150,7 @@ class _SearchViewState extends State<SearchView> {
 }
 
 class _SearchCardItem extends StatelessWidget {
-  final entities.Card card;
+  final YgoCard card;
 
   const _SearchCardItem({required this.card});
 
@@ -164,7 +163,7 @@ class _SearchCardItem extends StatelessWidget {
         children: [
           Expanded(
             child: FutureBuilder<String>(
-              future: context.read<CollectionCubit>().getCardImagePath(card.id),
+              future: context.read<SearchCubit>().getCardImagePath(card.id),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return const Center(

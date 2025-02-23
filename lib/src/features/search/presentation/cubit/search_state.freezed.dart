@@ -3,7 +3,7 @@
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
-part of 'collection_state.dart';
+part of 'search_state.dart';
 
 // **************************************************************************
 // FreezedGenerator
@@ -15,12 +15,12 @@ final _privateConstructorUsedError = UnsupportedError(
     'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
 
 /// @nodoc
-mixin _$CollectionState {
+mixin _$SearchState {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() initial,
     required TResult Function() loading,
-    required TResult Function(List<Card> cards, bool hasReachedMax) loaded,
+    required TResult Function(List<YgoCard> cards, String lastQuery) loaded,
     required TResult Function(String message) error,
   }) =>
       throw _privateConstructorUsedError;
@@ -28,7 +28,7 @@ mixin _$CollectionState {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? initial,
     TResult? Function()? loading,
-    TResult? Function(List<Card> cards, bool hasReachedMax)? loaded,
+    TResult? Function(List<YgoCard> cards, String lastQuery)? loaded,
     TResult? Function(String message)? error,
   }) =>
       throw _privateConstructorUsedError;
@@ -36,7 +36,7 @@ mixin _$CollectionState {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? initial,
     TResult Function()? loading,
-    TResult Function(List<Card> cards, bool hasReachedMax)? loaded,
+    TResult Function(List<YgoCard> cards, String lastQuery)? loaded,
     TResult Function(String message)? error,
     required TResult orElse(),
   }) =>
@@ -69,23 +69,23 @@ mixin _$CollectionState {
 }
 
 /// @nodoc
-abstract class $CollectionStateCopyWith<$Res> {
-  factory $CollectionStateCopyWith(
-          CollectionState value, $Res Function(CollectionState) then) =
-      _$CollectionStateCopyWithImpl<$Res, CollectionState>;
+abstract class $SearchStateCopyWith<$Res> {
+  factory $SearchStateCopyWith(
+          SearchState value, $Res Function(SearchState) then) =
+      _$SearchStateCopyWithImpl<$Res, SearchState>;
 }
 
 /// @nodoc
-class _$CollectionStateCopyWithImpl<$Res, $Val extends CollectionState>
-    implements $CollectionStateCopyWith<$Res> {
-  _$CollectionStateCopyWithImpl(this._value, this._then);
+class _$SearchStateCopyWithImpl<$Res, $Val extends SearchState>
+    implements $SearchStateCopyWith<$Res> {
+  _$SearchStateCopyWithImpl(this._value, this._then);
 
   // ignore: unused_field
   final $Val _value;
   // ignore: unused_field
   final $Res Function($Val) _then;
 
-  /// Create a copy of CollectionState
+  /// Create a copy of SearchState
   /// with the given fields replaced by the non-null parameter values.
 }
 
@@ -98,13 +98,13 @@ abstract class _$$InitialImplCopyWith<$Res> {
 
 /// @nodoc
 class __$$InitialImplCopyWithImpl<$Res>
-    extends _$CollectionStateCopyWithImpl<$Res, _$InitialImpl>
+    extends _$SearchStateCopyWithImpl<$Res, _$InitialImpl>
     implements _$$InitialImplCopyWith<$Res> {
   __$$InitialImplCopyWithImpl(
       _$InitialImpl _value, $Res Function(_$InitialImpl) _then)
       : super(_value, _then);
 
-  /// Create a copy of CollectionState
+  /// Create a copy of SearchState
   /// with the given fields replaced by the non-null parameter values.
 }
 
@@ -115,7 +115,7 @@ class _$InitialImpl implements _Initial {
 
   @override
   String toString() {
-    return 'CollectionState.initial()';
+    return 'SearchState.initial()';
   }
 
   @override
@@ -132,7 +132,7 @@ class _$InitialImpl implements _Initial {
   TResult when<TResult extends Object?>({
     required TResult Function() initial,
     required TResult Function() loading,
-    required TResult Function(List<Card> cards, bool hasReachedMax) loaded,
+    required TResult Function(List<YgoCard> cards, String lastQuery) loaded,
     required TResult Function(String message) error,
   }) {
     return initial();
@@ -143,7 +143,7 @@ class _$InitialImpl implements _Initial {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? initial,
     TResult? Function()? loading,
-    TResult? Function(List<Card> cards, bool hasReachedMax)? loaded,
+    TResult? Function(List<YgoCard> cards, String lastQuery)? loaded,
     TResult? Function(String message)? error,
   }) {
     return initial?.call();
@@ -154,7 +154,7 @@ class _$InitialImpl implements _Initial {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? initial,
     TResult Function()? loading,
-    TResult Function(List<Card> cards, bool hasReachedMax)? loaded,
+    TResult Function(List<YgoCard> cards, String lastQuery)? loaded,
     TResult Function(String message)? error,
     required TResult orElse(),
   }) {
@@ -202,7 +202,7 @@ class _$InitialImpl implements _Initial {
   }
 }
 
-abstract class _Initial implements CollectionState {
+abstract class _Initial implements SearchState {
   const factory _Initial() = _$InitialImpl;
 }
 
@@ -215,13 +215,13 @@ abstract class _$$LoadingImplCopyWith<$Res> {
 
 /// @nodoc
 class __$$LoadingImplCopyWithImpl<$Res>
-    extends _$CollectionStateCopyWithImpl<$Res, _$LoadingImpl>
+    extends _$SearchStateCopyWithImpl<$Res, _$LoadingImpl>
     implements _$$LoadingImplCopyWith<$Res> {
   __$$LoadingImplCopyWithImpl(
       _$LoadingImpl _value, $Res Function(_$LoadingImpl) _then)
       : super(_value, _then);
 
-  /// Create a copy of CollectionState
+  /// Create a copy of SearchState
   /// with the given fields replaced by the non-null parameter values.
 }
 
@@ -232,7 +232,7 @@ class _$LoadingImpl implements _Loading {
 
   @override
   String toString() {
-    return 'CollectionState.loading()';
+    return 'SearchState.loading()';
   }
 
   @override
@@ -249,7 +249,7 @@ class _$LoadingImpl implements _Loading {
   TResult when<TResult extends Object?>({
     required TResult Function() initial,
     required TResult Function() loading,
-    required TResult Function(List<Card> cards, bool hasReachedMax) loaded,
+    required TResult Function(List<YgoCard> cards, String lastQuery) loaded,
     required TResult Function(String message) error,
   }) {
     return loading();
@@ -260,7 +260,7 @@ class _$LoadingImpl implements _Loading {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? initial,
     TResult? Function()? loading,
-    TResult? Function(List<Card> cards, bool hasReachedMax)? loaded,
+    TResult? Function(List<YgoCard> cards, String lastQuery)? loaded,
     TResult? Function(String message)? error,
   }) {
     return loading?.call();
@@ -271,7 +271,7 @@ class _$LoadingImpl implements _Loading {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? initial,
     TResult Function()? loading,
-    TResult Function(List<Card> cards, bool hasReachedMax)? loaded,
+    TResult Function(List<YgoCard> cards, String lastQuery)? loaded,
     TResult Function(String message)? error,
     required TResult orElse(),
   }) {
@@ -319,7 +319,7 @@ class _$LoadingImpl implements _Loading {
   }
 }
 
-abstract class _Loading implements CollectionState {
+abstract class _Loading implements SearchState {
   const factory _Loading() = _$LoadingImpl;
 }
 
@@ -329,34 +329,34 @@ abstract class _$$LoadedImplCopyWith<$Res> {
           _$LoadedImpl value, $Res Function(_$LoadedImpl) then) =
       __$$LoadedImplCopyWithImpl<$Res>;
   @useResult
-  $Res call({List<Card> cards, bool hasReachedMax});
+  $Res call({List<YgoCard> cards, String lastQuery});
 }
 
 /// @nodoc
 class __$$LoadedImplCopyWithImpl<$Res>
-    extends _$CollectionStateCopyWithImpl<$Res, _$LoadedImpl>
+    extends _$SearchStateCopyWithImpl<$Res, _$LoadedImpl>
     implements _$$LoadedImplCopyWith<$Res> {
   __$$LoadedImplCopyWithImpl(
       _$LoadedImpl _value, $Res Function(_$LoadedImpl) _then)
       : super(_value, _then);
 
-  /// Create a copy of CollectionState
+  /// Create a copy of SearchState
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
     Object? cards = null,
-    Object? hasReachedMax = null,
+    Object? lastQuery = null,
   }) {
     return _then(_$LoadedImpl(
       cards: null == cards
           ? _value._cards
           : cards // ignore: cast_nullable_to_non_nullable
-              as List<Card>,
-      hasReachedMax: null == hasReachedMax
-          ? _value.hasReachedMax
-          : hasReachedMax // ignore: cast_nullable_to_non_nullable
-              as bool,
+              as List<YgoCard>,
+      lastQuery: null == lastQuery
+          ? _value.lastQuery
+          : lastQuery // ignore: cast_nullable_to_non_nullable
+              as String,
     ));
   }
 }
@@ -365,23 +365,23 @@ class __$$LoadedImplCopyWithImpl<$Res>
 
 class _$LoadedImpl implements _Loaded {
   const _$LoadedImpl(
-      {required final List<Card> cards, required this.hasReachedMax})
+      {required final List<YgoCard> cards, required this.lastQuery})
       : _cards = cards;
 
-  final List<Card> _cards;
+  final List<YgoCard> _cards;
   @override
-  List<Card> get cards {
+  List<YgoCard> get cards {
     if (_cards is EqualUnmodifiableListView) return _cards;
     // ignore: implicit_dynamic_type
     return EqualUnmodifiableListView(_cards);
   }
 
   @override
-  final bool hasReachedMax;
+  final String lastQuery;
 
   @override
   String toString() {
-    return 'CollectionState.loaded(cards: $cards, hasReachedMax: $hasReachedMax)';
+    return 'SearchState.loaded(cards: $cards, lastQuery: $lastQuery)';
   }
 
   @override
@@ -390,15 +390,15 @@ class _$LoadedImpl implements _Loaded {
         (other.runtimeType == runtimeType &&
             other is _$LoadedImpl &&
             const DeepCollectionEquality().equals(other._cards, _cards) &&
-            (identical(other.hasReachedMax, hasReachedMax) ||
-                other.hasReachedMax == hasReachedMax));
+            (identical(other.lastQuery, lastQuery) ||
+                other.lastQuery == lastQuery));
   }
 
   @override
   int get hashCode => Object.hash(
-      runtimeType, const DeepCollectionEquality().hash(_cards), hasReachedMax);
+      runtimeType, const DeepCollectionEquality().hash(_cards), lastQuery);
 
-  /// Create a copy of CollectionState
+  /// Create a copy of SearchState
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
@@ -411,10 +411,10 @@ class _$LoadedImpl implements _Loaded {
   TResult when<TResult extends Object?>({
     required TResult Function() initial,
     required TResult Function() loading,
-    required TResult Function(List<Card> cards, bool hasReachedMax) loaded,
+    required TResult Function(List<YgoCard> cards, String lastQuery) loaded,
     required TResult Function(String message) error,
   }) {
-    return loaded(cards, hasReachedMax);
+    return loaded(cards, lastQuery);
   }
 
   @override
@@ -422,10 +422,10 @@ class _$LoadedImpl implements _Loaded {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? initial,
     TResult? Function()? loading,
-    TResult? Function(List<Card> cards, bool hasReachedMax)? loaded,
+    TResult? Function(List<YgoCard> cards, String lastQuery)? loaded,
     TResult? Function(String message)? error,
   }) {
-    return loaded?.call(cards, hasReachedMax);
+    return loaded?.call(cards, lastQuery);
   }
 
   @override
@@ -433,12 +433,12 @@ class _$LoadedImpl implements _Loaded {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? initial,
     TResult Function()? loading,
-    TResult Function(List<Card> cards, bool hasReachedMax)? loaded,
+    TResult Function(List<YgoCard> cards, String lastQuery)? loaded,
     TResult Function(String message)? error,
     required TResult orElse(),
   }) {
     if (loaded != null) {
-      return loaded(cards, hasReachedMax);
+      return loaded(cards, lastQuery);
     }
     return orElse();
   }
@@ -481,15 +481,15 @@ class _$LoadedImpl implements _Loaded {
   }
 }
 
-abstract class _Loaded implements CollectionState {
+abstract class _Loaded implements SearchState {
   const factory _Loaded(
-      {required final List<Card> cards,
-      required final bool hasReachedMax}) = _$LoadedImpl;
+      {required final List<YgoCard> cards,
+      required final String lastQuery}) = _$LoadedImpl;
 
-  List<Card> get cards;
-  bool get hasReachedMax;
+  List<YgoCard> get cards;
+  String get lastQuery;
 
-  /// Create a copy of CollectionState
+  /// Create a copy of SearchState
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   _$$LoadedImplCopyWith<_$LoadedImpl> get copyWith =>
@@ -507,13 +507,13 @@ abstract class _$$ErrorImplCopyWith<$Res> {
 
 /// @nodoc
 class __$$ErrorImplCopyWithImpl<$Res>
-    extends _$CollectionStateCopyWithImpl<$Res, _$ErrorImpl>
+    extends _$SearchStateCopyWithImpl<$Res, _$ErrorImpl>
     implements _$$ErrorImplCopyWith<$Res> {
   __$$ErrorImplCopyWithImpl(
       _$ErrorImpl _value, $Res Function(_$ErrorImpl) _then)
       : super(_value, _then);
 
-  /// Create a copy of CollectionState
+  /// Create a copy of SearchState
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
@@ -539,7 +539,7 @@ class _$ErrorImpl implements _Error {
 
   @override
   String toString() {
-    return 'CollectionState.error(message: $message)';
+    return 'SearchState.error(message: $message)';
   }
 
   @override
@@ -553,7 +553,7 @@ class _$ErrorImpl implements _Error {
   @override
   int get hashCode => Object.hash(runtimeType, message);
 
-  /// Create a copy of CollectionState
+  /// Create a copy of SearchState
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
@@ -566,7 +566,7 @@ class _$ErrorImpl implements _Error {
   TResult when<TResult extends Object?>({
     required TResult Function() initial,
     required TResult Function() loading,
-    required TResult Function(List<Card> cards, bool hasReachedMax) loaded,
+    required TResult Function(List<YgoCard> cards, String lastQuery) loaded,
     required TResult Function(String message) error,
   }) {
     return error(message);
@@ -577,7 +577,7 @@ class _$ErrorImpl implements _Error {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? initial,
     TResult? Function()? loading,
-    TResult? Function(List<Card> cards, bool hasReachedMax)? loaded,
+    TResult? Function(List<YgoCard> cards, String lastQuery)? loaded,
     TResult? Function(String message)? error,
   }) {
     return error?.call(message);
@@ -588,7 +588,7 @@ class _$ErrorImpl implements _Error {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? initial,
     TResult Function()? loading,
-    TResult Function(List<Card> cards, bool hasReachedMax)? loaded,
+    TResult Function(List<YgoCard> cards, String lastQuery)? loaded,
     TResult Function(String message)? error,
     required TResult orElse(),
   }) {
@@ -636,12 +636,12 @@ class _$ErrorImpl implements _Error {
   }
 }
 
-abstract class _Error implements CollectionState {
+abstract class _Error implements SearchState {
   const factory _Error(final String message) = _$ErrorImpl;
 
   String get message;
 
-  /// Create a copy of CollectionState
+  /// Create a copy of SearchState
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   _$$ErrorImplCopyWith<_$ErrorImpl> get copyWith =>

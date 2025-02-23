@@ -1,12 +1,13 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'card.dart';
+part of 'ygo_card.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$CardImpl _$$CardImplFromJson(Map<String, dynamic> json) => _$CardImpl(
+_$YgoCardImpl _$$YgoCardImplFromJson(Map<String, dynamic> json) =>
+    _$YgoCardImpl(
       id: (json['id'] as num).toInt(),
       name: json['name'] as String,
       type: json['type'] as String,
@@ -22,7 +23,7 @@ _$CardImpl _$$CardImplFromJson(Map<String, dynamic> json) => _$CardImpl(
       isLocalImageAvailable: json['isLocalImageAvailable'] as bool? ?? false,
     );
 
-Map<String, dynamic> _$$CardImplToJson(_$CardImpl instance) =>
+Map<String, dynamic> _$$YgoCardImplToJson(_$YgoCardImpl instance) =>
     <String, dynamic>{
       'id': instance.id,
       'name': instance.name,
