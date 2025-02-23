@@ -41,7 +41,11 @@ class YGOProApiDatasource {
       return response.data;
     } catch (e) {
       print('🌐 API: Error during request: $e');
-      if (e is DioException && e.response != null) {
+      if (e is DioException) {
+        if (e.response?.statusCode == 400) {
+          // Handle "no cards found" case
+          return {'data': []};
+        }
         print('🌐 API: Error response: ${e.response?.data}');
       }
       rethrow;

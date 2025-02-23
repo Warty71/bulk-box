@@ -84,8 +84,28 @@ class _SearchViewState extends State<SearchView> {
                     child: CircularProgressIndicator(),
                   ),
                   loaded: (cards, hasReachedMax) => cards.isEmpty
-                      ? const Center(
-                          child: Text('No cards found'),
+                      ? Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const Icon(
+                                Icons.search_off,
+                                size: 48,
+                                color: Colors.grey,
+                              ),
+                              const SizedBox(height: Dimensions.md),
+                              Text(
+                                'No cards found matching "${_searchController.text}"',
+                                textAlign: TextAlign.center,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyLarge
+                                    ?.copyWith(
+                                      color: Colors.grey,
+                                    ),
+                              ),
+                            ],
+                          ),
                         )
                       : GridView.builder(
                           padding: const EdgeInsets.all(Dimensions.md),

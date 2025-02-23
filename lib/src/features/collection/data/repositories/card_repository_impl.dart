@@ -46,6 +46,10 @@ class CardRepositoryImpl implements CardRepository {
       final cards = _transformToCards(response);
       print('📱 Repository: Found ${cards.length} cards from API');
 
+      if (cards.isEmpty) {
+        return []; // Return empty list instead of throwing error
+      }
+
       // Cache the new cards
       await _cardLocalDatasource
           .cacheCards(cards.map((card) => _transformToModel(card)).toList());
