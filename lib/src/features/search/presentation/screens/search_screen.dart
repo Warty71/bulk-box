@@ -6,6 +6,7 @@ import 'package:ygo_collector/src/features/collection/presentation/cubit/collect
 import 'package:ygo_collector/src/features/collection/presentation/cubit/collection_state.dart';
 import 'package:ygo_collector/src/features/collection/domain/entities/card.dart'
     as entities;
+import 'dart:io';
 
 class SearchScreen extends StatelessWidget {
   const SearchScreen({super.key});
@@ -162,11 +163,40 @@ class _SearchCardItem extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Expanded(
-            child: Image.asset(
-              card.isLocalImageAvailable
-                  ? card.imageUrl
-                  : 'assets/images/ygo_placeholder.jpg',
-              fit: BoxFit.cover,
+            child: FutureBuilder<String>(
+              future: context.read<CollectionCubit>().getCardImagePath(card.id),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                }
+
+                if (snapshot.hasError) {
+                  return Image.asset(
+                    'assets/images/ygo_placeholder.jpg',
+                    fit: BoxFit.cover,
+                  );
+                }
+
+                if (snapshot.hasData) {
+                  return Image.file(
+                    File(snapshot.data!),
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) {
+                      return Image.asset(
+                        'assets/images/ygo_placeholder.jpg',
+                        fit: BoxFit.cover,
+                      );
+                    },
+                  );
+                }
+
+                return Image.asset(
+                  'assets/images/ygo_placeholder.jpg',
+                  fit: BoxFit.cover,
+                );
+              },
             ),
           ),
           Padding(

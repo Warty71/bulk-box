@@ -5,15 +5,15 @@ class YGOProApiDatasource {
   static const String baseUrl = 'https://db.ygoprodeck.com/api/v7';
 
   YGOProApiDatasource()
-      : _dio = Dio(BaseOptions(
-          baseUrl: baseUrl,
-          connectTimeout: const Duration(seconds: 5),
-          receiveTimeout: const Duration(seconds: 3),
-        ));
+      : _dio = Dio(
+          BaseOptions(
+            baseUrl: baseUrl,
+            connectTimeout: const Duration(seconds: 5),
+            receiveTimeout: const Duration(seconds: 3),
+          ),
+        );
 
   Future<Map<String, dynamic>> searchCards(String query) async {
-    print('🌐 API: Searching cards with query: "$query"');
-
     final Map<String, dynamic> params = {};
     if (query.isNotEmpty) {
       if (query.contains('=')) {
@@ -36,30 +36,47 @@ class YGOProApiDatasource {
         '/cardinfo.php',
         queryParameters: params,
       );
-      print('🌐 API: Response data structure: ${response.data.runtimeType}');
-      print('🌐 API: Response keys: ${response.data.keys}');
       return response.data;
     } catch (e) {
-      print('🌐 API: Error during request: $e');
       if (e is DioException) {
         if (e.response?.statusCode == 400) {
           // Handle "no cards found" case
           return {'data': []};
         }
-        print('🌐 API: Error response: ${e.response?.data}');
       }
       rethrow;
     }
   }
 
   Future<List<int>> getCardImage(int cardId) async {
-    print('🌐 API: Fetching image for card: $cardId');
-    final response = await _dio.get(
-      '/cardinfo.php',
-      queryParameters: {'id': cardId},
-      options: Options(responseType: ResponseType.bytes),
-    );
-    print('🌐 API: Received image data');
-    return response.data;
+    try {
+      // First get the card info to get the actual image URL
+      final response = await _dio.get(
+        '/cardinfo.php',
+        queryParameters: {'id': cardId},
+      );
+
+      final cardData = response.data['data'][0];
+      final imageUrl = cardData['card_images'][0]['image_url'];
+
+      // Create a new Dio instance specifically for image download
+      final imageDio = Dio(BaseOptions(
+        connectTimeout: const Duration(seconds: 10),
+        receiveTimeout: const Duration(seconds: 10),
+        responseType: ResponseType.bytes,
+      ));
+
+      final imageResponse = await imageDio.get(imageUrl);
+
+      if (imageResponse.statusCode == 200 && imageResponse.data != null) {
+        final bytes = imageResponse.data as List<int>;
+        return bytes;
+      } else {
+        throw Exception(
+            'Failed to download image: ${imageResponse.statusCode}');
+      }
+    } catch (e) {
+      rethrow;
+    }
   }
 }

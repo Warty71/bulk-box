@@ -18,48 +18,63 @@ class CardRepositoryImpl implements CardRepository {
 
   @override
   Future<List<Card>> searchCards(String query) async {
-    print('📱 Repository: Searching cards with query: "$query"');
-
     try {
       // First try to find cards in local cache
       final cachedCards = await _cardLocalDatasource.getCachedCards();
-      print('📱 Repository: Found ${cachedCards.length} cached cards');
 
       if (query.isEmpty) {
-        if (cachedCards.isEmpty) {
-          // If no cached cards, get initial set from API
-          print('📱 Repository: Cache empty, fetching initial cards');
-          final response = await _apiDatasource
-              .searchCards('type=Normal Monster&sort=name&offset=0&num=20');
-          final cards = _transformToCards(response);
-          print(
-              '📱 Repository: Fetched ${cards.length} initial cards from API');
-          await _cardLocalDatasource.cacheCards(
-              cards.map((card) => _transformToModel(card)).toList());
-          return cards;
+        if (cachedCards.isNotEmpty) {
+          return cachedCards.map(_transformToEntity).toList();
         }
-        return cachedCards.map(_transformToEntity).toList();
+        // If no cached cards, get initial set from API
+        return await _fetchAndCacheCards(
+            'type=Normal Monster&sort=name&offset=0&num=20');
       }
 
-      // Search remotely
-      final response = await _apiDatasource.searchCards(query);
-      final cards = _transformToCards(response);
-      print('📱 Repository: Found ${cards.length} cards from API');
+      // Try to find matching cards in cache first
+      final matchingCachedCards = cachedCards
+          .where(
+              (card) => card.name.toLowerCase().contains(query.toLowerCase()))
+          .toList();
 
-      if (cards.isEmpty) {
-        return []; // Return empty list instead of throwing error
+      if (matchingCachedCards.isNotEmpty) {
+        return matchingCachedCards.map(_transformToEntity).toList();
       }
 
-      // Cache the new cards
-      await _cardLocalDatasource
-          .cacheCards(cards.map((card) => _transformToModel(card)).toList());
-
-      return cards;
-    } catch (e, stackTrace) {
-      print('❌ Repository: Error searching cards: $e');
-      print('❌ Repository: Stack trace: $stackTrace');
+      // If no matches in cache, search remotely
+      return await _fetchAndCacheCards(query);
+    } catch (e) {
       rethrow;
     }
+  }
+
+  Future<List<Card>> _fetchAndCacheCards(String query) async {
+    final response = await _apiDatasource.searchCards(query);
+    final cards = _transformToCards(response);
+
+    if (cards.isNotEmpty) {
+      // Cache the new cards and fetch their images
+      await Future.wait([
+        _cardLocalDatasource
+            .cacheCards(cards.map((card) => _transformToModel(card)).toList()),
+        ..._prefetchImages(cards),
+      ]);
+    }
+
+    return cards;
+  }
+
+  List<Future<void>> _prefetchImages(List<Card> cards) {
+    return cards.map((card) async {
+      if (!await _imageLocalDatasource.isImageSaved(card.id)) {
+        try {
+          final imageBytes = await _apiDatasource.getCardImage(card.id);
+          await _imageLocalDatasource.saveImage(card.id, imageBytes);
+        } catch (e) {
+          rethrow;
+        }
+      } else {}
+    }).toList();
   }
 
   @override
@@ -70,34 +85,45 @@ class CardRepositoryImpl implements CardRepository {
 
   @override
   Future<String> getLocalImagePath(int cardId) async {
-    if (!await _imageLocalDatasource.isImageSaved(cardId)) {
-      final imageBytes = await _apiDatasource.getCardImage(cardId);
-      await _imageLocalDatasource.saveImage(cardId, imageBytes);
+    try {
+      if (!await _imageLocalDatasource.isImageSaved(cardId)) {
+        final imageBytes = await _apiDatasource.getCardImage(cardId);
+        await _imageLocalDatasource.saveImage(cardId, imageBytes);
+      } else {}
+      final path = await _imageLocalDatasource.getImagePath(cardId);
+      return path;
+    } catch (e) {
+      rethrow;
     }
-    return _imageLocalDatasource.getImagePath(cardId);
   }
 
   @override
   Future<void> saveCardImage(int cardId, List<int> imageBytes) async {
-    await _imageLocalDatasource.saveImage(cardId, imageBytes);
+    try {
+      await _imageLocalDatasource.saveImage(cardId, imageBytes);
+    } catch (e) {
+      rethrow;
+    }
   }
 
   @override
   Future<bool> isCardImageSaved(int cardId) async {
-    return _imageLocalDatasource.isImageSaved(cardId);
+    try {
+      final isSaved = await _imageLocalDatasource.isImageSaved(cardId);
+      return isSaved;
+    } catch (e) {
+      rethrow;
+    }
   }
 
   List<Card> _transformToCards(Map<String, dynamic> response) {
-    print('📱 Repository: Transforming API response to cards');
     try {
       if (!response.containsKey('data')) {
-        print('❌ Repository: Invalid API response format - missing data field');
         return [];
       }
 
       final data = response['data'];
       if (data == null) {
-        print('❌ Repository: No cards found in API response');
         return [];
       }
 
@@ -108,8 +134,6 @@ class CardRepositoryImpl implements CardRepository {
       } else if (data is Map<String, dynamic>) {
         cardList = [data];
       } else {
-        print(
-            '❌ Repository: Invalid data type in response: ${data.runtimeType}');
         return [];
       }
 
@@ -119,17 +143,14 @@ class CardRepositoryImpl implements CardRepository {
               final cardModel = CardModel.fromJson(cardJson);
               return _transformToEntity(cardModel);
             } catch (e) {
-              print('❌ Repository: Error transforming card: $e');
               return null;
             }
           })
           .whereType<Card>()
           .toList();
 
-      print('📱 Repository: Successfully transformed ${cards.length} cards');
       return cards;
     } catch (e) {
-      print('❌ Repository: Error during transformation: $e');
       return [];
     }
   }
@@ -169,7 +190,6 @@ class CardRepositoryImpl implements CardRepository {
         isLocalImageAvailable: false,
       );
     } catch (e) {
-      print('❌ Repository: Error transforming entity: $e');
       rethrow;
     }
   }
