@@ -30,8 +30,7 @@ mixin _$YgoCard {
   int? get atk => throw _privateConstructorUsedError;
   int? get def => throw _privateConstructorUsedError;
   String get imageUrl => throw _privateConstructorUsedError;
-  String get setCode => throw _privateConstructorUsedError;
-  String get setRarity => throw _privateConstructorUsedError;
+  List<CardSet> get cardSets => throw _privateConstructorUsedError;
   bool get isLocalImageAvailable => throw _privateConstructorUsedError;
 
   /// Serializes this YgoCard to a JSON map.
@@ -59,8 +58,7 @@ abstract class $YgoCardCopyWith<$Res> {
       int? atk,
       int? def,
       String imageUrl,
-      String setCode,
-      String setRarity,
+      List<CardSet> cardSets,
       bool isLocalImageAvailable});
 }
 
@@ -89,8 +87,7 @@ class _$YgoCardCopyWithImpl<$Res, $Val extends YgoCard>
     Object? atk = freezed,
     Object? def = freezed,
     Object? imageUrl = null,
-    Object? setCode = null,
-    Object? setRarity = null,
+    Object? cardSets = null,
     Object? isLocalImageAvailable = null,
   }) {
     return _then(_value.copyWith(
@@ -134,14 +131,10 @@ class _$YgoCardCopyWithImpl<$Res, $Val extends YgoCard>
           ? _value.imageUrl
           : imageUrl // ignore: cast_nullable_to_non_nullable
               as String,
-      setCode: null == setCode
-          ? _value.setCode
-          : setCode // ignore: cast_nullable_to_non_nullable
-              as String,
-      setRarity: null == setRarity
-          ? _value.setRarity
-          : setRarity // ignore: cast_nullable_to_non_nullable
-              as String,
+      cardSets: null == cardSets
+          ? _value.cardSets
+          : cardSets // ignore: cast_nullable_to_non_nullable
+              as List<CardSet>,
       isLocalImageAvailable: null == isLocalImageAvailable
           ? _value.isLocalImageAvailable
           : isLocalImageAvailable // ignore: cast_nullable_to_non_nullable
@@ -168,8 +161,7 @@ abstract class _$$YgoCardImplCopyWith<$Res> implements $YgoCardCopyWith<$Res> {
       int? atk,
       int? def,
       String imageUrl,
-      String setCode,
-      String setRarity,
+      List<CardSet> cardSets,
       bool isLocalImageAvailable});
 }
 
@@ -196,8 +188,7 @@ class __$$YgoCardImplCopyWithImpl<$Res>
     Object? atk = freezed,
     Object? def = freezed,
     Object? imageUrl = null,
-    Object? setCode = null,
-    Object? setRarity = null,
+    Object? cardSets = null,
     Object? isLocalImageAvailable = null,
   }) {
     return _then(_$YgoCardImpl(
@@ -241,14 +232,10 @@ class __$$YgoCardImplCopyWithImpl<$Res>
           ? _value.imageUrl
           : imageUrl // ignore: cast_nullable_to_non_nullable
               as String,
-      setCode: null == setCode
-          ? _value.setCode
-          : setCode // ignore: cast_nullable_to_non_nullable
-              as String,
-      setRarity: null == setRarity
-          ? _value.setRarity
-          : setRarity // ignore: cast_nullable_to_non_nullable
-              as String,
+      cardSets: null == cardSets
+          ? _value._cardSets
+          : cardSets // ignore: cast_nullable_to_non_nullable
+              as List<CardSet>,
       isLocalImageAvailable: null == isLocalImageAvailable
           ? _value.isLocalImageAvailable
           : isLocalImageAvailable // ignore: cast_nullable_to_non_nullable
@@ -271,9 +258,9 @@ class _$YgoCardImpl implements _YgoCard {
       this.atk,
       this.def,
       required this.imageUrl,
-      required this.setCode,
-      required this.setRarity,
-      this.isLocalImageAvailable = false});
+      required final List<CardSet> cardSets,
+      this.isLocalImageAvailable = false})
+      : _cardSets = cardSets;
 
   factory _$YgoCardImpl.fromJson(Map<String, dynamic> json) =>
       _$$YgoCardImplFromJson(json);
@@ -298,17 +285,21 @@ class _$YgoCardImpl implements _YgoCard {
   final int? def;
   @override
   final String imageUrl;
+  final List<CardSet> _cardSets;
   @override
-  final String setCode;
-  @override
-  final String setRarity;
+  List<CardSet> get cardSets {
+    if (_cardSets is EqualUnmodifiableListView) return _cardSets;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_cardSets);
+  }
+
   @override
   @JsonKey()
   final bool isLocalImageAvailable;
 
   @override
   String toString() {
-    return 'YgoCard(id: $id, name: $name, type: $type, description: $description, race: $race, attribute: $attribute, level: $level, atk: $atk, def: $def, imageUrl: $imageUrl, setCode: $setCode, setRarity: $setRarity, isLocalImageAvailable: $isLocalImageAvailable)';
+    return 'YgoCard(id: $id, name: $name, type: $type, description: $description, race: $race, attribute: $attribute, level: $level, atk: $atk, def: $def, imageUrl: $imageUrl, cardSets: $cardSets, isLocalImageAvailable: $isLocalImageAvailable)';
   }
 
   @override
@@ -329,9 +320,7 @@ class _$YgoCardImpl implements _YgoCard {
             (identical(other.def, def) || other.def == def) &&
             (identical(other.imageUrl, imageUrl) ||
                 other.imageUrl == imageUrl) &&
-            (identical(other.setCode, setCode) || other.setCode == setCode) &&
-            (identical(other.setRarity, setRarity) ||
-                other.setRarity == setRarity) &&
+            const DeepCollectionEquality().equals(other._cardSets, _cardSets) &&
             (identical(other.isLocalImageAvailable, isLocalImageAvailable) ||
                 other.isLocalImageAvailable == isLocalImageAvailable));
   }
@@ -350,8 +339,7 @@ class _$YgoCardImpl implements _YgoCard {
       atk,
       def,
       imageUrl,
-      setCode,
-      setRarity,
+      const DeepCollectionEquality().hash(_cardSets),
       isLocalImageAvailable);
 
   /// Create a copy of YgoCard
@@ -382,8 +370,7 @@ abstract class _YgoCard implements YgoCard {
       final int? atk,
       final int? def,
       required final String imageUrl,
-      required final String setCode,
-      required final String setRarity,
+      required final List<CardSet> cardSets,
       final bool isLocalImageAvailable}) = _$YgoCardImpl;
 
   factory _YgoCard.fromJson(Map<String, dynamic> json) = _$YgoCardImpl.fromJson;
@@ -409,9 +396,7 @@ abstract class _YgoCard implements YgoCard {
   @override
   String get imageUrl;
   @override
-  String get setCode;
-  @override
-  String get setRarity;
+  List<CardSet> get cardSets;
   @override
   bool get isLocalImageAvailable;
 
@@ -420,5 +405,211 @@ abstract class _YgoCard implements YgoCard {
   @override
   @JsonKey(includeFromJson: false, includeToJson: false)
   _$$YgoCardImplCopyWith<_$YgoCardImpl> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+CardSet _$CardSetFromJson(Map<String, dynamic> json) {
+  return _CardSet.fromJson(json);
+}
+
+/// @nodoc
+mixin _$CardSet {
+  String get setName => throw _privateConstructorUsedError;
+  String get setCode => throw _privateConstructorUsedError;
+  String get setRarity => throw _privateConstructorUsedError;
+  String get setPrice => throw _privateConstructorUsedError;
+
+  /// Serializes this CardSet to a JSON map.
+  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+
+  /// Create a copy of CardSet
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  $CardSetCopyWith<CardSet> get copyWith => throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class $CardSetCopyWith<$Res> {
+  factory $CardSetCopyWith(CardSet value, $Res Function(CardSet) then) =
+      _$CardSetCopyWithImpl<$Res, CardSet>;
+  @useResult
+  $Res call(
+      {String setName, String setCode, String setRarity, String setPrice});
+}
+
+/// @nodoc
+class _$CardSetCopyWithImpl<$Res, $Val extends CardSet>
+    implements $CardSetCopyWith<$Res> {
+  _$CardSetCopyWithImpl(this._value, this._then);
+
+  // ignore: unused_field
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
+
+  /// Create a copy of CardSet
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? setName = null,
+    Object? setCode = null,
+    Object? setRarity = null,
+    Object? setPrice = null,
+  }) {
+    return _then(_value.copyWith(
+      setName: null == setName
+          ? _value.setName
+          : setName // ignore: cast_nullable_to_non_nullable
+              as String,
+      setCode: null == setCode
+          ? _value.setCode
+          : setCode // ignore: cast_nullable_to_non_nullable
+              as String,
+      setRarity: null == setRarity
+          ? _value.setRarity
+          : setRarity // ignore: cast_nullable_to_non_nullable
+              as String,
+      setPrice: null == setPrice
+          ? _value.setPrice
+          : setPrice // ignore: cast_nullable_to_non_nullable
+              as String,
+    ) as $Val);
+  }
+}
+
+/// @nodoc
+abstract class _$$CardSetImplCopyWith<$Res> implements $CardSetCopyWith<$Res> {
+  factory _$$CardSetImplCopyWith(
+          _$CardSetImpl value, $Res Function(_$CardSetImpl) then) =
+      __$$CardSetImplCopyWithImpl<$Res>;
+  @override
+  @useResult
+  $Res call(
+      {String setName, String setCode, String setRarity, String setPrice});
+}
+
+/// @nodoc
+class __$$CardSetImplCopyWithImpl<$Res>
+    extends _$CardSetCopyWithImpl<$Res, _$CardSetImpl>
+    implements _$$CardSetImplCopyWith<$Res> {
+  __$$CardSetImplCopyWithImpl(
+      _$CardSetImpl _value, $Res Function(_$CardSetImpl) _then)
+      : super(_value, _then);
+
+  /// Create a copy of CardSet
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? setName = null,
+    Object? setCode = null,
+    Object? setRarity = null,
+    Object? setPrice = null,
+  }) {
+    return _then(_$CardSetImpl(
+      setName: null == setName
+          ? _value.setName
+          : setName // ignore: cast_nullable_to_non_nullable
+              as String,
+      setCode: null == setCode
+          ? _value.setCode
+          : setCode // ignore: cast_nullable_to_non_nullable
+              as String,
+      setRarity: null == setRarity
+          ? _value.setRarity
+          : setRarity // ignore: cast_nullable_to_non_nullable
+              as String,
+      setPrice: null == setPrice
+          ? _value.setPrice
+          : setPrice // ignore: cast_nullable_to_non_nullable
+              as String,
+    ));
+  }
+}
+
+/// @nodoc
+@JsonSerializable()
+class _$CardSetImpl implements _CardSet {
+  const _$CardSetImpl(
+      {required this.setName,
+      required this.setCode,
+      required this.setRarity,
+      required this.setPrice});
+
+  factory _$CardSetImpl.fromJson(Map<String, dynamic> json) =>
+      _$$CardSetImplFromJson(json);
+
+  @override
+  final String setName;
+  @override
+  final String setCode;
+  @override
+  final String setRarity;
+  @override
+  final String setPrice;
+
+  @override
+  String toString() {
+    return 'CardSet(setName: $setName, setCode: $setCode, setRarity: $setRarity, setPrice: $setPrice)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$CardSetImpl &&
+            (identical(other.setName, setName) || other.setName == setName) &&
+            (identical(other.setCode, setCode) || other.setCode == setCode) &&
+            (identical(other.setRarity, setRarity) ||
+                other.setRarity == setRarity) &&
+            (identical(other.setPrice, setPrice) ||
+                other.setPrice == setPrice));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode =>
+      Object.hash(runtimeType, setName, setCode, setRarity, setPrice);
+
+  /// Create a copy of CardSet
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$CardSetImplCopyWith<_$CardSetImpl> get copyWith =>
+      __$$CardSetImplCopyWithImpl<_$CardSetImpl>(this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$$CardSetImplToJson(
+      this,
+    );
+  }
+}
+
+abstract class _CardSet implements CardSet {
+  const factory _CardSet(
+      {required final String setName,
+      required final String setCode,
+      required final String setRarity,
+      required final String setPrice}) = _$CardSetImpl;
+
+  factory _CardSet.fromJson(Map<String, dynamic> json) = _$CardSetImpl.fromJson;
+
+  @override
+  String get setName;
+  @override
+  String get setCode;
+  @override
+  String get setRarity;
+  @override
+  String get setPrice;
+
+  /// Create a copy of CardSet
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$CardSetImplCopyWith<_$CardSetImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

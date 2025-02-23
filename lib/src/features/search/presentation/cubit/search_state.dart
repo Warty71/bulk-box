@@ -1,5 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:ygo_collector/src/core/ygo_cards/data/entities/ygo_card.dart';
+import 'package:ygo_collector/src/features/ygo_cards/data/entities/ygo_card.dart';
 
 part 'search_state.freezed.dart';
 

@@ -1,9 +1,9 @@
-import 'package:ygo_collector/src/core/ygo_cards/data/datasources/local/image_local_datasource.dart';
-import 'package:ygo_collector/src/core/ygo_cards/data/datasources/remote/ygopro_api_datasource.dart';
-import 'package:ygo_collector/src/core/ygo_cards/data/entities/ygo_card.dart';
-import 'package:ygo_collector/src/core/ygo_cards/data/models/card_model.dart';
+import 'package:ygo_collector/src/features/ygo_cards/data/datasources/local/image_local_datasource.dart';
+import 'package:ygo_collector/src/features/ygo_cards/data/datasources/remote/ygopro_api_datasource.dart';
+import 'package:ygo_collector/src/features/ygo_cards/data/entities/ygo_card.dart';
+import 'package:ygo_collector/src/features/ygo_cards/data/models/card_model.dart';
 import 'package:ygo_collector/src/features/search/domain/repositories/search_repository.dart';
-import 'package:ygo_collector/src/core/ygo_cards/data/datasources/local/card_local_datasource.dart';
+import 'package:ygo_collector/src/features/ygo_cards/data/datasources/local/card_local_datasource.dart';
 
 class SearchRepositoryImpl implements SearchRepository {
   final YGOProApiDatasource _apiDatasource;
@@ -142,14 +142,14 @@ class SearchRepositoryImpl implements SearchRepository {
             imageUrlSmall: '',
           );
 
-    final cardSet = model.cardSets.isNotEmpty
-        ? model.cardSets.first
-        : CardSetModel(
-            setName: '',
-            setCode: '',
-            setRarity: '',
-            setPrice: '',
-          );
+    final cardSets = model.cardSets
+        .map((set) => CardSet(
+              setName: set.setName,
+              setCode: set.setCode,
+              setRarity: set.setRarity,
+              setPrice: set.setPrice,
+            ))
+        .toList();
 
     return YgoCard(
       id: model.id,
@@ -162,8 +162,7 @@ class SearchRepositoryImpl implements SearchRepository {
       atk: model.atk,
       def: model.def,
       imageUrl: cardImage.imageUrl,
-      setCode: cardSet.setCode,
-      setRarity: cardSet.setRarity,
+      cardSets: cardSets,
       isLocalImageAvailable: false,
     );
   }
@@ -186,14 +185,14 @@ class SearchRepositoryImpl implements SearchRepository {
           imageUrlSmall: entity.imageUrl,
         ),
       ],
-      cardSets: [
-        CardSetModel(
-          setName: '', // Not available in entity
-          setCode: entity.setCode,
-          setRarity: entity.setRarity,
-          setPrice: '0', // Not available in entity
-        ),
-      ],
+      cardSets: entity.cardSets
+          .map((set) => CardSetModel(
+                setName: set.setName,
+                setCode: set.setCode,
+                setRarity: set.setRarity,
+                setPrice: set.setPrice,
+              ))
+          .toList(),
     );
   }
 }

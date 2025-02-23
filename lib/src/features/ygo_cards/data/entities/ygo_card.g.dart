@@ -18,8 +18,9 @@ _$YgoCardImpl _$$YgoCardImplFromJson(Map<String, dynamic> json) =>
       atk: (json['atk'] as num?)?.toInt(),
       def: (json['def'] as num?)?.toInt(),
       imageUrl: json['imageUrl'] as String,
-      setCode: json['setCode'] as String,
-      setRarity: json['setRarity'] as String,
+      cardSets: (json['cardSets'] as List<dynamic>)
+          .map((e) => CardSet.fromJson(e as Map<String, dynamic>))
+          .toList(),
       isLocalImageAvailable: json['isLocalImageAvailable'] as bool? ?? false,
     );
 
@@ -35,7 +36,22 @@ Map<String, dynamic> _$$YgoCardImplToJson(_$YgoCardImpl instance) =>
       'atk': instance.atk,
       'def': instance.def,
       'imageUrl': instance.imageUrl,
+      'cardSets': instance.cardSets,
+      'isLocalImageAvailable': instance.isLocalImageAvailable,
+    };
+
+_$CardSetImpl _$$CardSetImplFromJson(Map<String, dynamic> json) =>
+    _$CardSetImpl(
+      setName: json['setName'] as String,
+      setCode: json['setCode'] as String,
+      setRarity: json['setRarity'] as String,
+      setPrice: json['setPrice'] as String,
+    );
+
+Map<String, dynamic> _$$CardSetImplToJson(_$CardSetImpl instance) =>
+    <String, dynamic>{
+      'setName': instance.setName,
       'setCode': instance.setCode,
       'setRarity': instance.setRarity,
-      'isLocalImageAvailable': instance.isLocalImageAvailable,
+      'setPrice': instance.setPrice,
     };

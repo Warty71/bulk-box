@@ -16,11 +16,23 @@ class YgoCard with _$YgoCard {
     int? atk,
     int? def,
     required String imageUrl,
-    required String setCode,
-    required String setRarity,
+    required List<CardSet> cardSets,
     @Default(false) bool isLocalImageAvailable,
   }) = _YgoCard;
 
   factory YgoCard.fromJson(Map<String, dynamic> json) =>
       _$YgoCardFromJson(json);
+}
+
+@freezed
+class CardSet with _$CardSet {
+  const factory CardSet({
+    required String setName,
+    required String setCode,
+    required String setRarity,
+    required String setPrice,
+  }) = _CardSet;
+
+  factory CardSet.fromJson(Map<String, dynamic> json) =>
+      _$CardSetFromJson(json);
 }

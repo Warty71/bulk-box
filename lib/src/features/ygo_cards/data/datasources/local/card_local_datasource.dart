@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:ygo_collector/src/core/ygo_cards/data/models/card_model.dart';
+import 'package:ygo_collector/src/features/ygo_cards/data/models/card_model.dart';
 
 class CardLocalDatasource {
   final SharedPreferences _prefs;

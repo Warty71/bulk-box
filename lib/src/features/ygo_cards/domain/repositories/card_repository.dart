@@ -1,4 +1,4 @@
-import 'package:ygo_collector/src/core/ygo_cards/data/entities/ygo_card.dart';
+import 'package:ygo_collector/src/features/ygo_cards/data/entities/ygo_card.dart';
 
 abstract class CardRepository {
   Future<List<YgoCard>> searchCards(String query);

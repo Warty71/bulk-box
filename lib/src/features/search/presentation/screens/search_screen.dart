@@ -2,11 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ygo_collector/src/core/constants/dimensions.dart';
 import 'package:ygo_collector/src/core/widgets/debouncer.dart';
-import 'package:ygo_collector/src/core/ygo_cards/data/entities/ygo_card.dart';
+import 'package:ygo_collector/src/features/ygo_cards/data/entities/ygo_card.dart';
 import 'package:ygo_collector/src/features/search/presentation/cubit/search_cubit.dart';
 import 'package:ygo_collector/src/features/search/presentation/cubit/search_state.dart';
 import 'dart:io';
 import 'package:ygo_collector/src/core/di/injection_container.dart' as di;
+import 'package:ygo_collector/src/features/ygo_cards/presentation/screens/card_details_screen.dart';
 
 class SearchScreen extends StatelessWidget {
   const SearchScreen({super.key});
@@ -159,56 +160,68 @@ class _SearchCardItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       margin: EdgeInsets.zero,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Expanded(
-            child: FutureBuilder<String>(
-              future: context.read<SearchCubit>().getCardImagePath(card.id),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(
-                    child: CircularProgressIndicator(),
-                  );
-                }
+      child: InkWell(
+        onTap: () {
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) => BlocProvider.value(
+                value: context.read<SearchCubit>(),
+                child: CardDetailsScreen(card: card),
+              ),
+            ),
+          );
+        },
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+              child: FutureBuilder<String>(
+                future: context.read<SearchCubit>().getCardImagePath(card.id),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  }
 
-                if (snapshot.hasError) {
+                  if (snapshot.hasError) {
+                    return Image.asset(
+                      'assets/images/ygo_placeholder.jpg',
+                      fit: BoxFit.cover,
+                    );
+                  }
+
+                  if (snapshot.hasData) {
+                    return Image.file(
+                      File(snapshot.data!),
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) {
+                        return Image.asset(
+                          'assets/images/ygo_placeholder.jpg',
+                          fit: BoxFit.cover,
+                        );
+                      },
+                    );
+                  }
+
                   return Image.asset(
                     'assets/images/ygo_placeholder.jpg',
                     fit: BoxFit.cover,
                   );
-                }
-
-                if (snapshot.hasData) {
-                  return Image.file(
-                    File(snapshot.data!),
-                    fit: BoxFit.cover,
-                    errorBuilder: (context, error, stackTrace) {
-                      return Image.asset(
-                        'assets/images/ygo_placeholder.jpg',
-                        fit: BoxFit.cover,
-                      );
-                    },
-                  );
-                }
-
-                return Image.asset(
-                  'assets/images/ygo_placeholder.jpg',
-                  fit: BoxFit.cover,
-                );
-              },
+                },
+              ),
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Text(
-              card.name,
-              style: Theme.of(context).textTheme.titleSmall,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                card.name,
+                style: Theme.of(context).textTheme.titleSmall,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

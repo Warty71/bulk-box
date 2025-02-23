@@ -2,9 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ygo_collector/src/core/router/app_router.dart';
 import 'package:ygo_collector/src/core/theme/app_theme.dart';
+import 'package:ygo_collector/src/features/search/presentation/cubit/search_cubit.dart';
 import 'src/core/di/injection_container.dart' as di;
-
-import 'package:ygo_collector/src/features/search/domain/repositories/search_repository.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -12,16 +11,7 @@ void main() async {
   // Initialize dependencies
   await di.initializeDependencies();
 
-  runApp(
-    MultiRepositoryProvider(
-      providers: [
-        RepositoryProvider<SearchRepository>(
-          create: (context) => di.getIt<SearchRepository>(),
-        ),
-      ],
-      child: const MyApp(),
-    ),
-  );
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -29,10 +19,17 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp.router(
-      title: 'YGO Collector',
-      theme: AppTheme.lightTheme,
-      routerConfig: AppRouter.router,
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) => di.getIt<SearchCubit>(),
+        ),
+      ],
+      child: MaterialApp.router(
+        title: 'YGO Collector',
+        theme: AppTheme.lightTheme,
+        routerConfig: AppRouter.router,
+      ),
     );
   }
 }
