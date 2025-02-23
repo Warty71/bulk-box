@@ -6,6 +6,7 @@ import 'package:ygo_collector/src/core/ygo_cards/data/entities/ygo_card.dart';
 import 'package:ygo_collector/src/features/search/presentation/cubit/search_cubit.dart';
 import 'package:ygo_collector/src/features/search/presentation/cubit/search_state.dart';
 import 'dart:io';
+import 'package:ygo_collector/src/core/di/injection_container.dart' as di;
 
 class SearchScreen extends StatelessWidget {
   const SearchScreen({super.key});
@@ -13,7 +14,7 @@ class SearchScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => SearchCubit(context.read()),
+      create: (context) => di.getIt<SearchCubit>(),
       child: const SearchView(),
     );
   }
