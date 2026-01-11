@@ -6,8 +6,7 @@ part of 'ygo_card.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$YgoCardImpl _$$YgoCardImplFromJson(Map<String, dynamic> json) =>
-    _$YgoCardImpl(
+_YgoCard _$YgoCardFromJson(Map<String, dynamic> json) => _YgoCard(
       id: (json['id'] as num).toInt(),
       name: json['name'] as String,
       type: json['type'] as String,
@@ -24,8 +23,7 @@ _$YgoCardImpl _$$YgoCardImplFromJson(Map<String, dynamic> json) =>
       isLocalImageAvailable: json['isLocalImageAvailable'] as bool? ?? false,
     );
 
-Map<String, dynamic> _$$YgoCardImplToJson(_$YgoCardImpl instance) =>
-    <String, dynamic>{
+Map<String, dynamic> _$YgoCardToJson(_YgoCard instance) => <String, dynamic>{
       'id': instance.id,
       'name': instance.name,
       'type': instance.type,
@@ -40,15 +38,13 @@ Map<String, dynamic> _$$YgoCardImplToJson(_$YgoCardImpl instance) =>
       'isLocalImageAvailable': instance.isLocalImageAvailable,
     };
 
-_$CardSetImpl _$$CardSetImplFromJson(Map<String, dynamic> json) =>
-    _$CardSetImpl(
+_CardSet _$CardSetFromJson(Map<String, dynamic> json) => _CardSet(
       setName: json['setName'] as String,
       setCode: json['setCode'] as String,
       setRarity: json['setRarity'] as String,
     );
 
-Map<String, dynamic> _$$CardSetImplToJson(_$CardSetImpl instance) =>
-    <String, dynamic>{
+Map<String, dynamic> _$CardSetToJson(_CardSet instance) => <String, dynamic>{
       'setName': instance.setName,
       'setCode': instance.setCode,
       'setRarity': instance.setRarity,

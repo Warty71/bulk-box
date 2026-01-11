@@ -1,5 +1,6 @@
 import 'package:get_it/get_it.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:ygo_collector/src/core/database/app_database.dart';
 import 'package:ygo_collector/src/features/ygo_cards/data/datasources/local/card_local_datasource.dart';
 import 'package:ygo_collector/src/features/ygo_cards/data/datasources/local/image_local_datasource.dart';
 import 'package:ygo_collector/src/features/ygo_cards/data/datasources/remote/ygopro_api_datasource.dart';
@@ -21,6 +22,11 @@ Future<void> _initializeCore() async {
   // External
   final prefs = await SharedPreferences.getInstance();
   getIt.registerSingleton(prefs);
+
+  // Database
+  getIt.registerLazySingleton<AppDatabase>(
+    () => AppDatabase(),
+  );
 
   // Datasources
   getIt.registerLazySingleton(

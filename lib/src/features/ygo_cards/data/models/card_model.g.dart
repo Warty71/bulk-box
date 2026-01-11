@@ -6,8 +6,7 @@ part of 'card_model.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$CardModelImpl _$$CardModelImplFromJson(Map<String, dynamic> json) =>
-    _$CardModelImpl(
+_CardModel _$CardModelFromJson(Map<String, dynamic> json) => _CardModel(
       id: (json['id'] as num).toInt(),
       name: json['name'] as String,
       type: json['type'] as String,
@@ -26,7 +25,7 @@ _$CardModelImpl _$$CardModelImplFromJson(Map<String, dynamic> json) =>
           [],
     );
 
-Map<String, dynamic> _$$CardModelImplToJson(_$CardModelImpl instance) =>
+Map<String, dynamic> _$CardModelToJson(_CardModel instance) =>
     <String, dynamic>{
       'id': instance.id,
       'name': instance.name,
@@ -41,29 +40,28 @@ Map<String, dynamic> _$$CardModelImplToJson(_$CardModelImpl instance) =>
       'card_sets': instance.cardSets,
     };
 
-_$CardImageModelImpl _$$CardImageModelImplFromJson(Map<String, dynamic> json) =>
-    _$CardImageModelImpl(
+_CardImageModel _$CardImageModelFromJson(Map<String, dynamic> json) =>
+    _CardImageModel(
       id: (json['id'] as num).toInt(),
       imageUrl: json['image_url'] as String,
       imageUrlSmall: json['image_url_small'] as String,
     );
 
-Map<String, dynamic> _$$CardImageModelImplToJson(
-        _$CardImageModelImpl instance) =>
+Map<String, dynamic> _$CardImageModelToJson(_CardImageModel instance) =>
     <String, dynamic>{
       'id': instance.id,
       'image_url': instance.imageUrl,
       'image_url_small': instance.imageUrlSmall,
     };
 
-_$CardSetModelImpl _$$CardSetModelImplFromJson(Map<String, dynamic> json) =>
-    _$CardSetModelImpl(
+_CardSetModel _$CardSetModelFromJson(Map<String, dynamic> json) =>
+    _CardSetModel(
       setName: json['set_name'] as String,
       setCode: json['set_code'] as String,
       setRarity: json['set_rarity'] as String,
     );
 
-Map<String, dynamic> _$$CardSetModelImplToJson(_$CardSetModelImpl instance) =>
+Map<String, dynamic> _$CardSetModelToJson(_CardSetModel instance) =>
     <String, dynamic>{
       'set_name': instance.setName,
       'set_code': instance.setCode,

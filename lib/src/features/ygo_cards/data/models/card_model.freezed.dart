@@ -1,5 +1,5 @@
-// coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
+// coverage:ignore-file
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
@@ -9,144 +9,81 @@ part of 'card_model.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// dart format off
 T _$identity<T>(T value) => value;
-
-final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
-
-CardModel _$CardModelFromJson(Map<String, dynamic> json) {
-  return _CardModel.fromJson(json);
-}
 
 /// @nodoc
 mixin _$CardModel {
-  int get id => throw _privateConstructorUsedError;
-  String get name => throw _privateConstructorUsedError;
-  String get type => throw _privateConstructorUsedError;
-  String get desc => throw _privateConstructorUsedError;
-  String get race => throw _privateConstructorUsedError;
-  String? get attribute => throw _privateConstructorUsedError;
-  int? get level => throw _privateConstructorUsedError;
-  int? get atk => throw _privateConstructorUsedError;
-  int? get def => throw _privateConstructorUsedError;
+  int get id;
+  String get name;
+  String get type;
+  String get desc;
+  String get race;
+  String? get attribute;
+  int? get level;
+  int? get atk;
+  int? get def;
   @JsonKey(name: 'card_images')
-  List<CardImageModel> get cardImages => throw _privateConstructorUsedError;
+  List<CardImageModel> get cardImages;
   @JsonKey(name: 'card_sets', defaultValue: [])
-  List<CardSetModel> get cardSets => throw _privateConstructorUsedError;
-
-  /// Serializes this CardModel to a JSON map.
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+  List<CardSetModel> get cardSets;
 
   /// Create a copy of CardModel
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
-  $CardModelCopyWith<CardModel> get copyWith =>
-      throw _privateConstructorUsedError;
-}
-
-/// @nodoc
-abstract class $CardModelCopyWith<$Res> {
-  factory $CardModelCopyWith(CardModel value, $Res Function(CardModel) then) =
-      _$CardModelCopyWithImpl<$Res, CardModel>;
-  @useResult
-  $Res call(
-      {int id,
-      String name,
-      String type,
-      String desc,
-      String race,
-      String? attribute,
-      int? level,
-      int? atk,
-      int? def,
-      @JsonKey(name: 'card_images') List<CardImageModel> cardImages,
-      @JsonKey(name: 'card_sets', defaultValue: [])
-      List<CardSetModel> cardSets});
-}
-
-/// @nodoc
-class _$CardModelCopyWithImpl<$Res, $Val extends CardModel>
-    implements $CardModelCopyWith<$Res> {
-  _$CardModelCopyWithImpl(this._value, this._then);
-
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
-
-  /// Create a copy of CardModel
-  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
+  $CardModelCopyWith<CardModel> get copyWith =>
+      _$CardModelCopyWithImpl<CardModel>(this as CardModel, _$identity);
+
+  /// Serializes this CardModel to a JSON map.
+  Map<String, dynamic> toJson();
+
   @override
-  $Res call({
-    Object? id = null,
-    Object? name = null,
-    Object? type = null,
-    Object? desc = null,
-    Object? race = null,
-    Object? attribute = freezed,
-    Object? level = freezed,
-    Object? atk = freezed,
-    Object? def = freezed,
-    Object? cardImages = null,
-    Object? cardSets = null,
-  }) {
-    return _then(_value.copyWith(
-      id: null == id
-          ? _value.id
-          : id // ignore: cast_nullable_to_non_nullable
-              as int,
-      name: null == name
-          ? _value.name
-          : name // ignore: cast_nullable_to_non_nullable
-              as String,
-      type: null == type
-          ? _value.type
-          : type // ignore: cast_nullable_to_non_nullable
-              as String,
-      desc: null == desc
-          ? _value.desc
-          : desc // ignore: cast_nullable_to_non_nullable
-              as String,
-      race: null == race
-          ? _value.race
-          : race // ignore: cast_nullable_to_non_nullable
-              as String,
-      attribute: freezed == attribute
-          ? _value.attribute
-          : attribute // ignore: cast_nullable_to_non_nullable
-              as String?,
-      level: freezed == level
-          ? _value.level
-          : level // ignore: cast_nullable_to_non_nullable
-              as int?,
-      atk: freezed == atk
-          ? _value.atk
-          : atk // ignore: cast_nullable_to_non_nullable
-              as int?,
-      def: freezed == def
-          ? _value.def
-          : def // ignore: cast_nullable_to_non_nullable
-              as int?,
-      cardImages: null == cardImages
-          ? _value.cardImages
-          : cardImages // ignore: cast_nullable_to_non_nullable
-              as List<CardImageModel>,
-      cardSets: null == cardSets
-          ? _value.cardSets
-          : cardSets // ignore: cast_nullable_to_non_nullable
-              as List<CardSetModel>,
-    ) as $Val);
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is CardModel &&
+            (identical(other.id, id) || other.id == id) &&
+            (identical(other.name, name) || other.name == name) &&
+            (identical(other.type, type) || other.type == type) &&
+            (identical(other.desc, desc) || other.desc == desc) &&
+            (identical(other.race, race) || other.race == race) &&
+            (identical(other.attribute, attribute) ||
+                other.attribute == attribute) &&
+            (identical(other.level, level) || other.level == level) &&
+            (identical(other.atk, atk) || other.atk == atk) &&
+            (identical(other.def, def) || other.def == def) &&
+            const DeepCollectionEquality()
+                .equals(other.cardImages, cardImages) &&
+            const DeepCollectionEquality().equals(other.cardSets, cardSets));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode => Object.hash(
+      runtimeType,
+      id,
+      name,
+      type,
+      desc,
+      race,
+      attribute,
+      level,
+      atk,
+      def,
+      const DeepCollectionEquality().hash(cardImages),
+      const DeepCollectionEquality().hash(cardSets));
+
+  @override
+  String toString() {
+    return 'CardModel(id: $id, name: $name, type: $type, desc: $desc, race: $race, attribute: $attribute, level: $level, atk: $atk, def: $def, cardImages: $cardImages, cardSets: $cardSets)';
   }
 }
 
 /// @nodoc
-abstract class _$$CardModelImplCopyWith<$Res>
-    implements $CardModelCopyWith<$Res> {
-  factory _$$CardModelImplCopyWith(
-          _$CardModelImpl value, $Res Function(_$CardModelImpl) then) =
-      __$$CardModelImplCopyWithImpl<$Res>;
-  @override
+abstract mixin class $CardModelCopyWith<$Res> {
+  factory $CardModelCopyWith(CardModel value, $Res Function(CardModel) _then) =
+      _$CardModelCopyWithImpl;
   @useResult
   $Res call(
       {int id,
@@ -164,12 +101,11 @@ abstract class _$$CardModelImplCopyWith<$Res>
 }
 
 /// @nodoc
-class __$$CardModelImplCopyWithImpl<$Res>
-    extends _$CardModelCopyWithImpl<$Res, _$CardModelImpl>
-    implements _$$CardModelImplCopyWith<$Res> {
-  __$$CardModelImplCopyWithImpl(
-      _$CardModelImpl _value, $Res Function(_$CardModelImpl) _then)
-      : super(_value, _then);
+class _$CardModelCopyWithImpl<$Res> implements $CardModelCopyWith<$Res> {
+  _$CardModelCopyWithImpl(this._self, this._then);
+
+  final CardModel _self;
+  final $Res Function(CardModel) _then;
 
   /// Create a copy of CardModel
   /// with the given fields replaced by the non-null parameter values.
@@ -188,59 +124,288 @@ class __$$CardModelImplCopyWithImpl<$Res>
     Object? cardImages = null,
     Object? cardSets = null,
   }) {
-    return _then(_$CardModelImpl(
+    return _then(_self.copyWith(
       id: null == id
-          ? _value.id
+          ? _self.id
           : id // ignore: cast_nullable_to_non_nullable
               as int,
       name: null == name
-          ? _value.name
+          ? _self.name
           : name // ignore: cast_nullable_to_non_nullable
               as String,
       type: null == type
-          ? _value.type
+          ? _self.type
           : type // ignore: cast_nullable_to_non_nullable
               as String,
       desc: null == desc
-          ? _value.desc
+          ? _self.desc
           : desc // ignore: cast_nullable_to_non_nullable
               as String,
       race: null == race
-          ? _value.race
+          ? _self.race
           : race // ignore: cast_nullable_to_non_nullable
               as String,
       attribute: freezed == attribute
-          ? _value.attribute
+          ? _self.attribute
           : attribute // ignore: cast_nullable_to_non_nullable
               as String?,
       level: freezed == level
-          ? _value.level
+          ? _self.level
           : level // ignore: cast_nullable_to_non_nullable
               as int?,
       atk: freezed == atk
-          ? _value.atk
+          ? _self.atk
           : atk // ignore: cast_nullable_to_non_nullable
               as int?,
       def: freezed == def
-          ? _value.def
+          ? _self.def
           : def // ignore: cast_nullable_to_non_nullable
               as int?,
       cardImages: null == cardImages
-          ? _value._cardImages
+          ? _self.cardImages
           : cardImages // ignore: cast_nullable_to_non_nullable
               as List<CardImageModel>,
       cardSets: null == cardSets
-          ? _value._cardSets
+          ? _self.cardSets
           : cardSets // ignore: cast_nullable_to_non_nullable
               as List<CardSetModel>,
     ));
   }
 }
 
+/// Adds pattern-matching-related methods to [CardModel].
+extension CardModelPatterns on CardModel {
+  /// A variant of `map` that fallback to returning `orElse`.
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case final Subclass value:
+  ///     return ...;
+  ///   case _:
+  ///     return orElse();
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>(
+    TResult Function(_CardModel value)? $default, {
+    required TResult orElse(),
+  }) {
+    final _that = this;
+    switch (_that) {
+      case _CardModel() when $default != null:
+        return $default(_that);
+      case _:
+        return orElse();
+    }
+  }
+
+  /// A `switch`-like method, using callbacks.
+  ///
+  /// Callbacks receives the raw object, upcasted.
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case final Subclass value:
+  ///     return ...;
+  ///   case final Subclass2 value:
+  ///     return ...;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>(
+    TResult Function(_CardModel value) $default,
+  ) {
+    final _that = this;
+    switch (_that) {
+      case _CardModel():
+        return $default(_that);
+      case _:
+        throw StateError('Unexpected subclass');
+    }
+  }
+
+  /// A variant of `map` that fallback to returning `null`.
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case final Subclass value:
+  ///     return ...;
+  ///   case _:
+  ///     return null;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>(
+    TResult? Function(_CardModel value)? $default,
+  ) {
+    final _that = this;
+    switch (_that) {
+      case _CardModel() when $default != null:
+        return $default(_that);
+      case _:
+        return null;
+    }
+  }
+
+  /// A variant of `when` that fallback to an `orElse` callback.
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case Subclass(:final field):
+  ///     return ...;
+  ///   case _:
+  ///     return orElse();
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>(
+    TResult Function(
+            int id,
+            String name,
+            String type,
+            String desc,
+            String race,
+            String? attribute,
+            int? level,
+            int? atk,
+            int? def,
+            @JsonKey(name: 'card_images') List<CardImageModel> cardImages,
+            @JsonKey(name: 'card_sets', defaultValue: [])
+            List<CardSetModel> cardSets)?
+        $default, {
+    required TResult orElse(),
+  }) {
+    final _that = this;
+    switch (_that) {
+      case _CardModel() when $default != null:
+        return $default(
+            _that.id,
+            _that.name,
+            _that.type,
+            _that.desc,
+            _that.race,
+            _that.attribute,
+            _that.level,
+            _that.atk,
+            _that.def,
+            _that.cardImages,
+            _that.cardSets);
+      case _:
+        return orElse();
+    }
+  }
+
+  /// A `switch`-like method, using callbacks.
+  ///
+  /// As opposed to `map`, this offers destructuring.
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case Subclass(:final field):
+  ///     return ...;
+  ///   case Subclass2(:final field2):
+  ///     return ...;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>(
+    TResult Function(
+            int id,
+            String name,
+            String type,
+            String desc,
+            String race,
+            String? attribute,
+            int? level,
+            int? atk,
+            int? def,
+            @JsonKey(name: 'card_images') List<CardImageModel> cardImages,
+            @JsonKey(name: 'card_sets', defaultValue: [])
+            List<CardSetModel> cardSets)
+        $default,
+  ) {
+    final _that = this;
+    switch (_that) {
+      case _CardModel():
+        return $default(
+            _that.id,
+            _that.name,
+            _that.type,
+            _that.desc,
+            _that.race,
+            _that.attribute,
+            _that.level,
+            _that.atk,
+            _that.def,
+            _that.cardImages,
+            _that.cardSets);
+      case _:
+        throw StateError('Unexpected subclass');
+    }
+  }
+
+  /// A variant of `when` that fallback to returning `null`
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case Subclass(:final field):
+  ///     return ...;
+  ///   case _:
+  ///     return null;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>(
+    TResult? Function(
+            int id,
+            String name,
+            String type,
+            String desc,
+            String race,
+            String? attribute,
+            int? level,
+            int? atk,
+            int? def,
+            @JsonKey(name: 'card_images') List<CardImageModel> cardImages,
+            @JsonKey(name: 'card_sets', defaultValue: [])
+            List<CardSetModel> cardSets)?
+        $default,
+  ) {
+    final _that = this;
+    switch (_that) {
+      case _CardModel() when $default != null:
+        return $default(
+            _that.id,
+            _that.name,
+            _that.type,
+            _that.desc,
+            _that.race,
+            _that.attribute,
+            _that.level,
+            _that.atk,
+            _that.def,
+            _that.cardImages,
+            _that.cardSets);
+      case _:
+        return null;
+    }
+  }
+}
+
 /// @nodoc
 @JsonSerializable()
-class _$CardModelImpl implements _CardModel {
-  const _$CardModelImpl(
+class _CardModel implements CardModel {
+  const _CardModel(
       {required this.id,
       required this.name,
       required this.type,
@@ -256,9 +421,8 @@ class _$CardModelImpl implements _CardModel {
       required final List<CardSetModel> cardSets})
       : _cardImages = cardImages,
         _cardSets = cardSets;
-
-  factory _$CardModelImpl.fromJson(Map<String, dynamic> json) =>
-      _$$CardModelImplFromJson(json);
+  factory _CardModel.fromJson(Map<String, dynamic> json) =>
+      _$CardModelFromJson(json);
 
   @override
   final int id;
@@ -296,16 +460,26 @@ class _$CardModelImpl implements _CardModel {
     return EqualUnmodifiableListView(_cardSets);
   }
 
+  /// Create a copy of CardModel
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  String toString() {
-    return 'CardModel(id: $id, name: $name, type: $type, desc: $desc, race: $race, attribute: $attribute, level: $level, atk: $atk, def: $def, cardImages: $cardImages, cardSets: $cardSets)';
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  _$CardModelCopyWith<_CardModel> get copyWith =>
+      __$CardModelCopyWithImpl<_CardModel>(this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$CardModelToJson(
+      this,
+    );
   }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$CardModelImpl &&
+            other is _CardModel &&
             (identical(other.id, id) || other.id == id) &&
             (identical(other.name, name) || other.name == name) &&
             (identical(other.type, type) || other.type == type) &&
@@ -337,222 +511,132 @@ class _$CardModelImpl implements _CardModel {
       const DeepCollectionEquality().hash(_cardImages),
       const DeepCollectionEquality().hash(_cardSets));
 
-  /// Create a copy of CardModel
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  @pragma('vm:prefer-inline')
-  _$$CardModelImplCopyWith<_$CardModelImpl> get copyWith =>
-      __$$CardModelImplCopyWithImpl<_$CardModelImpl>(this, _$identity);
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$CardModelImplToJson(
-      this,
-    );
+  String toString() {
+    return 'CardModel(id: $id, name: $name, type: $type, desc: $desc, race: $race, attribute: $attribute, level: $level, atk: $atk, def: $def, cardImages: $cardImages, cardSets: $cardSets)';
   }
 }
 
-abstract class _CardModel implements CardModel {
-  const factory _CardModel(
-      {required final int id,
-      required final String name,
-      required final String type,
-      required final String desc,
-      required final String race,
-      final String? attribute,
-      final int? level,
-      final int? atk,
-      final int? def,
-      @JsonKey(name: 'card_images')
-      required final List<CardImageModel> cardImages,
+/// @nodoc
+abstract mixin class _$CardModelCopyWith<$Res>
+    implements $CardModelCopyWith<$Res> {
+  factory _$CardModelCopyWith(
+          _CardModel value, $Res Function(_CardModel) _then) =
+      __$CardModelCopyWithImpl;
+  @override
+  @useResult
+  $Res call(
+      {int id,
+      String name,
+      String type,
+      String desc,
+      String race,
+      String? attribute,
+      int? level,
+      int? atk,
+      int? def,
+      @JsonKey(name: 'card_images') List<CardImageModel> cardImages,
       @JsonKey(name: 'card_sets', defaultValue: [])
-      required final List<CardSetModel> cardSets}) = _$CardModelImpl;
+      List<CardSetModel> cardSets});
+}
 
-  factory _CardModel.fromJson(Map<String, dynamic> json) =
-      _$CardModelImpl.fromJson;
+/// @nodoc
+class __$CardModelCopyWithImpl<$Res> implements _$CardModelCopyWith<$Res> {
+  __$CardModelCopyWithImpl(this._self, this._then);
 
-  @override
-  int get id;
-  @override
-  String get name;
-  @override
-  String get type;
-  @override
-  String get desc;
-  @override
-  String get race;
-  @override
-  String? get attribute;
-  @override
-  int? get level;
-  @override
-  int? get atk;
-  @override
-  int? get def;
-  @override
-  @JsonKey(name: 'card_images')
-  List<CardImageModel> get cardImages;
-  @override
-  @JsonKey(name: 'card_sets', defaultValue: [])
-  List<CardSetModel> get cardSets;
+  final _CardModel _self;
+  final $Res Function(_CardModel) _then;
 
   /// Create a copy of CardModel
   /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$CardModelImplCopyWith<_$CardModelImpl> get copyWith =>
-      throw _privateConstructorUsedError;
-}
-
-CardImageModel _$CardImageModelFromJson(Map<String, dynamic> json) {
-  return _CardImageModel.fromJson(json);
-}
-
-/// @nodoc
-mixin _$CardImageModel {
-  int get id => throw _privateConstructorUsedError;
-  @JsonKey(name: 'image_url')
-  String get imageUrl => throw _privateConstructorUsedError;
-  @JsonKey(name: 'image_url_small')
-  String get imageUrlSmall => throw _privateConstructorUsedError;
-
-  /// Serializes this CardImageModel to a JSON map.
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-
-  /// Create a copy of CardImageModel
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  $CardImageModelCopyWith<CardImageModel> get copyWith =>
-      throw _privateConstructorUsedError;
-}
-
-/// @nodoc
-abstract class $CardImageModelCopyWith<$Res> {
-  factory $CardImageModelCopyWith(
-          CardImageModel value, $Res Function(CardImageModel) then) =
-      _$CardImageModelCopyWithImpl<$Res, CardImageModel>;
-  @useResult
-  $Res call(
-      {int id,
-      @JsonKey(name: 'image_url') String imageUrl,
-      @JsonKey(name: 'image_url_small') String imageUrlSmall});
-}
-
-/// @nodoc
-class _$CardImageModelCopyWithImpl<$Res, $Val extends CardImageModel>
-    implements $CardImageModelCopyWith<$Res> {
-  _$CardImageModelCopyWithImpl(this._value, this._then);
-
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
-
-  /// Create a copy of CardImageModel
-  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
-  @override
   $Res call({
     Object? id = null,
-    Object? imageUrl = null,
-    Object? imageUrlSmall = null,
+    Object? name = null,
+    Object? type = null,
+    Object? desc = null,
+    Object? race = null,
+    Object? attribute = freezed,
+    Object? level = freezed,
+    Object? atk = freezed,
+    Object? def = freezed,
+    Object? cardImages = null,
+    Object? cardSets = null,
   }) {
-    return _then(_value.copyWith(
+    return _then(_CardModel(
       id: null == id
-          ? _value.id
+          ? _self.id
           : id // ignore: cast_nullable_to_non_nullable
               as int,
-      imageUrl: null == imageUrl
-          ? _value.imageUrl
-          : imageUrl // ignore: cast_nullable_to_non_nullable
+      name: null == name
+          ? _self.name
+          : name // ignore: cast_nullable_to_non_nullable
               as String,
-      imageUrlSmall: null == imageUrlSmall
-          ? _value.imageUrlSmall
-          : imageUrlSmall // ignore: cast_nullable_to_non_nullable
+      type: null == type
+          ? _self.type
+          : type // ignore: cast_nullable_to_non_nullable
               as String,
-    ) as $Val);
-  }
-}
-
-/// @nodoc
-abstract class _$$CardImageModelImplCopyWith<$Res>
-    implements $CardImageModelCopyWith<$Res> {
-  factory _$$CardImageModelImplCopyWith(_$CardImageModelImpl value,
-          $Res Function(_$CardImageModelImpl) then) =
-      __$$CardImageModelImplCopyWithImpl<$Res>;
-  @override
-  @useResult
-  $Res call(
-      {int id,
-      @JsonKey(name: 'image_url') String imageUrl,
-      @JsonKey(name: 'image_url_small') String imageUrlSmall});
-}
-
-/// @nodoc
-class __$$CardImageModelImplCopyWithImpl<$Res>
-    extends _$CardImageModelCopyWithImpl<$Res, _$CardImageModelImpl>
-    implements _$$CardImageModelImplCopyWith<$Res> {
-  __$$CardImageModelImplCopyWithImpl(
-      _$CardImageModelImpl _value, $Res Function(_$CardImageModelImpl) _then)
-      : super(_value, _then);
-
-  /// Create a copy of CardImageModel
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? id = null,
-    Object? imageUrl = null,
-    Object? imageUrlSmall = null,
-  }) {
-    return _then(_$CardImageModelImpl(
-      id: null == id
-          ? _value.id
-          : id // ignore: cast_nullable_to_non_nullable
-              as int,
-      imageUrl: null == imageUrl
-          ? _value.imageUrl
-          : imageUrl // ignore: cast_nullable_to_non_nullable
+      desc: null == desc
+          ? _self.desc
+          : desc // ignore: cast_nullable_to_non_nullable
               as String,
-      imageUrlSmall: null == imageUrlSmall
-          ? _value.imageUrlSmall
-          : imageUrlSmall // ignore: cast_nullable_to_non_nullable
+      race: null == race
+          ? _self.race
+          : race // ignore: cast_nullable_to_non_nullable
               as String,
+      attribute: freezed == attribute
+          ? _self.attribute
+          : attribute // ignore: cast_nullable_to_non_nullable
+              as String?,
+      level: freezed == level
+          ? _self.level
+          : level // ignore: cast_nullable_to_non_nullable
+              as int?,
+      atk: freezed == atk
+          ? _self.atk
+          : atk // ignore: cast_nullable_to_non_nullable
+              as int?,
+      def: freezed == def
+          ? _self.def
+          : def // ignore: cast_nullable_to_non_nullable
+              as int?,
+      cardImages: null == cardImages
+          ? _self._cardImages
+          : cardImages // ignore: cast_nullable_to_non_nullable
+              as List<CardImageModel>,
+      cardSets: null == cardSets
+          ? _self._cardSets
+          : cardSets // ignore: cast_nullable_to_non_nullable
+              as List<CardSetModel>,
     ));
   }
 }
 
 /// @nodoc
-@JsonSerializable()
-class _$CardImageModelImpl implements _CardImageModel {
-  const _$CardImageModelImpl(
-      {required this.id,
-      @JsonKey(name: 'image_url') required this.imageUrl,
-      @JsonKey(name: 'image_url_small') required this.imageUrlSmall});
-
-  factory _$CardImageModelImpl.fromJson(Map<String, dynamic> json) =>
-      _$$CardImageModelImplFromJson(json);
-
-  @override
-  final int id;
-  @override
+mixin _$CardImageModel {
+  int get id;
   @JsonKey(name: 'image_url')
-  final String imageUrl;
-  @override
+  String get imageUrl;
   @JsonKey(name: 'image_url_small')
-  final String imageUrlSmall;
+  String get imageUrlSmall;
 
-  @override
-  String toString() {
-    return 'CardImageModel(id: $id, imageUrl: $imageUrl, imageUrlSmall: $imageUrlSmall)';
-  }
+  /// Create a copy of CardImageModel
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  $CardImageModelCopyWith<CardImageModel> get copyWith =>
+      _$CardImageModelCopyWithImpl<CardImageModel>(
+          this as CardImageModel, _$identity);
+
+  /// Serializes this CardImageModel to a JSON map.
+  Map<String, dynamic> toJson();
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$CardImageModelImpl &&
+            other is CardImageModel &&
             (identical(other.id, id) || other.id == id) &&
             (identical(other.imageUrl, imageUrl) ||
                 other.imageUrl == imageUrl) &&
@@ -564,179 +648,589 @@ class _$CardImageModelImpl implements _CardImageModel {
   @override
   int get hashCode => Object.hash(runtimeType, id, imageUrl, imageUrlSmall);
 
+  @override
+  String toString() {
+    return 'CardImageModel(id: $id, imageUrl: $imageUrl, imageUrlSmall: $imageUrlSmall)';
+  }
+}
+
+/// @nodoc
+abstract mixin class $CardImageModelCopyWith<$Res> {
+  factory $CardImageModelCopyWith(
+          CardImageModel value, $Res Function(CardImageModel) _then) =
+      _$CardImageModelCopyWithImpl;
+  @useResult
+  $Res call(
+      {int id,
+      @JsonKey(name: 'image_url') String imageUrl,
+      @JsonKey(name: 'image_url_small') String imageUrlSmall});
+}
+
+/// @nodoc
+class _$CardImageModelCopyWithImpl<$Res>
+    implements $CardImageModelCopyWith<$Res> {
+  _$CardImageModelCopyWithImpl(this._self, this._then);
+
+  final CardImageModel _self;
+  final $Res Function(CardImageModel) _then;
+
   /// Create a copy of CardImageModel
   /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
   @pragma('vm:prefer-inline')
-  _$$CardImageModelImplCopyWith<_$CardImageModelImpl> get copyWith =>
-      __$$CardImageModelImplCopyWithImpl<_$CardImageModelImpl>(
-          this, _$identity);
+  @override
+  $Res call({
+    Object? id = null,
+    Object? imageUrl = null,
+    Object? imageUrlSmall = null,
+  }) {
+    return _then(_self.copyWith(
+      id: null == id
+          ? _self.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as int,
+      imageUrl: null == imageUrl
+          ? _self.imageUrl
+          : imageUrl // ignore: cast_nullable_to_non_nullable
+              as String,
+      imageUrlSmall: null == imageUrlSmall
+          ? _self.imageUrlSmall
+          : imageUrlSmall // ignore: cast_nullable_to_non_nullable
+              as String,
+    ));
+  }
+}
+
+/// Adds pattern-matching-related methods to [CardImageModel].
+extension CardImageModelPatterns on CardImageModel {
+  /// A variant of `map` that fallback to returning `orElse`.
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case final Subclass value:
+  ///     return ...;
+  ///   case _:
+  ///     return orElse();
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>(
+    TResult Function(_CardImageModel value)? $default, {
+    required TResult orElse(),
+  }) {
+    final _that = this;
+    switch (_that) {
+      case _CardImageModel() when $default != null:
+        return $default(_that);
+      case _:
+        return orElse();
+    }
+  }
+
+  /// A `switch`-like method, using callbacks.
+  ///
+  /// Callbacks receives the raw object, upcasted.
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case final Subclass value:
+  ///     return ...;
+  ///   case final Subclass2 value:
+  ///     return ...;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>(
+    TResult Function(_CardImageModel value) $default,
+  ) {
+    final _that = this;
+    switch (_that) {
+      case _CardImageModel():
+        return $default(_that);
+      case _:
+        throw StateError('Unexpected subclass');
+    }
+  }
+
+  /// A variant of `map` that fallback to returning `null`.
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case final Subclass value:
+  ///     return ...;
+  ///   case _:
+  ///     return null;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>(
+    TResult? Function(_CardImageModel value)? $default,
+  ) {
+    final _that = this;
+    switch (_that) {
+      case _CardImageModel() when $default != null:
+        return $default(_that);
+      case _:
+        return null;
+    }
+  }
+
+  /// A variant of `when` that fallback to an `orElse` callback.
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case Subclass(:final field):
+  ///     return ...;
+  ///   case _:
+  ///     return orElse();
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>(
+    TResult Function(int id, @JsonKey(name: 'image_url') String imageUrl,
+            @JsonKey(name: 'image_url_small') String imageUrlSmall)?
+        $default, {
+    required TResult orElse(),
+  }) {
+    final _that = this;
+    switch (_that) {
+      case _CardImageModel() when $default != null:
+        return $default(_that.id, _that.imageUrl, _that.imageUrlSmall);
+      case _:
+        return orElse();
+    }
+  }
+
+  /// A `switch`-like method, using callbacks.
+  ///
+  /// As opposed to `map`, this offers destructuring.
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case Subclass(:final field):
+  ///     return ...;
+  ///   case Subclass2(:final field2):
+  ///     return ...;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>(
+    TResult Function(int id, @JsonKey(name: 'image_url') String imageUrl,
+            @JsonKey(name: 'image_url_small') String imageUrlSmall)
+        $default,
+  ) {
+    final _that = this;
+    switch (_that) {
+      case _CardImageModel():
+        return $default(_that.id, _that.imageUrl, _that.imageUrlSmall);
+      case _:
+        throw StateError('Unexpected subclass');
+    }
+  }
+
+  /// A variant of `when` that fallback to returning `null`
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case Subclass(:final field):
+  ///     return ...;
+  ///   case _:
+  ///     return null;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>(
+    TResult? Function(int id, @JsonKey(name: 'image_url') String imageUrl,
+            @JsonKey(name: 'image_url_small') String imageUrlSmall)?
+        $default,
+  ) {
+    final _that = this;
+    switch (_that) {
+      case _CardImageModel() when $default != null:
+        return $default(_that.id, _that.imageUrl, _that.imageUrlSmall);
+      case _:
+        return null;
+    }
+  }
+}
+
+/// @nodoc
+@JsonSerializable()
+class _CardImageModel implements CardImageModel {
+  const _CardImageModel(
+      {required this.id,
+      @JsonKey(name: 'image_url') required this.imageUrl,
+      @JsonKey(name: 'image_url_small') required this.imageUrlSmall});
+  factory _CardImageModel.fromJson(Map<String, dynamic> json) =>
+      _$CardImageModelFromJson(json);
+
+  @override
+  final int id;
+  @override
+  @JsonKey(name: 'image_url')
+  final String imageUrl;
+  @override
+  @JsonKey(name: 'image_url_small')
+  final String imageUrlSmall;
+
+  /// Create a copy of CardImageModel
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  _$CardImageModelCopyWith<_CardImageModel> get copyWith =>
+      __$CardImageModelCopyWithImpl<_CardImageModel>(this, _$identity);
 
   @override
   Map<String, dynamic> toJson() {
-    return _$$CardImageModelImplToJson(
+    return _$CardImageModelToJson(
       this,
     );
   }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _CardImageModel &&
+            (identical(other.id, id) || other.id == id) &&
+            (identical(other.imageUrl, imageUrl) ||
+                other.imageUrl == imageUrl) &&
+            (identical(other.imageUrlSmall, imageUrlSmall) ||
+                other.imageUrlSmall == imageUrlSmall));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode => Object.hash(runtimeType, id, imageUrl, imageUrlSmall);
+
+  @override
+  String toString() {
+    return 'CardImageModel(id: $id, imageUrl: $imageUrl, imageUrlSmall: $imageUrlSmall)';
+  }
 }
 
-abstract class _CardImageModel implements CardImageModel {
-  const factory _CardImageModel(
-      {required final int id,
-      @JsonKey(name: 'image_url') required final String imageUrl,
-      @JsonKey(name: 'image_url_small')
-      required final String imageUrlSmall}) = _$CardImageModelImpl;
+/// @nodoc
+abstract mixin class _$CardImageModelCopyWith<$Res>
+    implements $CardImageModelCopyWith<$Res> {
+  factory _$CardImageModelCopyWith(
+          _CardImageModel value, $Res Function(_CardImageModel) _then) =
+      __$CardImageModelCopyWithImpl;
+  @override
+  @useResult
+  $Res call(
+      {int id,
+      @JsonKey(name: 'image_url') String imageUrl,
+      @JsonKey(name: 'image_url_small') String imageUrlSmall});
+}
 
-  factory _CardImageModel.fromJson(Map<String, dynamic> json) =
-      _$CardImageModelImpl.fromJson;
+/// @nodoc
+class __$CardImageModelCopyWithImpl<$Res>
+    implements _$CardImageModelCopyWith<$Res> {
+  __$CardImageModelCopyWithImpl(this._self, this._then);
 
-  @override
-  int get id;
-  @override
-  @JsonKey(name: 'image_url')
-  String get imageUrl;
-  @override
-  @JsonKey(name: 'image_url_small')
-  String get imageUrlSmall;
+  final _CardImageModel _self;
+  final $Res Function(_CardImageModel) _then;
 
   /// Create a copy of CardImageModel
   /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$CardImageModelImplCopyWith<_$CardImageModelImpl> get copyWith =>
-      throw _privateConstructorUsedError;
-}
-
-CardSetModel _$CardSetModelFromJson(Map<String, dynamic> json) {
-  return _CardSetModel.fromJson(json);
-}
-
-/// @nodoc
-mixin _$CardSetModel {
-  @JsonKey(name: 'set_name')
-  String get setName => throw _privateConstructorUsedError;
-  @JsonKey(name: 'set_code')
-  String get setCode => throw _privateConstructorUsedError;
-  @JsonKey(name: 'set_rarity')
-  String get setRarity => throw _privateConstructorUsedError;
-
-  /// Serializes this CardSetModel to a JSON map.
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-
-  /// Create a copy of CardSetModel
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  $CardSetModelCopyWith<CardSetModel> get copyWith =>
-      throw _privateConstructorUsedError;
-}
-
-/// @nodoc
-abstract class $CardSetModelCopyWith<$Res> {
-  factory $CardSetModelCopyWith(
-          CardSetModel value, $Res Function(CardSetModel) then) =
-      _$CardSetModelCopyWithImpl<$Res, CardSetModel>;
-  @useResult
-  $Res call(
-      {@JsonKey(name: 'set_name') String setName,
-      @JsonKey(name: 'set_code') String setCode,
-      @JsonKey(name: 'set_rarity') String setRarity});
-}
-
-/// @nodoc
-class _$CardSetModelCopyWithImpl<$Res, $Val extends CardSetModel>
-    implements $CardSetModelCopyWith<$Res> {
-  _$CardSetModelCopyWithImpl(this._value, this._then);
-
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
-
-  /// Create a copy of CardSetModel
-  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
-  @override
   $Res call({
-    Object? setName = null,
-    Object? setCode = null,
-    Object? setRarity = null,
+    Object? id = null,
+    Object? imageUrl = null,
+    Object? imageUrlSmall = null,
   }) {
-    return _then(_value.copyWith(
-      setName: null == setName
-          ? _value.setName
-          : setName // ignore: cast_nullable_to_non_nullable
+    return _then(_CardImageModel(
+      id: null == id
+          ? _self.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as int,
+      imageUrl: null == imageUrl
+          ? _self.imageUrl
+          : imageUrl // ignore: cast_nullable_to_non_nullable
               as String,
-      setCode: null == setCode
-          ? _value.setCode
-          : setCode // ignore: cast_nullable_to_non_nullable
-              as String,
-      setRarity: null == setRarity
-          ? _value.setRarity
-          : setRarity // ignore: cast_nullable_to_non_nullable
-              as String,
-    ) as $Val);
-  }
-}
-
-/// @nodoc
-abstract class _$$CardSetModelImplCopyWith<$Res>
-    implements $CardSetModelCopyWith<$Res> {
-  factory _$$CardSetModelImplCopyWith(
-          _$CardSetModelImpl value, $Res Function(_$CardSetModelImpl) then) =
-      __$$CardSetModelImplCopyWithImpl<$Res>;
-  @override
-  @useResult
-  $Res call(
-      {@JsonKey(name: 'set_name') String setName,
-      @JsonKey(name: 'set_code') String setCode,
-      @JsonKey(name: 'set_rarity') String setRarity});
-}
-
-/// @nodoc
-class __$$CardSetModelImplCopyWithImpl<$Res>
-    extends _$CardSetModelCopyWithImpl<$Res, _$CardSetModelImpl>
-    implements _$$CardSetModelImplCopyWith<$Res> {
-  __$$CardSetModelImplCopyWithImpl(
-      _$CardSetModelImpl _value, $Res Function(_$CardSetModelImpl) _then)
-      : super(_value, _then);
-
-  /// Create a copy of CardSetModel
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? setName = null,
-    Object? setCode = null,
-    Object? setRarity = null,
-  }) {
-    return _then(_$CardSetModelImpl(
-      setName: null == setName
-          ? _value.setName
-          : setName // ignore: cast_nullable_to_non_nullable
-              as String,
-      setCode: null == setCode
-          ? _value.setCode
-          : setCode // ignore: cast_nullable_to_non_nullable
-              as String,
-      setRarity: null == setRarity
-          ? _value.setRarity
-          : setRarity // ignore: cast_nullable_to_non_nullable
+      imageUrlSmall: null == imageUrlSmall
+          ? _self.imageUrlSmall
+          : imageUrlSmall // ignore: cast_nullable_to_non_nullable
               as String,
     ));
   }
 }
 
 /// @nodoc
+mixin _$CardSetModel {
+  @JsonKey(name: 'set_name')
+  String get setName;
+  @JsonKey(name: 'set_code')
+  String get setCode;
+  @JsonKey(name: 'set_rarity')
+  String get setRarity;
+
+  /// Create a copy of CardSetModel
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  $CardSetModelCopyWith<CardSetModel> get copyWith =>
+      _$CardSetModelCopyWithImpl<CardSetModel>(
+          this as CardSetModel, _$identity);
+
+  /// Serializes this CardSetModel to a JSON map.
+  Map<String, dynamic> toJson();
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is CardSetModel &&
+            (identical(other.setName, setName) || other.setName == setName) &&
+            (identical(other.setCode, setCode) || other.setCode == setCode) &&
+            (identical(other.setRarity, setRarity) ||
+                other.setRarity == setRarity));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode => Object.hash(runtimeType, setName, setCode, setRarity);
+
+  @override
+  String toString() {
+    return 'CardSetModel(setName: $setName, setCode: $setCode, setRarity: $setRarity)';
+  }
+}
+
+/// @nodoc
+abstract mixin class $CardSetModelCopyWith<$Res> {
+  factory $CardSetModelCopyWith(
+          CardSetModel value, $Res Function(CardSetModel) _then) =
+      _$CardSetModelCopyWithImpl;
+  @useResult
+  $Res call(
+      {@JsonKey(name: 'set_name') String setName,
+      @JsonKey(name: 'set_code') String setCode,
+      @JsonKey(name: 'set_rarity') String setRarity});
+}
+
+/// @nodoc
+class _$CardSetModelCopyWithImpl<$Res> implements $CardSetModelCopyWith<$Res> {
+  _$CardSetModelCopyWithImpl(this._self, this._then);
+
+  final CardSetModel _self;
+  final $Res Function(CardSetModel) _then;
+
+  /// Create a copy of CardSetModel
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? setName = null,
+    Object? setCode = null,
+    Object? setRarity = null,
+  }) {
+    return _then(_self.copyWith(
+      setName: null == setName
+          ? _self.setName
+          : setName // ignore: cast_nullable_to_non_nullable
+              as String,
+      setCode: null == setCode
+          ? _self.setCode
+          : setCode // ignore: cast_nullable_to_non_nullable
+              as String,
+      setRarity: null == setRarity
+          ? _self.setRarity
+          : setRarity // ignore: cast_nullable_to_non_nullable
+              as String,
+    ));
+  }
+}
+
+/// Adds pattern-matching-related methods to [CardSetModel].
+extension CardSetModelPatterns on CardSetModel {
+  /// A variant of `map` that fallback to returning `orElse`.
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case final Subclass value:
+  ///     return ...;
+  ///   case _:
+  ///     return orElse();
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>(
+    TResult Function(_CardSetModel value)? $default, {
+    required TResult orElse(),
+  }) {
+    final _that = this;
+    switch (_that) {
+      case _CardSetModel() when $default != null:
+        return $default(_that);
+      case _:
+        return orElse();
+    }
+  }
+
+  /// A `switch`-like method, using callbacks.
+  ///
+  /// Callbacks receives the raw object, upcasted.
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case final Subclass value:
+  ///     return ...;
+  ///   case final Subclass2 value:
+  ///     return ...;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>(
+    TResult Function(_CardSetModel value) $default,
+  ) {
+    final _that = this;
+    switch (_that) {
+      case _CardSetModel():
+        return $default(_that);
+      case _:
+        throw StateError('Unexpected subclass');
+    }
+  }
+
+  /// A variant of `map` that fallback to returning `null`.
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case final Subclass value:
+  ///     return ...;
+  ///   case _:
+  ///     return null;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>(
+    TResult? Function(_CardSetModel value)? $default,
+  ) {
+    final _that = this;
+    switch (_that) {
+      case _CardSetModel() when $default != null:
+        return $default(_that);
+      case _:
+        return null;
+    }
+  }
+
+  /// A variant of `when` that fallback to an `orElse` callback.
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case Subclass(:final field):
+  ///     return ...;
+  ///   case _:
+  ///     return orElse();
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>(
+    TResult Function(
+            @JsonKey(name: 'set_name') String setName,
+            @JsonKey(name: 'set_code') String setCode,
+            @JsonKey(name: 'set_rarity') String setRarity)?
+        $default, {
+    required TResult orElse(),
+  }) {
+    final _that = this;
+    switch (_that) {
+      case _CardSetModel() when $default != null:
+        return $default(_that.setName, _that.setCode, _that.setRarity);
+      case _:
+        return orElse();
+    }
+  }
+
+  /// A `switch`-like method, using callbacks.
+  ///
+  /// As opposed to `map`, this offers destructuring.
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case Subclass(:final field):
+  ///     return ...;
+  ///   case Subclass2(:final field2):
+  ///     return ...;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>(
+    TResult Function(
+            @JsonKey(name: 'set_name') String setName,
+            @JsonKey(name: 'set_code') String setCode,
+            @JsonKey(name: 'set_rarity') String setRarity)
+        $default,
+  ) {
+    final _that = this;
+    switch (_that) {
+      case _CardSetModel():
+        return $default(_that.setName, _that.setCode, _that.setRarity);
+      case _:
+        throw StateError('Unexpected subclass');
+    }
+  }
+
+  /// A variant of `when` that fallback to returning `null`
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case Subclass(:final field):
+  ///     return ...;
+  ///   case _:
+  ///     return null;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>(
+    TResult? Function(
+            @JsonKey(name: 'set_name') String setName,
+            @JsonKey(name: 'set_code') String setCode,
+            @JsonKey(name: 'set_rarity') String setRarity)?
+        $default,
+  ) {
+    final _that = this;
+    switch (_that) {
+      case _CardSetModel() when $default != null:
+        return $default(_that.setName, _that.setCode, _that.setRarity);
+      case _:
+        return null;
+    }
+  }
+}
+
+/// @nodoc
 @JsonSerializable()
-class _$CardSetModelImpl implements _CardSetModel {
-  const _$CardSetModelImpl(
+class _CardSetModel implements CardSetModel {
+  const _CardSetModel(
       {@JsonKey(name: 'set_name') required this.setName,
       @JsonKey(name: 'set_code') required this.setCode,
       @JsonKey(name: 'set_rarity') required this.setRarity});
-
-  factory _$CardSetModelImpl.fromJson(Map<String, dynamic> json) =>
-      _$$CardSetModelImplFromJson(json);
+  factory _CardSetModel.fromJson(Map<String, dynamic> json) =>
+      _$CardSetModelFromJson(json);
 
   @override
   @JsonKey(name: 'set_name')
@@ -748,16 +1242,26 @@ class _$CardSetModelImpl implements _CardSetModel {
   @JsonKey(name: 'set_rarity')
   final String setRarity;
 
+  /// Create a copy of CardSetModel
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  String toString() {
-    return 'CardSetModel(setName: $setName, setCode: $setCode, setRarity: $setRarity)';
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  _$CardSetModelCopyWith<_CardSetModel> get copyWith =>
+      __$CardSetModelCopyWithImpl<_CardSetModel>(this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$CardSetModelToJson(
+      this,
+    );
   }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$CardSetModelImpl &&
+            other is _CardSetModel &&
             (identical(other.setName, setName) || other.setName == setName) &&
             (identical(other.setCode, setCode) || other.setCode == setCode) &&
             (identical(other.setRarity, setRarity) ||
@@ -768,46 +1272,58 @@ class _$CardSetModelImpl implements _CardSetModel {
   @override
   int get hashCode => Object.hash(runtimeType, setName, setCode, setRarity);
 
-  /// Create a copy of CardSetModel
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  @pragma('vm:prefer-inline')
-  _$$CardSetModelImplCopyWith<_$CardSetModelImpl> get copyWith =>
-      __$$CardSetModelImplCopyWithImpl<_$CardSetModelImpl>(this, _$identity);
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$CardSetModelImplToJson(
-      this,
-    );
+  String toString() {
+    return 'CardSetModel(setName: $setName, setCode: $setCode, setRarity: $setRarity)';
   }
 }
 
-abstract class _CardSetModel implements CardSetModel {
-  const factory _CardSetModel(
-          {@JsonKey(name: 'set_name') required final String setName,
-          @JsonKey(name: 'set_code') required final String setCode,
-          @JsonKey(name: 'set_rarity') required final String setRarity}) =
-      _$CardSetModelImpl;
+/// @nodoc
+abstract mixin class _$CardSetModelCopyWith<$Res>
+    implements $CardSetModelCopyWith<$Res> {
+  factory _$CardSetModelCopyWith(
+          _CardSetModel value, $Res Function(_CardSetModel) _then) =
+      __$CardSetModelCopyWithImpl;
+  @override
+  @useResult
+  $Res call(
+      {@JsonKey(name: 'set_name') String setName,
+      @JsonKey(name: 'set_code') String setCode,
+      @JsonKey(name: 'set_rarity') String setRarity});
+}
 
-  factory _CardSetModel.fromJson(Map<String, dynamic> json) =
-      _$CardSetModelImpl.fromJson;
+/// @nodoc
+class __$CardSetModelCopyWithImpl<$Res>
+    implements _$CardSetModelCopyWith<$Res> {
+  __$CardSetModelCopyWithImpl(this._self, this._then);
 
-  @override
-  @JsonKey(name: 'set_name')
-  String get setName;
-  @override
-  @JsonKey(name: 'set_code')
-  String get setCode;
-  @override
-  @JsonKey(name: 'set_rarity')
-  String get setRarity;
+  final _CardSetModel _self;
+  final $Res Function(_CardSetModel) _then;
 
   /// Create a copy of CardSetModel
   /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$CardSetModelImplCopyWith<_$CardSetModelImpl> get copyWith =>
-      throw _privateConstructorUsedError;
+  @pragma('vm:prefer-inline')
+  $Res call({
+    Object? setName = null,
+    Object? setCode = null,
+    Object? setRarity = null,
+  }) {
+    return _then(_CardSetModel(
+      setName: null == setName
+          ? _self.setName
+          : setName // ignore: cast_nullable_to_non_nullable
+              as String,
+      setCode: null == setCode
+          ? _self.setCode
+          : setCode // ignore: cast_nullable_to_non_nullable
+              as String,
+      setRarity: null == setRarity
+          ? _self.setRarity
+          : setRarity // ignore: cast_nullable_to_non_nullable
+              as String,
+    ));
+  }
 }
+
+// dart format on

@@ -4,7 +4,7 @@ part 'ygo_card.freezed.dart';
 part 'ygo_card.g.dart';
 
 @freezed
-class YgoCard with _$YgoCard {
+abstract class YgoCard with _$YgoCard {
   const factory YgoCard({
     required int id,
     required String name,
@@ -25,7 +25,7 @@ class YgoCard with _$YgoCard {
 }
 
 @freezed
-class CardSet with _$CardSet {
+abstract class CardSet with _$CardSet {
   const factory CardSet({
     required String setName,
     required String setCode,

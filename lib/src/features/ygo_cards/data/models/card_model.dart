@@ -6,7 +6,7 @@ part 'card_model.freezed.dart';
 part 'card_model.g.dart';
 
 @freezed
-class CardModel with _$CardModel {
+abstract class CardModel with _$CardModel {
   const factory CardModel({
     required int id,
     required String name,
@@ -29,7 +29,7 @@ class CardModel with _$CardModel {
 }
 
 @freezed
-class CardImageModel with _$CardImageModel {
+abstract class CardImageModel with _$CardImageModel {
   const factory CardImageModel({
     required int id,
     @JsonKey(name: 'image_url') required String imageUrl,
@@ -41,7 +41,7 @@ class CardImageModel with _$CardImageModel {
 }
 
 @freezed
-class CardSetModel with _$CardSetModel {
+abstract class CardSetModel with _$CardSetModel {
   const factory CardSetModel({
     @JsonKey(name: 'set_name') required String setName,
     @JsonKey(name: 'set_code') required String setCode,
