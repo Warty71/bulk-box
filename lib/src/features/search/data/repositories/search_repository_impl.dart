@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:ygo_collector/src/features/ygo_cards/data/datasources/local/image_local_datasource.dart';
 import 'package:ygo_collector/src/features/ygo_cards/data/datasources/remote/ygopro_api_datasource.dart';
 import 'package:ygo_collector/src/features/ygo_cards/data/entities/ygo_card.dart';
@@ -18,15 +19,24 @@ class SearchRepositoryImpl implements SearchRepository {
 
   @override
   Future<List<YgoCard>> searchCards(String query) async {
+    if (kDebugMode) {
+      print('searchCards called with query: "$query"');
+    }
     try {
       // First try to find cards in local cache
       final cachedCards = await _cardLocalDatasource.getCachedCards();
 
       if (query.isEmpty) {
         if (cachedCards.isNotEmpty) {
+          if (kDebugMode) {
+            print('Returning ${cachedCards.length} cached cards (no API call)');
+          }
           return cachedCards.map(_transformToEntity).toList();
         }
         // If no cached cards, get initial set from API
+        if (kDebugMode) {
+          print('No cached cards found, fetching initial set from API');
+        }
         return await _fetchAndCacheCards(
             'type=Normal Monster&sort=name&offset=0&num=20');
       }
@@ -38,10 +48,16 @@ class SearchRepositoryImpl implements SearchRepository {
           .toList();
 
       if (matchingCachedCards.isNotEmpty) {
+        if (kDebugMode) {
+          print('Found ${matchingCachedCards.length} matching cached cards (no API call)');
+        }
         return matchingCachedCards.map(_transformToEntity).toList();
       }
 
       // If no matches in cache, search remotely
+      if (kDebugMode) {
+        print('No cached matches found, searching remotely');
+      }
       return await _fetchAndCacheCards(query);
     } catch (e) {
       rethrow;
@@ -73,6 +89,9 @@ class SearchRepositoryImpl implements SearchRepository {
   }
 
   Future<List<YgoCard>> _fetchAndCacheCards(String query) async {
+    if (kDebugMode) {
+      print('API call triggered with query: "$query"');
+    }
     final response = await _apiDatasource.searchCards(query);
     final cards = _transformToCards(response);
 
@@ -117,17 +136,39 @@ class SearchRepositoryImpl implements SearchRepository {
         return [];
       }
 
-      return cardList
+      final cards = cardList
           .map((cardJson) {
             try {
               final cardModel = CardModel.fromJson(cardJson);
-              return _transformToEntity(cardModel);
+              final card = _transformToEntity(cardModel);
+              
+              // Debug print - only in debug mode
+              if (kDebugMode) {
+                print('Card loaded: ${card.name} (ID: ${card.id})');
+                print('  Type: ${card.type}, Race: ${card.race}');
+                if (card.attribute != null) print('  Attribute: ${card.attribute}');
+                if (card.level != null) print('  Level: ${card.level}');
+                if (card.atk != null) print('  ATK: ${card.atk}');
+                if (card.def != null) print('  DEF: ${card.def}');
+                print('  Sets: ${card.cardSets.length}');
+              }
+              
+              return card;
             } catch (e) {
+              if (kDebugMode) {
+                print('Error parsing card: $e');
+              }
               return null;
             }
           })
           .whereType<YgoCard>()
           .toList();
+      
+      if (kDebugMode) {
+        print('Total cards loaded: ${cards.length}');
+      }
+      
+      return cards;
     } catch (e) {
       return [];
     }
@@ -147,7 +188,6 @@ class SearchRepositoryImpl implements SearchRepository {
               setName: set.setName,
               setCode: set.setCode,
               setRarity: set.setRarity,
-              setPrice: set.setPrice,
             ))
         .toList();
 
@@ -190,7 +230,6 @@ class SearchRepositoryImpl implements SearchRepository {
                 setName: set.setName,
                 setCode: set.setCode,
                 setRarity: set.setRarity,
-                setPrice: set.setPrice,
               ))
           .toList(),
     );

@@ -30,7 +30,7 @@ class CardSet with _$CardSet {
     required String setName,
     required String setCode,
     required String setRarity,
-    required String setPrice,
+    // Price data removed - not used in this app
   }) = _CardSet;
 
   factory CardSet.fromJson(Map<String, dynamic> json) =>

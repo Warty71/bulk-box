@@ -620,8 +620,6 @@ mixin _$CardSetModel {
   String get setCode => throw _privateConstructorUsedError;
   @JsonKey(name: 'set_rarity')
   String get setRarity => throw _privateConstructorUsedError;
-  @JsonKey(name: 'set_price')
-  String get setPrice => throw _privateConstructorUsedError;
 
   /// Serializes this CardSetModel to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -642,8 +640,7 @@ abstract class $CardSetModelCopyWith<$Res> {
   $Res call(
       {@JsonKey(name: 'set_name') String setName,
       @JsonKey(name: 'set_code') String setCode,
-      @JsonKey(name: 'set_rarity') String setRarity,
-      @JsonKey(name: 'set_price') String setPrice});
+      @JsonKey(name: 'set_rarity') String setRarity});
 }
 
 /// @nodoc
@@ -664,7 +661,6 @@ class _$CardSetModelCopyWithImpl<$Res, $Val extends CardSetModel>
     Object? setName = null,
     Object? setCode = null,
     Object? setRarity = null,
-    Object? setPrice = null,
   }) {
     return _then(_value.copyWith(
       setName: null == setName
@@ -678,10 +674,6 @@ class _$CardSetModelCopyWithImpl<$Res, $Val extends CardSetModel>
       setRarity: null == setRarity
           ? _value.setRarity
           : setRarity // ignore: cast_nullable_to_non_nullable
-              as String,
-      setPrice: null == setPrice
-          ? _value.setPrice
-          : setPrice // ignore: cast_nullable_to_non_nullable
               as String,
     ) as $Val);
   }
@@ -698,8 +690,7 @@ abstract class _$$CardSetModelImplCopyWith<$Res>
   $Res call(
       {@JsonKey(name: 'set_name') String setName,
       @JsonKey(name: 'set_code') String setCode,
-      @JsonKey(name: 'set_rarity') String setRarity,
-      @JsonKey(name: 'set_price') String setPrice});
+      @JsonKey(name: 'set_rarity') String setRarity});
 }
 
 /// @nodoc
@@ -718,7 +709,6 @@ class __$$CardSetModelImplCopyWithImpl<$Res>
     Object? setName = null,
     Object? setCode = null,
     Object? setRarity = null,
-    Object? setPrice = null,
   }) {
     return _then(_$CardSetModelImpl(
       setName: null == setName
@@ -733,10 +723,6 @@ class __$$CardSetModelImplCopyWithImpl<$Res>
           ? _value.setRarity
           : setRarity // ignore: cast_nullable_to_non_nullable
               as String,
-      setPrice: null == setPrice
-          ? _value.setPrice
-          : setPrice // ignore: cast_nullable_to_non_nullable
-              as String,
     ));
   }
 }
@@ -747,8 +733,7 @@ class _$CardSetModelImpl implements _CardSetModel {
   const _$CardSetModelImpl(
       {@JsonKey(name: 'set_name') required this.setName,
       @JsonKey(name: 'set_code') required this.setCode,
-      @JsonKey(name: 'set_rarity') required this.setRarity,
-      @JsonKey(name: 'set_price') required this.setPrice});
+      @JsonKey(name: 'set_rarity') required this.setRarity});
 
   factory _$CardSetModelImpl.fromJson(Map<String, dynamic> json) =>
       _$$CardSetModelImplFromJson(json);
@@ -762,13 +747,10 @@ class _$CardSetModelImpl implements _CardSetModel {
   @override
   @JsonKey(name: 'set_rarity')
   final String setRarity;
-  @override
-  @JsonKey(name: 'set_price')
-  final String setPrice;
 
   @override
   String toString() {
-    return 'CardSetModel(setName: $setName, setCode: $setCode, setRarity: $setRarity, setPrice: $setPrice)';
+    return 'CardSetModel(setName: $setName, setCode: $setCode, setRarity: $setRarity)';
   }
 
   @override
@@ -779,15 +761,12 @@ class _$CardSetModelImpl implements _CardSetModel {
             (identical(other.setName, setName) || other.setName == setName) &&
             (identical(other.setCode, setCode) || other.setCode == setCode) &&
             (identical(other.setRarity, setRarity) ||
-                other.setRarity == setRarity) &&
-            (identical(other.setPrice, setPrice) ||
-                other.setPrice == setPrice));
+                other.setRarity == setRarity));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, setName, setCode, setRarity, setPrice);
+  int get hashCode => Object.hash(runtimeType, setName, setCode, setRarity);
 
   /// Create a copy of CardSetModel
   /// with the given fields replaced by the non-null parameter values.
@@ -809,8 +788,7 @@ abstract class _CardSetModel implements CardSetModel {
   const factory _CardSetModel(
           {@JsonKey(name: 'set_name') required final String setName,
           @JsonKey(name: 'set_code') required final String setCode,
-          @JsonKey(name: 'set_rarity') required final String setRarity,
-          @JsonKey(name: 'set_price') required final String setPrice}) =
+          @JsonKey(name: 'set_rarity') required final String setRarity}) =
       _$CardSetModelImpl;
 
   factory _CardSetModel.fromJson(Map<String, dynamic> json) =
@@ -825,9 +803,6 @@ abstract class _CardSetModel implements CardSetModel {
   @override
   @JsonKey(name: 'set_rarity')
   String get setRarity;
-  @override
-  @JsonKey(name: 'set_price')
-  String get setPrice;
 
   /// Create a copy of CardSetModel
   /// with the given fields replaced by the non-null parameter values.

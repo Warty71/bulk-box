@@ -46,7 +46,7 @@ class CardSetModel with _$CardSetModel {
     @JsonKey(name: 'set_name') required String setName,
     @JsonKey(name: 'set_code') required String setCode,
     @JsonKey(name: 'set_rarity') required String setRarity,
-    @JsonKey(name: 'set_price') required String setPrice,
+    // Price data is ignored - not used in this app
   }) = _CardSetModel;
 
   factory CardSetModel.fromJson(Map<String, dynamic> json) =>

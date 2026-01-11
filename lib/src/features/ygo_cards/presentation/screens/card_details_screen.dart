@@ -92,7 +92,6 @@ class CardDetailsScreen extends StatelessWidget {
                           _buildDetailRow('Set Name', set.setName),
                           _buildDetailRow('Set Code', set.setCode),
                           _buildDetailRow('Rarity', set.setRarity),
-                          _buildDetailRow('Price', '\$${set.setPrice}'),
                         ],
                       ),
                     ),

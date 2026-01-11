@@ -45,7 +45,6 @@ _$CardSetImpl _$$CardSetImplFromJson(Map<String, dynamic> json) =>
       setName: json['setName'] as String,
       setCode: json['setCode'] as String,
       setRarity: json['setRarity'] as String,
-      setPrice: json['setPrice'] as String,
     );
 
 Map<String, dynamic> _$$CardSetImplToJson(_$CardSetImpl instance) =>
@@ -53,5 +52,4 @@ Map<String, dynamic> _$$CardSetImplToJson(_$CardSetImpl instance) =>
       'setName': instance.setName,
       'setCode': instance.setCode,
       'setRarity': instance.setRarity,
-      'setPrice': instance.setPrice,
     };
