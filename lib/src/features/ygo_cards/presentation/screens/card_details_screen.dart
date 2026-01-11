@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ygo_collector/src/core/constants/dimensions.dart';
 import 'package:ygo_collector/src/features/search/presentation/cubit/search_cubit.dart';
+import 'package:ygo_collector/src/features/collection/presentation/widgets/add_card_bottom_sheet.dart';
+
 import 'dart:io';
 
 import 'package:ygo_collector/src/features/ygo_cards/data/entities/ygo_card.dart';
@@ -21,6 +23,18 @@ class CardDetailsScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(card.name, style: theme.textTheme.titleLarge),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.add),
+            onPressed: () {
+              showModalBottomSheet(
+                context: context,
+                isScrollControlled: true,
+                builder: (sheetContext) => AddCardBottomSheet(card: card),
+              );
+            },
+          ),
+        ],
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(Dimensions.md),

@@ -7,6 +7,10 @@ import 'package:ygo_collector/src/features/ygo_cards/data/datasources/remote/ygo
 import 'package:ygo_collector/src/features/search/data/repositories/search_repository_impl.dart';
 import 'package:ygo_collector/src/features/search/domain/repositories/search_repository.dart';
 import 'package:ygo_collector/src/features/search/presentation/cubit/search_cubit.dart';
+import 'package:ygo_collector/src/features/collection/data/datasources/collection_local_datasource.dart';
+import 'package:ygo_collector/src/features/collection/data/repositories/collection_repository_impl.dart';
+import 'package:ygo_collector/src/features/collection/domain/repositories/collection_repository.dart';
+import 'package:ygo_collector/src/features/collection/presentation/cubit/collection_cubit.dart';
 
 final getIt = GetIt.instance;
 
@@ -45,6 +49,9 @@ Future<void> _initializeCore() async {
 Future<void> _initializeFeatures() async {
   // Search Feature
   _initializeSearchFeature();
+
+  // Collection Feature
+  _initializeCollectionFeature();
 }
 
 void _initializeSearchFeature() {
@@ -60,5 +67,22 @@ void _initializeSearchFeature() {
   // Cubit
   getIt.registerFactory(
     () => SearchCubit(getIt()),
+  );
+}
+
+void _initializeCollectionFeature() {
+  // Datasource
+  getIt.registerLazySingleton(
+    () => CollectionLocalDatasource(getIt<AppDatabase>()),
+  );
+
+  // Repository
+  getIt.registerLazySingleton<CollectionRepository>(
+    () => CollectionRepositoryImpl(getIt()),
+  );
+
+  // Cubit
+  getIt.registerLazySingleton(
+    () => CollectionCubit(getIt()),
   );
 }

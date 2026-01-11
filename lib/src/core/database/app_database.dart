@@ -6,7 +6,20 @@ import 'package:path/path.dart' as p;
 
 part 'app_database.g.dart';
 
-@DriftDatabase(tables: [])
+class CollectionItems extends Table {
+  IntColumn get cardId => integer()();
+  TextColumn get cardName => text()();
+  TextColumn get setCode => text()();
+  TextColumn get setRarity => text()();
+  IntColumn get quantity => integer().withDefault(const Constant(1))();
+  TextColumn get condition => text().nullable()();
+  DateTimeColumn get dateAdded => dateTime().withDefault(currentDateAndTime)();
+
+  @override
+  Set<Column> get primaryKey => {cardId, setCode, setRarity};
+}
+
+@DriftDatabase(tables: [CollectionItems])
 class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(_openConnection());
 
@@ -18,9 +31,6 @@ class AppDatabase extends _$AppDatabase {
     return MigrationStrategy(
       onCreate: (Migrator m) async {
         await m.createAll();
-      },
-      onUpgrade: (Migrator m, int from, int to) async {
-        // Handle migrations here when schema changes
       },
     );
   }

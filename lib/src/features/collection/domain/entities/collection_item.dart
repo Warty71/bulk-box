@@ -1,0 +1,16 @@
+import 'package:freezed_annotation/freezed_annotation.dart';
+
+part 'collection_item.freezed.dart';
+
+@freezed
+abstract class CollectionItemEntity with _$CollectionItemEntity {
+  const factory CollectionItemEntity({
+    required int cardId,
+    required String cardName,
+    required String setCode,
+    required String setRarity,
+    required int quantity,
+    String? condition,
+    required DateTime dateAdded,
+  }) = _CollectionItemEntity;
+}
