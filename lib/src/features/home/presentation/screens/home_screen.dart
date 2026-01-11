@@ -183,7 +183,7 @@ class HomeScreen extends StatelessWidget {
           Container(
             height: 120,
             decoration: BoxDecoration(
-              color: theme.colorScheme.surfaceVariant,
+              color: theme.colorScheme.surfaceContainerHighest,
               borderRadius: BorderRadius.vertical(
                 top: Radius.circular(Dimensions.radiusMd),
               ),

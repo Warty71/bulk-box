@@ -66,7 +66,7 @@ class _SearchViewState extends State<SearchView> {
                   borderRadius: BorderRadius.circular(Dimensions.radiusMd),
                 ),
                 filled: true,
-                fillColor: theme.colorScheme.surfaceVariant.withOpacity(0.3),
+                fillColor: theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
               ),
               onChanged: (query) {
                 _debounce.run(() {

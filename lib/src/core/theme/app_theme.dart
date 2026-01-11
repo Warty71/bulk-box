@@ -25,8 +25,6 @@ class AppTheme {
         onError: AppColors.onError,
         errorContainer: AppColors.errorContainer,
         onErrorContainer: AppColors.onErrorContainer,
-        background: AppColors.background,
-        onBackground: AppColors.onBackground,
         surface: AppColors.surface,
         onSurface: AppColors.onSurface,
       ),
@@ -41,7 +39,7 @@ class AppTheme {
         bodyMedium: AppTextStyles.bodyMedium,
         labelLarge: AppTextStyles.labelLarge,
       ),
-      cardTheme: CardTheme(
+      cardTheme: CardThemeData(
         elevation: 0,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(Dimensions.radiusMd),
