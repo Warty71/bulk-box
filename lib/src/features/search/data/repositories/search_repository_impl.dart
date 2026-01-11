@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:ygo_collector/src/core/utils/rate_limiter.dart';
 import 'package:ygo_collector/src/features/ygo_cards/data/datasources/local/image_local_datasource.dart';
 import 'package:ygo_collector/src/features/ygo_cards/data/datasources/remote/ygopro_api_datasource.dart';
 import 'package:ygo_collector/src/features/ygo_cards/data/entities/ygo_card.dart';
@@ -10,6 +11,16 @@ class SearchRepositoryImpl implements SearchRepository {
   final YGOProApiDatasource _apiDatasource;
   final ImageLocalDatasource _imageLocalDatasource;
   final CardLocalDatasource _cardLocalDatasource;
+
+  // Rate limiter: 18 requests per second (slightly under 20/sec limit for safety)
+  static final _rateLimiter = RateLimiter(
+    maxRequests: 18,
+    timeWindow: const Duration(seconds: 1),
+  );
+
+  // Track current prefetch operation to allow cancellation
+  int _currentPrefetchId = 0;
+  static const int _maxPrefetchCards = 30; // Limit prefetching to first 30 cards
 
   SearchRepositoryImpl(
     this._apiDatasource,
@@ -29,34 +40,25 @@ class SearchRepositoryImpl implements SearchRepository {
       if (query.isEmpty) {
         if (cachedCards.isNotEmpty) {
           if (kDebugMode) {
+            // ignore: avoid_print
             print('Returning ${cachedCards.length} cached cards (no API call)');
           }
           return cachedCards.map(_transformToEntity).toList();
         }
         // If no cached cards, get initial set from API
         if (kDebugMode) {
+          // ignore: avoid_print
           print('No cached cards found, fetching initial set from API');
         }
         return await _fetchAndCacheCards(
             'type=Normal Monster&sort=name&offset=0&num=20');
       }
 
-      // Try to find matching cards in cache first
-      final matchingCachedCards = cachedCards
-          .where(
-              (card) => card.name.toLowerCase().contains(query.toLowerCase()))
-          .toList();
-
-      if (matchingCachedCards.isNotEmpty) {
-        if (kDebugMode) {
-          print('Found ${matchingCachedCards.length} matching cached cards (no API call)');
-        }
-        return matchingCachedCards.map(_transformToEntity).toList();
-      }
-
-      // If no matches in cache, search remotely
+      // Always search the API for non-empty queries (API is source of truth)
+      // Cache is only used for empty queries or as fallback
       if (kDebugMode) {
-        print('No cached matches found, searching remotely');
+        // ignore: avoid_print
+        print('Searching API for query: "$query"');
       }
       return await _fetchAndCacheCards(query);
     } catch (e) {
@@ -96,28 +98,93 @@ class SearchRepositoryImpl implements SearchRepository {
     final cards = _transformToCards(response);
 
     if (cards.isNotEmpty) {
-      // Cache the new cards and fetch their images
-      await Future.wait([
-        _cardLocalDatasource
-            .cacheCards(cards.map((card) => _transformToModel(card)).toList()),
-        ..._prefetchImages(cards),
-      ]);
+      // Cache the new cards
+      await _cardLocalDatasource
+          .cacheCards(cards.map((card) => _transformToModel(card)).toList());
+      
+      // Cancel any ongoing prefetch and start new one
+      _currentPrefetchId++;
+      // Prefetch images in the background (with rate limiting)
+      // Only prefetch first 50 cards to avoid excessive API calls
+      final cardsToPrefetch = cards.take(_maxPrefetchCards).toList();
+      _prefetchImages(cardsToPrefetch, _currentPrefetchId);
     }
 
     return cards;
   }
 
-  List<Future<void>> _prefetchImages(List<YgoCard> cards) {
-    return cards.map((card) async {
-      if (!await _imageLocalDatasource.isImageSaved(card.id)) {
-        try {
-          final imageBytes = await _apiDatasource.getCardImage(card.id);
-          await _imageLocalDatasource.saveImage(card.id, imageBytes);
-        } catch (e) {
-          // Ignore prefetch errors
+  Future<void> _prefetchImages(List<YgoCard> cards, int prefetchId) async {
+    const batchSize = 15; // Process 15 at a time (under 20/sec limit)
+
+    // Filter cards that need images
+    final cardsToFetch = <YgoCard>[];
+    for (final card in cards) {
+      // Check if this prefetch was cancelled
+      if (prefetchId != _currentPrefetchId) {
+        if (kDebugMode) {
+          // ignore: avoid_print
+          print('Prefetch cancelled (new search started)');
         }
+        return;
       }
-    }).toList();
+      
+      if (!await _imageLocalDatasource.isImageSaved(card.id)) {
+        cardsToFetch.add(card);
+      }
+    }
+
+    if (kDebugMode && cardsToFetch.isNotEmpty) {
+      // ignore: avoid_print
+      print('Prefetching ${cardsToFetch.length} card images in batches of $batchSize (ID: $prefetchId)');
+    }
+
+    // Process in batches
+    for (var i = 0; i < cardsToFetch.length; i += batchSize) {
+      // Check if this prefetch was cancelled before each batch
+      if (prefetchId != _currentPrefetchId) {
+        if (kDebugMode) {
+          // ignore: avoid_print
+          print('Prefetch cancelled during batch processing (ID: $prefetchId)');
+        }
+        return;
+      }
+
+      final batch = cardsToFetch.skip(i).take(batchSize).toList();
+
+      // Process batch with rate limiting
+      await Future.wait(
+        batch.map((card) async {
+          try {
+            await _rateLimiter.waitIfNeeded();
+            // Double-check cancellation before API call
+            if (prefetchId != _currentPrefetchId) return;
+            
+            final imageBytes = await _apiDatasource.getCardImage(card.id);
+            await _imageLocalDatasource.saveImage(card.id, imageBytes);
+            if (kDebugMode) {
+              // ignore: avoid_print
+              print('Prefetched image for card: ${card.name} (ID: ${card.id})');
+            }
+          } catch (e) {
+            if (kDebugMode) {
+              // ignore: avoid_print
+              print('Error prefetching image for card ${card.id}: $e');
+            }
+            // Ignore prefetch errors
+          }
+        }),
+      );
+
+      // Small delay between batches to ensure we're under the limit
+      if (i + batchSize < cardsToFetch.length) {
+        await Future.delayed(const Duration(milliseconds: 100));
+      }
+    }
+
+    if (kDebugMode && cardsToFetch.isNotEmpty && prefetchId == _currentPrefetchId) {
+      // ignore: avoid_print
+      print('Completed prefetching ${cardsToFetch.length} card images (ID: $prefetchId)');
+    }
   }
 
   List<YgoCard> _transformToCards(Map<String, dynamic> response) {
