@@ -96,46 +96,53 @@ class CollectionQuantityControls extends StatelessWidget {
           currentQuantity = item.quantity;
         }
 
-        return Container(
-          padding: const EdgeInsets.symmetric(vertical: Dimensions.xs),
-          decoration: BoxDecoration(
-            color: theme.colorScheme.surfaceContainerHighest,
-            borderRadius: BorderRadius.circular(Dimensions.radiusSm),
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              IconButton(
-                icon: const Icon(Icons.remove_circle_outline),
-                iconSize: Dimensions.iconMd,
-                onPressed: () {
-                  context.read<CollectionCubit>().removeCollectionItem(
-                        cardId,
-                        setCode,
-                        setRarity,
-                      );
-                },
+        return Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            IconButton(
+              icon: const Icon(Icons.chevron_left),
+              iconSize: Dimensions.iconSm,
+              padding: EdgeInsets.zero,
+              constraints: const BoxConstraints(
+                minWidth: 24,
+                minHeight: 24,
               ),
-              Text(
+              onPressed: () {
+                context.read<CollectionCubit>().removeCollectionItem(
+                      cardId,
+                      setCode,
+                      setRarity,
+                    );
+              },
+            ),
+            SizedBox(
+              width: 28,
+              child: Text(
                 '$currentQuantity',
-                style: theme.textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.bold,
+                textAlign: TextAlign.center,
+                style: theme.textTheme.bodySmall?.copyWith(
+                  fontWeight: FontWeight.w600,
                 ),
               ),
-              IconButton(
-                icon: const Icon(Icons.add_circle_outline),
-                iconSize: Dimensions.iconMd,
-                onPressed: () {
-                  context.read<CollectionCubit>().updateQuantity(
-                        cardId,
-                        setCode,
-                        setRarity,
-                        currentQuantity + 1,
-                      );
-                },
+            ),
+            IconButton(
+              icon: const Icon(Icons.chevron_right),
+              iconSize: Dimensions.iconSm,
+              padding: EdgeInsets.zero,
+              constraints: const BoxConstraints(
+                minWidth: 24,
+                minHeight: 24,
               ),
-            ],
-          ),
+              onPressed: () {
+                context.read<CollectionCubit>().updateQuantity(
+                      cardId,
+                      setCode,
+                      setRarity,
+                      currentQuantity + 1,
+                    );
+              },
+            ),
+          ],
         );
       },
     );

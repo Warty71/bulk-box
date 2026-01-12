@@ -40,17 +40,31 @@ enum Rarity {
   static Rarity? fromString(String rarity) {
     final lowerRarity = rarity.toLowerCase().trim();
     
+    // First, try exact matches
     for (final rarityEnum in Rarity.values) {
-      if (lowerRarity == rarityEnum.fullName.toLowerCase() ||
-          lowerRarity.contains(rarityEnum.fullName.toLowerCase()) ||
-          rarityEnum.fullName.toLowerCase().contains(lowerRarity)) {
+      if (lowerRarity == rarityEnum.fullName.toLowerCase()) {
         return rarityEnum;
       }
     }
     
-    // Special cases for better matching
-    if (lowerRarity.contains('common') && !lowerRarity.contains('uncommon')) {
-      return Rarity.common;
+    // Then, check more specific rarities first (longer names first to avoid matching "rare" too early)
+    if (lowerRarity.contains('starlight') && lowerRarity.contains('rare')) {
+      return Rarity.starlightRare;
+    }
+    if (lowerRarity.contains('platinum') && lowerRarity.contains('rare')) {
+      return Rarity.platinumRare;
+    }
+    if (lowerRarity.contains('ultimate') && lowerRarity.contains('rare')) {
+      return Rarity.ultimateRare;
+    }
+    if (lowerRarity.contains('secret') && lowerRarity.contains('rare')) {
+      return Rarity.secretRare;
+    }
+    if (lowerRarity.contains('ghost') && lowerRarity.contains('rare')) {
+      return Rarity.ghostRare;
+    }
+    if (lowerRarity.contains('gold') && lowerRarity.contains('rare')) {
+      return Rarity.goldRare;
     }
     if (lowerRarity.contains('super') && lowerRarity.contains('rare') && 
         !lowerRarity.contains('ultra') && !lowerRarity.contains('secret')) {
@@ -60,23 +74,8 @@ enum Rarity {
         !lowerRarity.contains('secret')) {
       return Rarity.ultraRare;
     }
-    if (lowerRarity.contains('secret') && lowerRarity.contains('rare')) {
-      return Rarity.secretRare;
-    }
-    if (lowerRarity.contains('ultimate') && lowerRarity.contains('rare')) {
-      return Rarity.ultimateRare;
-    }
-    if (lowerRarity.contains('ghost') && lowerRarity.contains('rare')) {
-      return Rarity.ghostRare;
-    }
-    if (lowerRarity.contains('platinum') && lowerRarity.contains('rare')) {
-      return Rarity.platinumRare;
-    }
-    if (lowerRarity.contains('gold') && lowerRarity.contains('rare')) {
-      return Rarity.goldRare;
-    }
-    if (lowerRarity.contains('starlight') && lowerRarity.contains('rare')) {
-      return Rarity.starlightRare;
+    if (lowerRarity.contains('common') && !lowerRarity.contains('uncommon')) {
+      return Rarity.common;
     }
     if (lowerRarity.contains('rare') && 
         !lowerRarity.contains('super') && 
