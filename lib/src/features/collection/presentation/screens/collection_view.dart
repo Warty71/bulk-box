@@ -4,6 +4,7 @@ import 'package:ygo_collector/src/features/collection/presentation/cubit/collect
 import 'package:ygo_collector/src/features/collection/presentation/cubit/collection_state.dart';
 import 'package:ygo_collector/src/features/collection/presentation/enums/collection_view_mode.dart';
 import 'package:ygo_collector/src/features/collection/presentation/widgets/collection_grid_view.dart';
+import 'package:ygo_collector/src/features/collection/presentation/widgets/collection_list_view.dart';
 
 class CollectionView extends StatelessWidget {
   const CollectionView({super.key});
@@ -42,7 +43,7 @@ class CollectionView extends StatelessWidget {
 
               return viewMode.isGrid
                   ? CollectionGridView(items: items)
-                  : const Placeholder();
+                  : CollectionListView(items: items);
             },
           );
         },

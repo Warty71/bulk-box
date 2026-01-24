@@ -1,111 +1,109 @@
 import 'package:flutter/material.dart';
 import 'package:ygo_collector/src/core/constants/dimensions.dart';
-import 'package:ygo_collector/src/core/enums/rarity.dart';
-import 'package:ygo_collector/src/features/collection/domain/entities/collection_item.dart';
 import 'package:ygo_collector/src/features/collection/presentation/widgets/collection_card_image.dart';
 import 'package:ygo_collector/src/features/collection/presentation/widgets/collection_card_image_dialog.dart';
-import 'package:ygo_collector/src/features/collection/presentation/widgets/collection_quantity_controls.dart';
+import 'package:ygo_collector/src/features/ygo_cards/data/entities/ygo_card.dart';
 
 class CollectionItemCard extends StatelessWidget {
-  final CollectionItemEntity item;
+  final YgoCard card;
+  final int totalQuantity;
 
   const CollectionItemCard({
     super.key,
-    required this.item,
+    required this.card,
+    required this.totalQuantity,
   });
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final rarityShort = Rarity.getShortRarity(item.setRarity);
 
-    return Material(
-      elevation: 1,
-      color: theme.cardTheme.color ?? theme.colorScheme.surface,
-      child: InkWell(
-        onTap: () {
-          CollectionCardImageDialog.show(context, item.cardId);
-        },
-        child: Padding(
-          padding: const EdgeInsets.all(Dimensions.sm),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Card Image - cached to prevent rebuilds
-              CollectionCardImage(cardId: item.cardId),
-              const SizedBox(width: Dimensions.sm),
+    return Padding(
+      padding: const EdgeInsets.only(bottom: Dimensions.sm),
+      child: Material(
+        elevation: 2,
+        borderRadius: BorderRadius.circular(12),
+        color: theme.cardTheme.color ?? theme.colorScheme.surface,
+        child: InkWell(
+          borderRadius: BorderRadius.circular(12),
+          onTap: () {
+            CollectionCardImageDialog.show(context, card.id);
+          },
+          child: Padding(
+            padding: const EdgeInsets.all(Dimensions.sm),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Card Image
+                CollectionCardImage(cardId: card.id),
 
-              // Card Info - static, doesn't change
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // Card Name - max 2 lines with ellipsis
-                    Text(
-                      item.cardName,
-                      style: theme.textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.w600,
-                      ),
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    const SizedBox(height: Dimensions.xs),
+                const SizedBox(width: Dimensions.sm),
 
-                    // Set Code
-                    Text(
-                      item.setCode,
-                      style: theme.textTheme.bodySmall?.copyWith(
-                        color:
-                            theme.colorScheme.onSurface.withValues(alpha: 0.7),
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                    const SizedBox(height: Dimensions.xs),
-
-                    // Rarity with abbreviation
-                    Row(
-                      children: [
-                        Text(
-                          item.setRarity,
-                          style: theme.textTheme.bodySmall?.copyWith(
-                            color: theme.colorScheme.onSurface
-                                .withValues(alpha: 0.7),
-                          ),
-                        ),
-                        const SizedBox(width: Dimensions.xs),
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 6,
-                            vertical: 2,
-                          ),
-                          decoration: BoxDecoration(
-                            color: theme.colorScheme.surfaceContainerHighest,
-                            borderRadius: BorderRadius.circular(4),
-                          ),
-                          child: Text(
-                            rarityShort,
-                            style: theme.textTheme.labelSmall?.copyWith(
-                              color: theme.colorScheme.onSurface,
-                              fontWeight: FontWeight.bold,
+                // Card Info
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Name + Quantity
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Expanded(
+                            child: Text(
+                              card.name,
+                              style: theme.textTheme.titleMedium?.copyWith(
+                                fontWeight: FontWeight.w600,
+                              ),
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
                             ),
                           ),
-                        ),
-                      ],
-                    ),
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 8, vertical: 4),
+                            decoration: BoxDecoration(
+                              color: theme.colorScheme.primary.withOpacity(0.1),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: Text(
+                              'x$totalQuantity',
+                              style: theme.textTheme.bodySmall?.copyWith(
+                                color: theme.colorScheme.primary,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: Dimensions.xs),
 
-                    const SizedBox(height: Dimensions.xs),
-
-                    // Quantity Controls - inline with card info
-                    CollectionQuantityControls(
-                      cardId: item.cardId,
-                      setCode: item.setCode,
-                      setRarity: item.setRarity,
-                      initialQuantity: item.quantity,
-                    ),
-                  ],
+                      // Optional: small preview of sets/rarity
+                      Wrap(
+                        spacing: 6,
+                        runSpacing: 4,
+                        children: card.cardSets
+                            .take(3)
+                            .map(
+                              (set) => Container(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 6, vertical: 2),
+                                decoration: BoxDecoration(
+                                  color: theme.colorScheme.surfaceVariant,
+                                  borderRadius: BorderRadius.circular(6),
+                                ),
+                                child: Text(
+                                  set.setRarity,
+                                  style: theme.textTheme.labelSmall,
+                                ),
+                              ),
+                            )
+                            .toList(),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
