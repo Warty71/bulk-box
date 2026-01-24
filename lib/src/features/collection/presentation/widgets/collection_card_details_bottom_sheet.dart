@@ -5,34 +5,32 @@ import 'package:ygo_collector/src/features/collection/domain/entities/collection
 import 'package:ygo_collector/src/features/collection/presentation/cubit/collection_cubit.dart';
 import 'package:ygo_collector/src/features/ygo_cards/data/entities/ygo_card.dart';
 
-class AddCardBottomSheet extends StatefulWidget {
+/// Bottom sheet that displays all versions/rarities of a card in the collection
+class CollectionCardDetailsBottomSheet extends StatefulWidget {
   final YgoCard card;
 
-  const AddCardBottomSheet({
+  const CollectionCardDetailsBottomSheet({
     super.key,
     required this.card,
   });
 
   @override
-  State<AddCardBottomSheet> createState() => _AddCardBottomSheetState();
+  State<CollectionCardDetailsBottomSheet> createState() =>
+      _CollectionCardDetailsBottomSheetState();
 }
 
-class _AddCardBottomSheetState extends State<AddCardBottomSheet> {
+class _CollectionCardDetailsBottomSheetState
+    extends State<CollectionCardDetailsBottomSheet> {
   final Map<String, int> _quantities = {};
+  bool _isLoading = true;
 
   @override
   void initState() {
     super.initState();
-    // Initialize quantities to 0 for all card sets
-    for (final set in widget.card.cardSets) {
-      final key = '${set.setCode}_${set.setRarity}';
-      _quantities[key] = 0;
-    }
-    // Load existing quantities
-    _loadExistingQuantities();
+    _loadCollectionData();
   }
 
-  Future<void> _loadExistingQuantities() async {
+  Future<void> _loadCollectionData() async {
     final cubit = di.getIt<CollectionCubit>();
     final existingItems =
         await cubit.getCollectionItemsByCardId(widget.card.id);
@@ -43,6 +41,7 @@ class _AddCardBottomSheetState extends State<AddCardBottomSheet> {
           final key = '${item.setCode}_${item.setRarity}';
           _quantities[key] = item.quantity;
         }
+        _isLoading = false;
       });
     }
   }
@@ -150,57 +149,63 @@ class _AddCardBottomSheetState extends State<AddCardBottomSheet> {
           const Divider(),
 
           // Card Sets List
-          Flexible(
-            child: ListView.builder(
-              shrinkWrap: true,
-              itemCount: widget.card.cardSets.length,
-              itemBuilder: (context, index) {
-                final set = widget.card.cardSets[index];
-                final key = '${set.setCode}_${set.setRarity}';
-                final quantity = _quantities[key] ?? 0;
+          if (_isLoading)
+            const Padding(
+              padding: EdgeInsets.all(Dimensions.xl),
+              child: Center(child: CircularProgressIndicator()),
+            )
+          else
+            Flexible(
+              child: ListView.builder(
+                shrinkWrap: true,
+                itemCount: widget.card.cardSets.length,
+                itemBuilder: (context, index) {
+                  final set = widget.card.cardSets[index];
+                  final key = '${set.setCode}_${set.setRarity}';
+                  final quantity = _quantities[key] ?? 0;
 
-                return ListTile(
-                  title: Text(set.setName),
-                  subtitle: Text('${set.setCode} - ${set.setRarity}'),
-                  trailing: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      IconButton(
-                        icon: const Icon(Icons.remove),
-                        onPressed: () => _updateQuantity(
-                          set.setCode,
-                          set.setRarity,
-                          -1,
+                  return ListTile(
+                    title: Text(set.setName),
+                    subtitle: Text('${set.setCode} - ${set.setRarity}'),
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        IconButton(
+                          icon: const Icon(Icons.remove),
+                          onPressed: () => _updateQuantity(
+                            set.setCode,
+                            set.setRarity,
+                            -1,
+                          ),
                         ),
-                      ),
-                      SizedBox(
-                        width: 50,
-                        child: Text(
-                          '$quantity',
-                          textAlign: TextAlign.center,
-                          style: theme.textTheme.titleMedium,
+                        SizedBox(
+                          width: 50,
+                          child: Text(
+                            '$quantity',
+                            textAlign: TextAlign.center,
+                            style: theme.textTheme.titleMedium,
+                          ),
                         ),
-                      ),
-                      IconButton(
-                        icon: const Icon(Icons.add),
-                        onPressed: () => _updateQuantity(
-                          set.setCode,
-                          set.setRarity,
-                          1,
+                        IconButton(
+                          icon: const Icon(Icons.add),
+                          onPressed: () => _updateQuantity(
+                            set.setCode,
+                            set.setRarity,
+                            1,
+                          ),
                         ),
-                      ),
-                    ],
-                  ),
-                );
-              },
+                      ],
+                    ),
+                  );
+                },
+              ),
             ),
-          ),
 
           // Save Button
           Padding(
             padding: const EdgeInsets.all(Dimensions.md),
             child: FilledButton(
-              onPressed: _save,
+              onPressed: _isLoading ? null : _save,
               child: const Text('Save'),
             ),
           ),

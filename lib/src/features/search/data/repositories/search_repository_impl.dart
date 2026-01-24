@@ -68,8 +68,14 @@ class SearchRepositoryImpl implements SearchRepository {
 
   @override
   Future<YgoCard> getCardDetails(int cardId) async {
-    final response = await _apiDatasource.searchCards('id:$cardId');
-    return _transformToCards(response).first;
+    final response = await _apiDatasource.searchCards('id=$cardId');
+    final cards = _transformToCards(response);
+    
+    if (cards.isEmpty) {
+      throw Exception('Card with ID $cardId not found in API');
+    }
+    
+    return cards.first;
   }
 
   @override
