@@ -28,11 +28,11 @@ class CollectionQuantityControls extends StatelessWidget {
       buildWhen: (previous, current) {
         // Only rebuild if this specific item's quantity changed
         final previousItems = previous.maybeWhen(
-          loaded: (items) => items,
+          loaded: (items, viewMode) => items,
           orElse: () => <CollectionItemEntity>[],
         );
         final currentItems = current.maybeWhen(
-          loaded: (items) => items,
+          loaded: (items, viewMode) => items,
           orElse: () => <CollectionItemEntity>[],
         );
 
@@ -73,7 +73,7 @@ class CollectionQuantityControls extends StatelessWidget {
       builder: (context, state) {
         // Get current quantity from state
         final items = state.maybeWhen(
-          loaded: (items) => items,
+          loaded: (items, viewMode) => items,
           orElse: () => <CollectionItemEntity>[],
         );
 

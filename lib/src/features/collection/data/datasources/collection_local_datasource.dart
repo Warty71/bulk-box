@@ -61,15 +61,15 @@ class CollectionLocalDatasource {
     } else {
       // Insert new
       await _db.into(_db.collectionItems).insert(
-        CollectionItemsCompanion(
-          cardId: Value(item.cardId),
-          cardName: Value(item.cardName),
-          setCode: Value(item.setCode),
-          setRarity: Value(item.setRarity),
-          quantity: Value(item.quantity),
-          condition: Value(item.condition),
-        ),
-      );
+            CollectionItemsCompanion(
+              cardId: Value(item.cardId),
+              cardName: Value(item.cardName),
+              setCode: Value(item.setCode),
+              setRarity: Value(item.setRarity),
+              quantity: Value(item.quantity),
+              condition: Value(item.condition),
+            ),
+          );
     }
   }
 

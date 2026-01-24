@@ -20,7 +20,7 @@ class SearchRepositoryImpl implements SearchRepository {
 
   // Track current prefetch operation to allow cancellation
   int _currentPrefetchId = 0;
-  static const int _maxPrefetchCards = 30; // Limit prefetching to first 30 cards
+  static const int _maxPrefetchCards = 30;
 
   SearchRepositoryImpl(
     this._apiDatasource,
@@ -67,18 +67,6 @@ class SearchRepositoryImpl implements SearchRepository {
   }
 
   @override
-  Future<YgoCard> getCardDetails(int cardId) async {
-    final response = await _apiDatasource.searchCards('id=$cardId');
-    final cards = _transformToCards(response);
-    
-    if (cards.isEmpty) {
-      throw Exception('Card with ID $cardId not found in API');
-    }
-    
-    return cards.first;
-  }
-
-  @override
   Future<String> getCardImagePath(int cardId) async {
     try {
       if (!await _imageLocalDatasource.isImageSaved(cardId)) {
@@ -107,7 +95,7 @@ class SearchRepositoryImpl implements SearchRepository {
       // Cache the new cards
       await _cardLocalDatasource
           .cacheCards(cards.map((card) => _transformToModel(card)).toList());
-      
+
       // Cancel any ongoing prefetch and start new one
       _currentPrefetchId++;
       // Prefetch images in the background (with rate limiting)
@@ -133,7 +121,7 @@ class SearchRepositoryImpl implements SearchRepository {
         }
         return;
       }
-      
+
       if (!await _imageLocalDatasource.isImageSaved(card.id)) {
         cardsToFetch.add(card);
       }
@@ -141,7 +129,8 @@ class SearchRepositoryImpl implements SearchRepository {
 
     if (kDebugMode && cardsToFetch.isNotEmpty) {
       // ignore: avoid_print
-      print('Prefetching ${cardsToFetch.length} card images in batches of $batchSize (ID: $prefetchId)');
+      print(
+          'Prefetching ${cardsToFetch.length} card images in batches of $batchSize (ID: $prefetchId)');
     }
 
     // Process in batches
@@ -164,7 +153,7 @@ class SearchRepositoryImpl implements SearchRepository {
             await _rateLimiter.waitIfNeeded();
             // Double-check cancellation before API call
             if (prefetchId != _currentPrefetchId) return;
-            
+
             final imageBytes = await _apiDatasource.getCardImage(card.id);
             await _imageLocalDatasource.saveImage(card.id, imageBytes);
             if (kDebugMode) {
@@ -187,9 +176,12 @@ class SearchRepositoryImpl implements SearchRepository {
       }
     }
 
-    if (kDebugMode && cardsToFetch.isNotEmpty && prefetchId == _currentPrefetchId) {
+    if (kDebugMode &&
+        cardsToFetch.isNotEmpty &&
+        prefetchId == _currentPrefetchId) {
       // ignore: avoid_print
-      print('Completed prefetching ${cardsToFetch.length} card images (ID: $prefetchId)');
+      print(
+          'Completed prefetching ${cardsToFetch.length} card images (ID: $prefetchId)');
     }
   }
 
@@ -214,18 +206,19 @@ class SearchRepositoryImpl implements SearchRepository {
             try {
               final cardModel = CardModel.fromJson(cardJson);
               final card = _transformToEntity(cardModel);
-              
+
               // Debug print - only in debug mode
               if (kDebugMode) {
                 print('Card loaded: ${card.name} (ID: ${card.id})');
                 print('  Type: ${card.type}, Race: ${card.race}');
-                if (card.attribute != null) print('  Attribute: ${card.attribute}');
+                if (card.attribute != null)
+                  print('  Attribute: ${card.attribute}');
                 if (card.level != null) print('  Level: ${card.level}');
                 if (card.atk != null) print('  ATK: ${card.atk}');
                 if (card.def != null) print('  DEF: ${card.def}');
                 print('  Sets: ${card.cardSets.length}');
               }
-              
+
               return card;
             } catch (e) {
               if (kDebugMode) {
@@ -236,11 +229,11 @@ class SearchRepositoryImpl implements SearchRepository {
           })
           .whereType<YgoCard>()
           .toList();
-      
+
       if (kDebugMode) {
         print('Total cards loaded: ${cards.length}');
       }
-      
+
       return cards;
     } catch (e) {
       return [];
