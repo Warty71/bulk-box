@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:collection';
-import 'package:flutter/foundation.dart';
 
 /// Simple rate limiter that ensures requests don't exceed a rate limit
 class RateLimiter {
@@ -28,11 +27,6 @@ class RateLimiter {
       final oldestRequest = _requestTimes.first;
       final waitTime = timeWindow - now.difference(oldestRequest);
       if (waitTime > Duration.zero) {
-        if (kDebugMode) {
-          // ignore: avoid_print
-          print(
-              'RateLimiter: Waiting ${waitTime.inMilliseconds}ms (${_requestTimes.length}/$maxRequests requests)');
-        }
         await Future.delayed(waitTime);
         // Remove the oldest after waiting
         _requestTimes.removeFirst();
@@ -41,11 +35,5 @@ class RateLimiter {
 
     // Record this request
     _requestTimes.add(DateTime.now());
-
-    if (kDebugMode) {
-      // ignore: avoid_print
-      print(
-          'RateLimiter: Request allowed (${_requestTimes.length}/$maxRequests)');
-    }
   }
 }

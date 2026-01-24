@@ -59,7 +59,8 @@ class _CollectionCardDetailsBottomSheetState
     final now = DateTime.now();
 
     // Fetch existing items once before the loop
-    final existingItems = await cubit.getCollectionItemsByCardId(widget.card.id);
+    final existingItems =
+        await cubit.getCollectionItemsByCardId(widget.card.id);
 
     for (final set in widget.card.cardSets) {
       final key = '${set.setCode}_${set.setRarity}';
@@ -67,7 +68,8 @@ class _CollectionCardDetailsBottomSheetState
 
       // Check if this specific set/rarity combination already exists
       final existingItem = existingItems.firstWhere(
-        (item) => item.setCode == set.setCode && item.setRarity == set.setRarity,
+        (item) =>
+            item.setCode == set.setCode && item.setRarity == set.setRarity,
         orElse: () => CollectionItemEntity(
           cardId: -1,
           cardName: '',

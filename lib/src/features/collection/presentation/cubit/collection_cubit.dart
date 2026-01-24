@@ -2,7 +2,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ygo_collector/src/features/collection/domain/entities/collection_item.dart';
 import 'package:ygo_collector/src/features/collection/domain/repositories/collection_repository.dart';
 import 'package:ygo_collector/src/features/collection/presentation/cubit/collection_state.dart';
-import 'package:ygo_collector/src/features/collection/presentation/enums/collection_view_mode.dart';
 
 class CollectionCubit extends Cubit<CollectionState> {
   final CollectionRepository _repository;
@@ -83,15 +82,5 @@ class CollectionCubit extends Cubit<CollectionState> {
       // Don't emit error state for this read-only operation
       return [];
     }
-  }
-
-  /// Toggle view mode
-  void toggleViewMode() {
-    state.maybeMap(
-      loaded: (s) => emit(
-        s.copyWith(viewMode: s.viewMode.toggled),
-      ),
-      orElse: () {},
-    );
   }
 }

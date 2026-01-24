@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:ygo_collector/src/core/utils/rate_limiter.dart';
 import 'package:ygo_collector/src/features/ygo_cards/data/datasources/local/image_local_datasource.dart';
 import 'package:ygo_collector/src/features/ygo_cards/data/datasources/remote/ygopro_api_datasource.dart';
@@ -30,36 +29,19 @@ class SearchRepositoryImpl implements SearchRepository {
 
   @override
   Future<List<YgoCard>> searchCards(String query) async {
-    if (kDebugMode) {
-      print('searchCards called with query: "$query"');
-    }
     try {
       // First try to find cards in local cache
       final cachedCards = await _cardLocalDatasource.getCachedCards();
 
       if (query.isEmpty) {
         if (cachedCards.isNotEmpty) {
-          if (kDebugMode) {
-            // ignore: avoid_print
-            print('Returning ${cachedCards.length} cached cards (no API call)');
-          }
           return cachedCards.map(_transformToEntity).toList();
         }
         // If no cached cards, get initial set from API
-        if (kDebugMode) {
-          // ignore: avoid_print
-          print('No cached cards found, fetching initial set from API');
-        }
         return await _fetchAndCacheCards(
             'type=Normal Monster&sort=name&offset=0&num=20');
       }
 
-      // Always search the API for non-empty queries (API is source of truth)
-      // Cache is only used for empty queries or as fallback
-      if (kDebugMode) {
-        // ignore: avoid_print
-        print('Searching API for query: "$query"');
-      }
       return await _fetchAndCacheCards(query);
     } catch (e) {
       rethrow;
@@ -85,9 +67,6 @@ class SearchRepositoryImpl implements SearchRepository {
   }
 
   Future<List<YgoCard>> _fetchAndCacheCards(String query) async {
-    if (kDebugMode) {
-      print('API call triggered with query: "$query"');
-    }
     final response = await _apiDatasource.searchCards(query);
     final cards = _transformToCards(response);
 
@@ -115,10 +94,6 @@ class SearchRepositoryImpl implements SearchRepository {
     for (final card in cards) {
       // Check if this prefetch was cancelled
       if (prefetchId != _currentPrefetchId) {
-        if (kDebugMode) {
-          // ignore: avoid_print
-          print('Prefetch cancelled (new search started)');
-        }
         return;
       }
 
@@ -127,20 +102,10 @@ class SearchRepositoryImpl implements SearchRepository {
       }
     }
 
-    if (kDebugMode && cardsToFetch.isNotEmpty) {
-      // ignore: avoid_print
-      print(
-          'Prefetching ${cardsToFetch.length} card images in batches of $batchSize (ID: $prefetchId)');
-    }
-
     // Process in batches
     for (var i = 0; i < cardsToFetch.length; i += batchSize) {
       // Check if this prefetch was cancelled before each batch
       if (prefetchId != _currentPrefetchId) {
-        if (kDebugMode) {
-          // ignore: avoid_print
-          print('Prefetch cancelled during batch processing (ID: $prefetchId)');
-        }
         return;
       }
 
@@ -156,16 +121,8 @@ class SearchRepositoryImpl implements SearchRepository {
 
             final imageBytes = await _apiDatasource.getCardImage(card.id);
             await _imageLocalDatasource.saveImage(card.id, imageBytes);
-            if (kDebugMode) {
-              // ignore: avoid_print
-              print('Prefetched image for card: ${card.name} (ID: ${card.id})');
-            }
           } catch (e) {
-            if (kDebugMode) {
-              // ignore: avoid_print
-              print('Error prefetching image for card ${card.id}: $e');
-            }
-            // Ignore prefetch errors
+            // Comment
           }
         }),
       );
@@ -174,14 +131,6 @@ class SearchRepositoryImpl implements SearchRepository {
       if (i + batchSize < cardsToFetch.length) {
         await Future.delayed(const Duration(milliseconds: 100));
       }
-    }
-
-    if (kDebugMode &&
-        cardsToFetch.isNotEmpty &&
-        prefetchId == _currentPrefetchId) {
-      // ignore: avoid_print
-      print(
-          'Completed prefetching ${cardsToFetch.length} card images (ID: $prefetchId)');
     }
   }
 
@@ -207,32 +156,14 @@ class SearchRepositoryImpl implements SearchRepository {
               final cardModel = CardModel.fromJson(cardJson);
               final card = _transformToEntity(cardModel);
 
-              // Debug print - only in debug mode
-              if (kDebugMode) {
-                print('Card loaded: ${card.name} (ID: ${card.id})');
-                print('  Type: ${card.type}, Race: ${card.race}');
-                if (card.attribute != null)
-                  print('  Attribute: ${card.attribute}');
-                if (card.level != null) print('  Level: ${card.level}');
-                if (card.atk != null) print('  ATK: ${card.atk}');
-                if (card.def != null) print('  DEF: ${card.def}');
-                print('  Sets: ${card.cardSets.length}');
-              }
-
               return card;
             } catch (e) {
-              if (kDebugMode) {
-                print('Error parsing card: $e');
-              }
+              // Comment
               return null;
             }
           })
           .whereType<YgoCard>()
           .toList();
-
-      if (kDebugMode) {
-        print('Total cards loaded: ${cards.length}');
-      }
 
       return cards;
     } catch (e) {
