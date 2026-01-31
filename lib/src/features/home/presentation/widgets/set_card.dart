@@ -17,63 +17,61 @@ class SetCard extends StatelessWidget {
     final cardStyles = theme.extension<CardStyles>()!;
 
     return Container(
-        width: 120,
-        height: 180,
-        decoration: cardStyles.cardDecoration,
-        child: Column(
-          mainAxisSize: MainAxisSize.max,
-          children: [
-            Container(
-              height: 120,
-              decoration: BoxDecoration(
-                color: theme.colorScheme.surfaceContainerHighest,
-                borderRadius: BorderRadius.vertical(
-                  top: Radius.circular(Dimensions.radiusMd),
-                ),
+      width: 120,
+      height: 180,
+      decoration: cardStyles.cardDecoration,
+      child: Column(
+        mainAxisSize: MainAxisSize.max,
+        children: [
+          Container(
+            height: 120,
+            decoration: BoxDecoration(
+              color: theme.colorScheme.surfaceContainerHighest,
+              borderRadius: BorderRadius.vertical(
+                top: Radius.circular(Dimensions.radiusMd),
               ),
-              child: set.setImage != null && set.setImage!.isNotEmpty
-                  ? ClipRRect(
-                      borderRadius: BorderRadius.vertical(
-                        top: Radius.circular(Dimensions.radiusMd),
-                      ),
-                      child: Image.network(
-                        set.setImage!,
-                        width: 120,
-                        height: 120,
-                        fit: BoxFit.cover,
-                        errorBuilder: (_, __, ___) => Center(
-                          child: Icon(
-                            Icons.image_outlined,
-                            size: Dimensions.iconXl,
-                            color: theme.colorScheme.onSurfaceVariant,
-                          ),
+            ),
+            child: set.setImage != null && set.setImage!.isNotEmpty
+                ? ClipRRect(
+                    borderRadius: BorderRadius.vertical(
+                      top: Radius.circular(Dimensions.radiusMd),
+                    ),
+                    child: Image.network(
+                      set.setImage!,
+                      width: 120,
+                      height: 120,
+                      fit: BoxFit.cover,
+                      errorBuilder: (_, __, ___) => Center(
+                        child: Icon(
+                          Icons.image_outlined,
+                          size: Dimensions.iconXl,
+                          color: theme.colorScheme.onSurfaceVariant,
                         ),
                       ),
-                    )
-                  : Center(
-                      child: Icon(
-                        Icons.image_outlined,
-                        size: Dimensions.iconXl,
-                        color: theme.colorScheme.onSurfaceVariant,
-                      ),
                     ),
-            ),
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.all(Dimensions.sm),
-                child: Text(
-                  set.setName,
-                  style: theme.textTheme.labelLarge,
-                  textAlign: TextAlign.center,
-                  maxLines: 3,
-                  overflow: TextOverflow.ellipsis,
-                ),
+                  )
+                : Center(
+                    child: Icon(
+                      Icons.image_outlined,
+                      size: Dimensions.iconXl,
+                      color: theme.colorScheme.onSurfaceVariant,
+                    ),
+                  ),
+          ),
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.all(Dimensions.sm),
+              child: Text(
+                set.setName,
+                style: theme.textTheme.labelLarge,
+                textAlign: TextAlign.center,
+                maxLines: 3,
+                overflow: TextOverflow.ellipsis,
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
 }
-
