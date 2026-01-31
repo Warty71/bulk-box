@@ -1,5 +1,5 @@
-import 'package:ygo_collector/src/features/collection/domain/entities/collection_item.dart';
-import 'package:ygo_collector/src/features/collection/domain/entities/collection_entry.dart';
+import 'package:bulk_box/src/features/collection/domain/entities/collection_item.dart';
+import 'package:bulk_box/src/features/collection/domain/entities/collection_entry.dart';
 
 abstract class CollectionRepository {
   Future<List<CollectionEntry>> getCollectionWithCards();

@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:ygo_collector/src/core/constants/dimensions.dart';
-import 'package:ygo_collector/src/core/widgets/debouncer.dart';
-import 'package:ygo_collector/src/core/database/app_database.dart' as db;
-import 'package:ygo_collector/src/features/search/presentation/cubit/search_cubit.dart';
-import 'package:ygo_collector/src/features/search/presentation/cubit/search_state.dart';
+import 'package:bulk_box/src/core/constants/dimensions.dart';
+import 'package:bulk_box/src/core/widgets/debouncer.dart';
+import 'package:bulk_box/src/core/database/app_database.dart' as db;
+import 'package:bulk_box/src/features/search/presentation/cubit/search_cubit.dart';
+import 'package:bulk_box/src/features/search/presentation/cubit/search_state.dart';
 import 'dart:io';
-import 'package:ygo_collector/src/core/di/injection_container.dart' as di;
-import 'package:ygo_collector/src/features/ygo_cards/presentation/screens/card_details_screen.dart';
+import 'package:bulk_box/src/core/di/injection_container.dart' as di;
+import 'package:bulk_box/src/features/ygo_cards/presentation/screens/card_details_screen.dart';
 
 class SearchScreen extends StatelessWidget {
   const SearchScreen({super.key});

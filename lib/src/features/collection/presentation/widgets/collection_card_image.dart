@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:ygo_collector/src/features/search/presentation/cubit/search_cubit.dart';
+import 'package:bulk_box/src/features/search/presentation/cubit/search_cubit.dart';
 
 /// Cached image widget that prevents rebuilds
 class CollectionCardImage extends StatefulWidget {

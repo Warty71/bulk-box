@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:ygo_collector/src/features/collection/presentation/cubit/collection_cubit.dart';
-import 'package:ygo_collector/src/features/collection/presentation/widgets/collection_options_bottom_sheet.dart';
+import 'package:bulk_box/src/features/collection/presentation/cubit/collection_cubit.dart';
+import 'package:bulk_box/src/features/collection/presentation/widgets/collection_options_bottom_sheet.dart';
 
 // * This button opens a bottom sheet with the collection options
 // * The bottom sheet contains the following options:

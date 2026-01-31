@@ -1,6 +1,6 @@
-import 'package:ygo_collector/src/features/ygo_cards/data/datasources/remote/ygopro_api_datasource.dart';
-import 'package:ygo_collector/src/features/ygo_cards/data/models/set_info_model.dart';
-import 'package:ygo_collector/src/features/ygo_cards/domain/repositories/set_list_repository.dart';
+import 'package:bulk_box/src/features/ygo_cards/data/datasources/remote/ygopro_api_datasource.dart';
+import 'package:bulk_box/src/features/ygo_cards/data/models/set_info_model.dart';
+import 'package:bulk_box/src/features/ygo_cards/domain/repositories/set_list_repository.dart';
 
 class SetListRepositoryImpl implements SetListRepository {
   final YGOProApiDatasource _apiDatasource;

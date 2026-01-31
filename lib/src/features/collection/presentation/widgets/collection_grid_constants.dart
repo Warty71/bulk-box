@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:ygo_collector/src/core/constants/dimensions.dart';
+import 'package:bulk_box/src/core/constants/dimensions.dart';
 
 const collectionGridDelegate = SliverGridDelegateWithFixedCrossAxisCount(
   crossAxisCount: 3,

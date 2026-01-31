@@ -1,12 +1,12 @@
 import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:ygo_collector/src/core/di/injection_container.dart';
-import 'package:ygo_collector/src/core/widgets/root_layout.dart';
-import 'package:ygo_collector/src/features/home/presentation/cubit/latest_sets_cubit.dart';
-import 'package:ygo_collector/src/features/home/presentation/screens/home_screen.dart';
-import 'package:ygo_collector/src/features/collection/presentation/screens/collection_screen.dart';
-import 'package:ygo_collector/src/features/search/presentation/screens/search_screen.dart';
+import 'package:bulk_box/src/core/di/injection_container.dart';
+import 'package:bulk_box/src/core/widgets/root_layout.dart';
+import 'package:bulk_box/src/features/home/presentation/cubit/latest_sets_cubit.dart';
+import 'package:bulk_box/src/features/home/presentation/screens/home_screen.dart';
+import 'package:bulk_box/src/features/collection/presentation/screens/collection_screen.dart';
+import 'package:bulk_box/src/features/search/presentation/screens/search_screen.dart';
 
 class AppRouter {
   static final GlobalKey<NavigatorState> rootNavigatorKey =

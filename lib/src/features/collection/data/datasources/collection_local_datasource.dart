@@ -1,7 +1,7 @@
 import 'package:drift/drift.dart';
-import 'package:ygo_collector/src/core/database/app_database.dart';
-import 'package:ygo_collector/src/features/collection/domain/entities/collection_entry.dart';
-import 'package:ygo_collector/src/features/collection/domain/entities/collection_item.dart';
+import 'package:bulk_box/src/core/database/app_database.dart';
+import 'package:bulk_box/src/features/collection/domain/entities/collection_entry.dart';
+import 'package:bulk_box/src/features/collection/domain/entities/collection_item.dart';
 
 class CollectionLocalDatasource {
   final AppDatabase _db;

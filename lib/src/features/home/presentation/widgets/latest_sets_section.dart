@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:ygo_collector/src/core/constants/dimensions.dart';
-import 'package:ygo_collector/src/features/home/presentation/cubit/latest_sets_cubit.dart';
-import 'package:ygo_collector/src/features/home/presentation/cubit/latest_sets_state.dart';
-import 'package:ygo_collector/src/features/home/presentation/widgets/set_card.dart';
+import 'package:bulk_box/src/core/constants/dimensions.dart';
+import 'package:bulk_box/src/features/home/presentation/cubit/latest_sets_cubit.dart';
+import 'package:bulk_box/src/features/home/presentation/cubit/latest_sets_state.dart';
+import 'package:bulk_box/src/features/home/presentation/widgets/set_card.dart';
 
 class LatestSetsSection extends StatelessWidget {
   const LatestSetsSection({super.key});

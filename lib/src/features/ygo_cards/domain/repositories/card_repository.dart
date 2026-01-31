@@ -1,4 +1,4 @@
-import 'package:ygo_collector/src/core/database/app_database.dart';
+import 'package:bulk_box/src/core/database/app_database.dart';
 
 abstract class CardRepository {
   Future<List<Card>> searchCards(String query);

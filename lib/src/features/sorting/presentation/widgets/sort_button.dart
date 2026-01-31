@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:ygo_collector/src/core/settings/settings_cubit.dart';
-import 'package:ygo_collector/src/core/settings/settings_state.dart';
-import 'package:ygo_collector/src/features/sorting/domain/entities/sort_options.dart';
+import 'package:bulk_box/src/core/settings/settings_cubit.dart';
+import 'package:bulk_box/src/core/settings/settings_state.dart';
+import 'package:bulk_box/src/features/sorting/domain/entities/sort_options.dart';
 
 class SortButton extends StatelessWidget {
   const SortButton({super.key});

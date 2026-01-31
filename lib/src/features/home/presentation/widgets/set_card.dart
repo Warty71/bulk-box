@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:ygo_collector/src/core/constants/dimensions.dart';
-import 'package:ygo_collector/src/core/theme/theme_extensions.dart';
-import 'package:ygo_collector/src/features/ygo_cards/data/models/set_info_model.dart';
+import 'package:bulk_box/src/core/constants/dimensions.dart';
+import 'package:bulk_box/src/core/theme/theme_extensions.dart';
+import 'package:bulk_box/src/features/ygo_cards/data/models/set_info_model.dart';
 
 class SetCard extends StatelessWidget {
   const SetCard({

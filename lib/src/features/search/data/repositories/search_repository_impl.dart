@@ -1,12 +1,12 @@
 import 'dart:convert';
 
-import 'package:ygo_collector/src/core/database/app_database.dart';
-import 'package:ygo_collector/src/core/database/card_dao.dart';
-import 'package:ygo_collector/src/core/utils/rate_limiter.dart';
-import 'package:ygo_collector/src/features/search/domain/repositories/search_repository.dart';
-import 'package:ygo_collector/src/features/ygo_cards/data/datasources/local/image_local_datasource.dart';
-import 'package:ygo_collector/src/features/ygo_cards/data/datasources/remote/ygopro_api_datasource.dart';
-import 'package:ygo_collector/src/features/ygo_cards/data/models/card_model.dart';
+import 'package:bulk_box/src/core/database/app_database.dart';
+import 'package:bulk_box/src/core/database/card_dao.dart';
+import 'package:bulk_box/src/core/utils/rate_limiter.dart';
+import 'package:bulk_box/src/features/search/domain/repositories/search_repository.dart';
+import 'package:bulk_box/src/features/ygo_cards/data/datasources/local/image_local_datasource.dart';
+import 'package:bulk_box/src/features/ygo_cards/data/datasources/remote/ygopro_api_datasource.dart';
+import 'package:bulk_box/src/features/ygo_cards/data/models/card_model.dart';
 
 class SearchRepositoryImpl implements SearchRepository {
   final YGOProApiDatasource _apiDatasource;
@@ -156,9 +156,8 @@ class SearchRepositoryImpl implements SearchRepository {
   }
 
   Card _cardModelToDriftCard(CardModel model) {
-    final imageUrl = model.cardImages.isNotEmpty
-        ? model.cardImages.first.imageUrl
-        : '';
+    final imageUrl =
+        model.cardImages.isNotEmpty ? model.cardImages.first.imageUrl : '';
     final cardSetsJson = jsonEncode(
       model.cardSets
           .map((s) => {

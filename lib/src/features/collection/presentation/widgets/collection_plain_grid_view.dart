@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:ygo_collector/src/features/collection/domain/entities/collection_entry.dart';
-import 'package:ygo_collector/src/features/collection/presentation/widgets/collection_grid_constants.dart';
-import 'package:ygo_collector/src/features/collection/presentation/widgets/collection_grid_item.dart';
+import 'package:bulk_box/src/features/collection/domain/entities/collection_entry.dart';
+import 'package:bulk_box/src/features/collection/presentation/widgets/collection_grid_constants.dart';
+import 'package:bulk_box/src/features/collection/presentation/widgets/collection_grid_item.dart';
 
 class CollectionPlainGridView extends StatelessWidget {
   const CollectionPlainGridView({

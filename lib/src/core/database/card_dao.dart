@@ -1,5 +1,5 @@
 import 'package:drift/drift.dart';
-import 'package:ygo_collector/src/core/database/app_database.dart';
+import 'package:bulk_box/src/core/database/app_database.dart';
 
 class CardDao {
   final AppDatabase _db;

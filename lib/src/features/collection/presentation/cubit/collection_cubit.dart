@@ -1,10 +1,10 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:ygo_collector/src/features/collection/domain/entities/collection_entry.dart';
-import 'package:ygo_collector/src/features/collection/domain/entities/collection_item.dart';
-import 'package:ygo_collector/src/features/collection/domain/repositories/collection_repository.dart';
-import 'package:ygo_collector/src/features/collection/presentation/cubit/collection_state.dart';
-import 'package:ygo_collector/src/features/sorting/domain/comparators/ygo_card_sorters.dart';
-import 'package:ygo_collector/src/features/sorting/domain/entities/sort_options.dart';
+import 'package:bulk_box/src/features/collection/domain/entities/collection_entry.dart';
+import 'package:bulk_box/src/features/collection/domain/entities/collection_item.dart';
+import 'package:bulk_box/src/features/collection/domain/repositories/collection_repository.dart';
+import 'package:bulk_box/src/features/collection/presentation/cubit/collection_state.dart';
+import 'package:bulk_box/src/features/sorting/domain/comparators/ygo_card_sorters.dart';
+import 'package:bulk_box/src/features/sorting/domain/entities/sort_options.dart';
 
 class CollectionCubit extends Cubit<CollectionState> {
   final CollectionRepository _repository;

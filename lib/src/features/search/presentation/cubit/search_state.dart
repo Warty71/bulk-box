@@ -1,5 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:ygo_collector/src/core/database/app_database.dart';
+import 'package:bulk_box/src/core/database/app_database.dart';
 
 part 'search_state.freezed.dart';
 

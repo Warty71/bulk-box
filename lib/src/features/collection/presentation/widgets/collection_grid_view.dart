@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:ygo_collector/src/features/collection/domain/entities/collection_entry.dart';
-import 'package:ygo_collector/src/features/collection/presentation/widgets/collection_plain_grid_view.dart';
-import 'package:ygo_collector/src/features/collection/presentation/widgets/collection_sectioned_grid_view.dart';
-import 'package:ygo_collector/src/features/sorting/domain/entities/sort_options.dart';
+import 'package:bulk_box/src/features/collection/domain/entities/collection_entry.dart';
+import 'package:bulk_box/src/features/collection/presentation/widgets/collection_plain_grid_view.dart';
+import 'package:bulk_box/src/features/collection/presentation/widgets/collection_sectioned_grid_view.dart';
+import 'package:bulk_box/src/features/sorting/domain/entities/sort_options.dart';
 
 /// Grid view for displaying unique cards in the collection
 class CollectionGridView extends StatelessWidget {

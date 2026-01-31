@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:ygo_collector/src/core/settings/settings_cubit.dart';
-import 'package:ygo_collector/src/core/settings/settings_state.dart';
-import 'package:ygo_collector/src/features/collection/domain/entities/collection_entry.dart';
-import 'package:ygo_collector/src/features/collection/presentation/cubit/collection_cubit.dart';
-import 'package:ygo_collector/src/features/collection/presentation/cubit/collection_state.dart';
-import 'package:ygo_collector/src/features/collection/presentation/widgets/collection_grid_view.dart';
-import 'package:ygo_collector/src/features/collection/presentation/widgets/collection_options_button.dart';
-import 'package:ygo_collector/src/features/sorting/domain/comparators/ygo_card_sorters.dart';
-import 'package:ygo_collector/src/features/sorting/presentation/widgets/sort_button.dart';
+import 'package:bulk_box/src/core/settings/settings_cubit.dart';
+import 'package:bulk_box/src/core/settings/settings_state.dart';
+import 'package:bulk_box/src/features/collection/domain/entities/collection_entry.dart';
+import 'package:bulk_box/src/features/collection/presentation/cubit/collection_cubit.dart';
+import 'package:bulk_box/src/features/collection/presentation/cubit/collection_state.dart';
+import 'package:bulk_box/src/features/collection/presentation/widgets/collection_grid_view.dart';
+import 'package:bulk_box/src/features/collection/presentation/widgets/collection_options_button.dart';
+import 'package:bulk_box/src/features/sorting/domain/comparators/ygo_card_sorters.dart';
+import 'package:bulk_box/src/features/sorting/presentation/widgets/sort_button.dart';
 
 class CollectionView extends StatelessWidget {
   const CollectionView({super.key});

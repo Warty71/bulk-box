@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:ygo_collector/src/core/constants/dimensions.dart';
-import 'package:ygo_collector/src/features/collection/domain/entities/collection_entry.dart';
-import 'package:ygo_collector/src/features/sorting/domain/entities/sort_options.dart';
-import 'package:ygo_collector/src/features/collection/presentation/widgets/collection_grid_constants.dart';
-import 'package:ygo_collector/src/features/collection/presentation/widgets/collection_grid_item.dart';
-import 'package:ygo_collector/src/features/collection/presentation/widgets/collection_section_header.dart';
+import 'package:bulk_box/src/core/constants/dimensions.dart';
+import 'package:bulk_box/src/features/collection/domain/entities/collection_entry.dart';
+import 'package:bulk_box/src/features/sorting/domain/entities/sort_options.dart';
+import 'package:bulk_box/src/features/collection/presentation/widgets/collection_grid_constants.dart';
+import 'package:bulk_box/src/features/collection/presentation/widgets/collection_grid_item.dart';
+import 'package:bulk_box/src/features/collection/presentation/widgets/collection_section_header.dart';
 
 class CollectionSectionedGridView extends StatelessWidget {
   const CollectionSectionedGridView({
@@ -30,8 +30,7 @@ class CollectionSectionedGridView extends StatelessWidget {
     final quantitiesByCardId = getQuantitiesByCardId();
     final groups = groupBySection(collectionEntries, quantitiesByCardId);
 
-    final sectionKeys = groups.keys.toList()
-      ..sort((a, b) => a.compareTo(b));
+    final sectionKeys = groups.keys.toList()..sort((a, b) => a.compareTo(b));
 
     return CustomScrollView(
       slivers: [

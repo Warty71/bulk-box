@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:ygo_collector/src/core/constants/dimensions.dart';
-import 'package:ygo_collector/src/core/theme/theme_extensions.dart';
-import 'package:ygo_collector/src/features/home/presentation/widgets/latest_sets_section.dart';
+import 'package:bulk_box/src/core/constants/dimensions.dart';
+import 'package:bulk_box/src/core/theme/theme_extensions.dart';
+import 'package:bulk_box/src/features/home/presentation/widgets/latest_sets_section.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -13,7 +13,7 @@ class HomeScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('YGO Collector', style: theme.textTheme.titleLarge),
+        title: Text('Bulk Box', style: theme.textTheme.titleLarge),
       ),
       body: ListView(
         padding: const EdgeInsets.all(Dimensions.md),

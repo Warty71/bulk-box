@@ -1,4 +1,4 @@
-# YGO Collector 🃏
+# Bulk Box 🃏
 
 This is a **work-in-progress Yugioh card collection app**.
 

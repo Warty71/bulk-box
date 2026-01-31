@@ -1,5 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:ygo_collector/src/features/collection/domain/entities/collection_entry.dart';
+import 'package:bulk_box/src/features/collection/domain/entities/collection_entry.dart';
 
 part 'collection_state.freezed.dart';
 

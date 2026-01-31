@@ -1,7 +1,7 @@
-import 'package:ygo_collector/src/features/collection/data/datasources/collection_local_datasource.dart';
-import 'package:ygo_collector/src/features/collection/domain/entities/collection_entry.dart';
-import 'package:ygo_collector/src/features/collection/domain/entities/collection_item.dart';
-import 'package:ygo_collector/src/features/collection/domain/repositories/collection_repository.dart';
+import 'package:bulk_box/src/features/collection/data/datasources/collection_local_datasource.dart';
+import 'package:bulk_box/src/features/collection/domain/entities/collection_entry.dart';
+import 'package:bulk_box/src/features/collection/domain/entities/collection_item.dart';
+import 'package:bulk_box/src/features/collection/domain/repositories/collection_repository.dart';
 
 class CollectionRepositoryImpl implements CollectionRepository {
   final CollectionLocalDatasource _localDatasource;

@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:ygo_collector/src/core/database/app_database.dart';
+import 'package:bulk_box/src/core/database/app_database.dart';
 
 /// Parsed card set from [Card.cardSetsJson].
 /// When [tcgplayer_data] is used, includes edition, prices, and TCGPlayer URL.

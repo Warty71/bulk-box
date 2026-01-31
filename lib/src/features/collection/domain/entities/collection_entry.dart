@@ -1,4 +1,4 @@
-import 'package:ygo_collector/src/core/database/app_database.dart';
+import 'package:bulk_box/src/core/database/app_database.dart';
 
 class CollectionEntry {
   final Card card; // Full card data

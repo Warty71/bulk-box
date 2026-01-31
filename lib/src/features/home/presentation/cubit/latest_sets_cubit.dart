@@ -1,11 +1,12 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:ygo_collector/src/features/ygo_cards/domain/repositories/set_list_repository.dart';
-import 'package:ygo_collector/src/features/home/presentation/cubit/latest_sets_state.dart';
+import 'package:bulk_box/src/features/ygo_cards/domain/repositories/set_list_repository.dart';
+import 'package:bulk_box/src/features/home/presentation/cubit/latest_sets_state.dart';
 
 class LatestSetsCubit extends Cubit<LatestSetsState> {
   final SetListRepository _setListRepository;
 
-  LatestSetsCubit(this._setListRepository) : super(const LatestSetsState.initial()) {
+  LatestSetsCubit(this._setListRepository)
+      : super(const LatestSetsState.initial()) {
     load();
   }
 

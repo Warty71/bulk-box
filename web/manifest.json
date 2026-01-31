@@ -1,6 +1,6 @@
 {
-    "name": "ygo_collector",
-    "short_name": "ygo_collector",
+    "name": "bulk_box",
+    "short_name": "bulk_box",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

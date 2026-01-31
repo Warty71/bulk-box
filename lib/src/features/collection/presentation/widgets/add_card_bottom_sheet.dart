@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:ygo_collector/src/core/constants/dimensions.dart';
-import 'package:ygo_collector/src/core/database/app_database.dart' as db;
-import 'package:ygo_collector/src/core/database/card_extensions.dart';
-import 'package:ygo_collector/src/core/di/injection_container.dart' as di;
-import 'package:ygo_collector/src/features/collection/domain/entities/collection_item.dart';
-import 'package:ygo_collector/src/features/collection/presentation/cubit/collection_cubit.dart';
+import 'package:bulk_box/src/core/constants/dimensions.dart';
+import 'package:bulk_box/src/core/database/app_database.dart' as db;
+import 'package:bulk_box/src/core/database/card_extensions.dart';
+import 'package:bulk_box/src/core/di/injection_container.dart' as di;
+import 'package:bulk_box/src/features/collection/domain/entities/collection_item.dart';
+import 'package:bulk_box/src/features/collection/presentation/cubit/collection_cubit.dart';
 
 /// Bottom sheet for adding/editing card quantities in collection.
 /// Works for both adding new cards and editing existing ones.

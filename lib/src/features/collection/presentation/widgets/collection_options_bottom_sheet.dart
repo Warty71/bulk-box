@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:ygo_collector/src/core/constants/dimensions.dart';
-import 'package:ygo_collector/src/core/settings/settings_cubit.dart';
-import 'package:ygo_collector/src/core/settings/settings_state.dart';
+import 'package:bulk_box/src/core/constants/dimensions.dart';
+import 'package:bulk_box/src/core/settings/settings_cubit.dart';
+import 'package:bulk_box/src/core/settings/settings_state.dart';
 
 class CollectionOptionsBottomSheet extends StatelessWidget {
   const CollectionOptionsBottomSheet({super.key});

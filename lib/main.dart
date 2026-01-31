@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:ygo_collector/src/core/router/app_router.dart';
-import 'package:ygo_collector/src/core/settings/settings_cubit.dart';
-import 'package:ygo_collector/src/core/theme/app_theme.dart';
-import 'package:ygo_collector/src/features/search/presentation/cubit/search_cubit.dart';
+import 'package:bulk_box/src/core/router/app_router.dart';
+import 'package:bulk_box/src/core/settings/settings_cubit.dart';
+import 'package:bulk_box/src/core/theme/app_theme.dart';
+import 'package:bulk_box/src/features/search/presentation/cubit/search_cubit.dart';
 import 'src/core/di/injection_container.dart' as di;
 
 void main() async {
@@ -42,7 +42,7 @@ class MyApp extends StatelessWidget {
         ),
       ],
       child: MaterialApp.router(
-        title: 'YGO Collector',
+        title: 'Bulk Box',
         theme: AppTheme.lightTheme,
         routerConfig: AppRouter.router,
       ),

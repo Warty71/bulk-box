@@ -1,6 +1,6 @@
 import 'package:hydrated_bloc/hydrated_bloc.dart';
-import 'package:ygo_collector/src/core/settings/settings_state.dart';
-import 'package:ygo_collector/src/features/sorting/domain/entities/sort_options.dart';
+import 'package:bulk_box/src/core/settings/settings_state.dart';
+import 'package:bulk_box/src/features/sorting/domain/entities/sort_options.dart';
 
 class SettingsCubit extends HydratedCubit<SettingsState> {
   SettingsCubit() : super(const SettingsState());

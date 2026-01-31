@@ -1,9 +1,9 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:ygo_collector/src/core/database/app_database.dart';
-import 'package:ygo_collector/src/core/database/card_extensions.dart';
-import 'package:ygo_collector/src/features/search/domain/repositories/search_repository.dart';
-import 'package:ygo_collector/src/features/search/presentation/cubit/search_state.dart';
+import 'package:bulk_box/src/core/database/app_database.dart';
+import 'package:bulk_box/src/core/database/card_extensions.dart';
+import 'package:bulk_box/src/features/search/domain/repositories/search_repository.dart';
+import 'package:bulk_box/src/features/search/presentation/cubit/search_state.dart';
 
 class SearchCubit extends Cubit<SearchState> {
   final SearchRepository _searchRepository;

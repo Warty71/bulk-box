@@ -1,5 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:ygo_collector/src/features/sorting/domain/entities/sort_options.dart';
+import 'package:bulk_box/src/features/sorting/domain/entities/sort_options.dart';
 
 part 'settings_state.freezed.dart';
 part 'settings_state.g.dart';
