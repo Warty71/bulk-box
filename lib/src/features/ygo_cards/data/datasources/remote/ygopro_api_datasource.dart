@@ -14,7 +14,7 @@ class YGOProApiDatasource {
         );
 
   Future<Map<String, dynamic>> searchCards(String query) async {
-    final Map<String, dynamic> params = {};
+    final Map<String, dynamic> params = {'tcgplayer_data': 'yes'};
     if (query.isNotEmpty) {
       if (query.contains('=')) {
         // Advanced search parameters
@@ -53,7 +53,7 @@ class YGOProApiDatasource {
       // First get the card info to get the actual image URL
       final response = await _dio.get(
         '/cardinfo.php',
-        queryParameters: {'id': cardId},
+        queryParameters: {'id': cardId, 'tcgplayer_data': 'yes'},
       );
 
       final cardData = response.data['data'][0];

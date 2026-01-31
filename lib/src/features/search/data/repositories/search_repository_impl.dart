@@ -165,6 +165,10 @@ class SearchRepositoryImpl implements SearchRepository {
                 'set_name': s.setName,
                 'set_code': s.setCode,
                 'set_rarity': s.setRarity,
+                if (s.setEdition != null) 'set_edition': s.setEdition,
+                if (s.setPrice != null) 'set_price': s.setPrice,
+                if (s.setPriceLow != null) 'set_price_low': s.setPriceLow,
+                if (s.setUrl != null) 'set_url': s.setUrl,
               })
           .toList(),
     );

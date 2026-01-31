@@ -46,7 +46,10 @@ abstract class CardSetModel with _$CardSetModel {
     @JsonKey(name: 'set_name') required String setName,
     @JsonKey(name: 'set_code') required String setCode,
     @JsonKey(name: 'set_rarity') required String setRarity,
-    // Price data is ignored - not used in this app
+    @JsonKey(name: 'set_edition') String? setEdition,
+    @JsonKey(name: 'set_price') String? setPrice,
+    @JsonKey(name: 'set_price_low') String? setPriceLow,
+    @JsonKey(name: 'set_url') String? setUrl,
   }) = _CardSetModel;
 
   factory CardSetModel.fromJson(Map<String, dynamic> json) =>

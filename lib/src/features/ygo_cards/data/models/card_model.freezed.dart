@@ -975,6 +975,14 @@ mixin _$CardSetModel {
   String get setCode;
   @JsonKey(name: 'set_rarity')
   String get setRarity;
+  @JsonKey(name: 'set_edition')
+  String? get setEdition;
+  @JsonKey(name: 'set_price')
+  String? get setPrice;
+  @JsonKey(name: 'set_price_low')
+  String? get setPriceLow;
+  @JsonKey(name: 'set_url')
+  String? get setUrl;
 
   /// Create a copy of CardSetModel
   /// with the given fields replaced by the non-null parameter values.
@@ -995,16 +1003,24 @@ mixin _$CardSetModel {
             (identical(other.setName, setName) || other.setName == setName) &&
             (identical(other.setCode, setCode) || other.setCode == setCode) &&
             (identical(other.setRarity, setRarity) ||
-                other.setRarity == setRarity));
+                other.setRarity == setRarity) &&
+            (identical(other.setEdition, setEdition) ||
+                other.setEdition == setEdition) &&
+            (identical(other.setPrice, setPrice) ||
+                other.setPrice == setPrice) &&
+            (identical(other.setPriceLow, setPriceLow) ||
+                other.setPriceLow == setPriceLow) &&
+            (identical(other.setUrl, setUrl) || other.setUrl == setUrl));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(runtimeType, setName, setCode, setRarity);
+  int get hashCode => Object.hash(runtimeType, setName, setCode, setRarity,
+      setEdition, setPrice, setPriceLow, setUrl);
 
   @override
   String toString() {
-    return 'CardSetModel(setName: $setName, setCode: $setCode, setRarity: $setRarity)';
+    return 'CardSetModel(setName: $setName, setCode: $setCode, setRarity: $setRarity, setEdition: $setEdition, setPrice: $setPrice, setPriceLow: $setPriceLow, setUrl: $setUrl)';
   }
 }
 
@@ -1017,7 +1033,11 @@ abstract mixin class $CardSetModelCopyWith<$Res> {
   $Res call(
       {@JsonKey(name: 'set_name') String setName,
       @JsonKey(name: 'set_code') String setCode,
-      @JsonKey(name: 'set_rarity') String setRarity});
+      @JsonKey(name: 'set_rarity') String setRarity,
+      @JsonKey(name: 'set_edition') String? setEdition,
+      @JsonKey(name: 'set_price') String? setPrice,
+      @JsonKey(name: 'set_price_low') String? setPriceLow,
+      @JsonKey(name: 'set_url') String? setUrl});
 }
 
 /// @nodoc
@@ -1035,6 +1055,10 @@ class _$CardSetModelCopyWithImpl<$Res> implements $CardSetModelCopyWith<$Res> {
     Object? setName = null,
     Object? setCode = null,
     Object? setRarity = null,
+    Object? setEdition = freezed,
+    Object? setPrice = freezed,
+    Object? setPriceLow = freezed,
+    Object? setUrl = freezed,
   }) {
     return _then(_self.copyWith(
       setName: null == setName
@@ -1049,6 +1073,22 @@ class _$CardSetModelCopyWithImpl<$Res> implements $CardSetModelCopyWith<$Res> {
           ? _self.setRarity
           : setRarity // ignore: cast_nullable_to_non_nullable
               as String,
+      setEdition: freezed == setEdition
+          ? _self.setEdition
+          : setEdition // ignore: cast_nullable_to_non_nullable
+              as String?,
+      setPrice: freezed == setPrice
+          ? _self.setPrice
+          : setPrice // ignore: cast_nullable_to_non_nullable
+              as String?,
+      setPriceLow: freezed == setPriceLow
+          ? _self.setPriceLow
+          : setPriceLow // ignore: cast_nullable_to_non_nullable
+              as String?,
+      setUrl: freezed == setUrl
+          ? _self.setUrl
+          : setUrl // ignore: cast_nullable_to_non_nullable
+              as String?,
     ));
   }
 }
@@ -1149,14 +1189,19 @@ extension CardSetModelPatterns on CardSetModel {
     TResult Function(
             @JsonKey(name: 'set_name') String setName,
             @JsonKey(name: 'set_code') String setCode,
-            @JsonKey(name: 'set_rarity') String setRarity)?
+            @JsonKey(name: 'set_rarity') String setRarity,
+            @JsonKey(name: 'set_edition') String? setEdition,
+            @JsonKey(name: 'set_price') String? setPrice,
+            @JsonKey(name: 'set_price_low') String? setPriceLow,
+            @JsonKey(name: 'set_url') String? setUrl)?
         $default, {
     required TResult orElse(),
   }) {
     final _that = this;
     switch (_that) {
       case _CardSetModel() when $default != null:
-        return $default(_that.setName, _that.setCode, _that.setRarity);
+        return $default(_that.setName, _that.setCode, _that.setRarity,
+            _that.setEdition, _that.setPrice, _that.setPriceLow, _that.setUrl);
       case _:
         return orElse();
     }
@@ -1180,13 +1225,18 @@ extension CardSetModelPatterns on CardSetModel {
     TResult Function(
             @JsonKey(name: 'set_name') String setName,
             @JsonKey(name: 'set_code') String setCode,
-            @JsonKey(name: 'set_rarity') String setRarity)
+            @JsonKey(name: 'set_rarity') String setRarity,
+            @JsonKey(name: 'set_edition') String? setEdition,
+            @JsonKey(name: 'set_price') String? setPrice,
+            @JsonKey(name: 'set_price_low') String? setPriceLow,
+            @JsonKey(name: 'set_url') String? setUrl)
         $default,
   ) {
     final _that = this;
     switch (_that) {
       case _CardSetModel():
-        return $default(_that.setName, _that.setCode, _that.setRarity);
+        return $default(_that.setName, _that.setCode, _that.setRarity,
+            _that.setEdition, _that.setPrice, _that.setPriceLow, _that.setUrl);
       case _:
         throw StateError('Unexpected subclass');
     }
@@ -1209,13 +1259,18 @@ extension CardSetModelPatterns on CardSetModel {
     TResult? Function(
             @JsonKey(name: 'set_name') String setName,
             @JsonKey(name: 'set_code') String setCode,
-            @JsonKey(name: 'set_rarity') String setRarity)?
+            @JsonKey(name: 'set_rarity') String setRarity,
+            @JsonKey(name: 'set_edition') String? setEdition,
+            @JsonKey(name: 'set_price') String? setPrice,
+            @JsonKey(name: 'set_price_low') String? setPriceLow,
+            @JsonKey(name: 'set_url') String? setUrl)?
         $default,
   ) {
     final _that = this;
     switch (_that) {
       case _CardSetModel() when $default != null:
-        return $default(_that.setName, _that.setCode, _that.setRarity);
+        return $default(_that.setName, _that.setCode, _that.setRarity,
+            _that.setEdition, _that.setPrice, _that.setPriceLow, _that.setUrl);
       case _:
         return null;
     }
@@ -1228,7 +1283,11 @@ class _CardSetModel implements CardSetModel {
   const _CardSetModel(
       {@JsonKey(name: 'set_name') required this.setName,
       @JsonKey(name: 'set_code') required this.setCode,
-      @JsonKey(name: 'set_rarity') required this.setRarity});
+      @JsonKey(name: 'set_rarity') required this.setRarity,
+      @JsonKey(name: 'set_edition') this.setEdition,
+      @JsonKey(name: 'set_price') this.setPrice,
+      @JsonKey(name: 'set_price_low') this.setPriceLow,
+      @JsonKey(name: 'set_url') this.setUrl});
   factory _CardSetModel.fromJson(Map<String, dynamic> json) =>
       _$CardSetModelFromJson(json);
 
@@ -1241,6 +1300,18 @@ class _CardSetModel implements CardSetModel {
   @override
   @JsonKey(name: 'set_rarity')
   final String setRarity;
+  @override
+  @JsonKey(name: 'set_edition')
+  final String? setEdition;
+  @override
+  @JsonKey(name: 'set_price')
+  final String? setPrice;
+  @override
+  @JsonKey(name: 'set_price_low')
+  final String? setPriceLow;
+  @override
+  @JsonKey(name: 'set_url')
+  final String? setUrl;
 
   /// Create a copy of CardSetModel
   /// with the given fields replaced by the non-null parameter values.
@@ -1265,16 +1336,24 @@ class _CardSetModel implements CardSetModel {
             (identical(other.setName, setName) || other.setName == setName) &&
             (identical(other.setCode, setCode) || other.setCode == setCode) &&
             (identical(other.setRarity, setRarity) ||
-                other.setRarity == setRarity));
+                other.setRarity == setRarity) &&
+            (identical(other.setEdition, setEdition) ||
+                other.setEdition == setEdition) &&
+            (identical(other.setPrice, setPrice) ||
+                other.setPrice == setPrice) &&
+            (identical(other.setPriceLow, setPriceLow) ||
+                other.setPriceLow == setPriceLow) &&
+            (identical(other.setUrl, setUrl) || other.setUrl == setUrl));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(runtimeType, setName, setCode, setRarity);
+  int get hashCode => Object.hash(runtimeType, setName, setCode, setRarity,
+      setEdition, setPrice, setPriceLow, setUrl);
 
   @override
   String toString() {
-    return 'CardSetModel(setName: $setName, setCode: $setCode, setRarity: $setRarity)';
+    return 'CardSetModel(setName: $setName, setCode: $setCode, setRarity: $setRarity, setEdition: $setEdition, setPrice: $setPrice, setPriceLow: $setPriceLow, setUrl: $setUrl)';
   }
 }
 
@@ -1289,7 +1368,11 @@ abstract mixin class _$CardSetModelCopyWith<$Res>
   $Res call(
       {@JsonKey(name: 'set_name') String setName,
       @JsonKey(name: 'set_code') String setCode,
-      @JsonKey(name: 'set_rarity') String setRarity});
+      @JsonKey(name: 'set_rarity') String setRarity,
+      @JsonKey(name: 'set_edition') String? setEdition,
+      @JsonKey(name: 'set_price') String? setPrice,
+      @JsonKey(name: 'set_price_low') String? setPriceLow,
+      @JsonKey(name: 'set_url') String? setUrl});
 }
 
 /// @nodoc
@@ -1308,6 +1391,10 @@ class __$CardSetModelCopyWithImpl<$Res>
     Object? setName = null,
     Object? setCode = null,
     Object? setRarity = null,
+    Object? setEdition = freezed,
+    Object? setPrice = freezed,
+    Object? setPriceLow = freezed,
+    Object? setUrl = freezed,
   }) {
     return _then(_CardSetModel(
       setName: null == setName
@@ -1322,6 +1409,22 @@ class __$CardSetModelCopyWithImpl<$Res>
           ? _self.setRarity
           : setRarity // ignore: cast_nullable_to_non_nullable
               as String,
+      setEdition: freezed == setEdition
+          ? _self.setEdition
+          : setEdition // ignore: cast_nullable_to_non_nullable
+              as String?,
+      setPrice: freezed == setPrice
+          ? _self.setPrice
+          : setPrice // ignore: cast_nullable_to_non_nullable
+              as String?,
+      setPriceLow: freezed == setPriceLow
+          ? _self.setPriceLow
+          : setPriceLow // ignore: cast_nullable_to_non_nullable
+              as String?,
+      setUrl: freezed == setUrl
+          ? _self.setUrl
+          : setUrl // ignore: cast_nullable_to_non_nullable
+              as String?,
     ));
   }
 }
