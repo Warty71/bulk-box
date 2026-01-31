@@ -17,6 +17,8 @@ class CollectionOptionsButton extends StatelessWidget {
         final collectionCubit = context.read<CollectionCubit>();
         showModalBottomSheet(
           context: context,
+          isScrollControlled: true,
+          useSafeArea: true,
           builder: (sheetContext) => BlocProvider.value(
             value: collectionCubit,
             child: const CollectionOptionsBottomSheet(),

@@ -30,6 +30,7 @@ class CardDetailsScreen extends StatelessWidget {
               showModalBottomSheet(
                 context: context,
                 isScrollControlled: true,
+                useSafeArea: true,
                 builder: (sheetContext) => AddCardBottomSheet(card: card),
               );
             },

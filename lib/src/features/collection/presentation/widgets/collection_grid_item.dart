@@ -27,6 +27,7 @@ class CollectionGridItem extends StatelessWidget {
           showModalBottomSheet(
             context: context,
             isScrollControlled: true,
+            useSafeArea: true,
             builder: (context) =>
                 CollectionCardDetailsBottomSheet(card: entry.card),
           );
