@@ -12,19 +12,11 @@ class CollectionCubit extends Cubit<CollectionState> {
 
   /// Load all collection items
   Future<void> loadCollectionItems() async {
-    final preserveShowDividers = state.maybeWhen(
-      loaded: (_, showDividers) => showDividers,
-      orElse: () => false,
-    );
-
     emit(const CollectionState.loading());
 
     try {
       final collectionEntries = await _repository.getCollectionWithCards();
-
-      emit(CollectionState.loaded(
-          collectionEntries: collectionEntries,
-          showDividersBetweenSections: preserveShowDividers));
+      emit(CollectionState.loaded(collectionEntries: collectionEntries));
     } catch (e) {
       emit(CollectionState.error(e.toString()));
     }
@@ -102,17 +94,5 @@ class CollectionCubit extends Cubit<CollectionState> {
     final sorted = List<CollectionEntry>.from(collectionEntries);
     sortCollectionItems(sorted, option);
     return sorted;
-  }
-
-  void setShowDividersBetweenSections(bool value) {
-    emit(state.when(
-      initial: () => const CollectionState.initial(),
-      loading: () => const CollectionState.loading(),
-      loaded: (collectionEntries, showDividersBetweenSections) =>
-          CollectionState.loaded(
-              collectionEntries: collectionEntries,
-              showDividersBetweenSections: value),
-      error: (message) => CollectionState.error(message),
-    ));
   }
 }

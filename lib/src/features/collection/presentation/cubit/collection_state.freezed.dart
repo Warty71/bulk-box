@@ -157,9 +157,7 @@ extension CollectionStatePatterns on CollectionState {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? initial,
     TResult Function()? loading,
-    TResult Function(List<CollectionEntry> collectionEntries,
-            bool showDividersBetweenSections)?
-        loaded,
+    TResult Function(List<CollectionEntry> collectionEntries)? loaded,
     TResult Function(String message)? error,
     required TResult orElse(),
   }) {
@@ -170,8 +168,7 @@ extension CollectionStatePatterns on CollectionState {
       case _Loading() when loading != null:
         return loading();
       case _Loaded() when loaded != null:
-        return loaded(
-            _that.collectionEntries, _that.showDividersBetweenSections);
+        return loaded(_that.collectionEntries);
       case _Error() when error != null:
         return error(_that.message);
       case _:
@@ -196,9 +193,7 @@ extension CollectionStatePatterns on CollectionState {
   TResult when<TResult extends Object?>({
     required TResult Function() initial,
     required TResult Function() loading,
-    required TResult Function(List<CollectionEntry> collectionEntries,
-            bool showDividersBetweenSections)
-        loaded,
+    required TResult Function(List<CollectionEntry> collectionEntries) loaded,
     required TResult Function(String message) error,
   }) {
     final _that = this;
@@ -208,8 +203,7 @@ extension CollectionStatePatterns on CollectionState {
       case _Loading():
         return loading();
       case _Loaded():
-        return loaded(
-            _that.collectionEntries, _that.showDividersBetweenSections);
+        return loaded(_that.collectionEntries);
       case _Error():
         return error(_that.message);
       case _:
@@ -233,9 +227,7 @@ extension CollectionStatePatterns on CollectionState {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? initial,
     TResult? Function()? loading,
-    TResult? Function(List<CollectionEntry> collectionEntries,
-            bool showDividersBetweenSections)?
-        loaded,
+    TResult? Function(List<CollectionEntry> collectionEntries)? loaded,
     TResult? Function(String message)? error,
   }) {
     final _that = this;
@@ -245,8 +237,7 @@ extension CollectionStatePatterns on CollectionState {
       case _Loading() when loading != null:
         return loading();
       case _Loaded() when loaded != null:
-        return loaded(
-            _that.collectionEntries, _that.showDividersBetweenSections);
+        return loaded(_that.collectionEntries);
       case _Error() when error != null:
         return error(_that.message);
       case _:
@@ -298,9 +289,7 @@ class _Loading implements CollectionState {
 /// @nodoc
 
 class _Loaded implements CollectionState {
-  const _Loaded(
-      {required final List<CollectionEntry> collectionEntries,
-      this.showDividersBetweenSections = false})
+  const _Loaded({required final List<CollectionEntry> collectionEntries})
       : _collectionEntries = collectionEntries;
 
   final List<CollectionEntry> _collectionEntries;
@@ -310,9 +299,6 @@ class _Loaded implements CollectionState {
     // ignore: implicit_dynamic_type
     return EqualUnmodifiableListView(_collectionEntries);
   }
-
-  @JsonKey()
-  final bool showDividersBetweenSections;
 
   /// Create a copy of CollectionState
   /// with the given fields replaced by the non-null parameter values.
@@ -327,22 +313,16 @@ class _Loaded implements CollectionState {
         (other.runtimeType == runtimeType &&
             other is _Loaded &&
             const DeepCollectionEquality()
-                .equals(other._collectionEntries, _collectionEntries) &&
-            (identical(other.showDividersBetweenSections,
-                    showDividersBetweenSections) ||
-                other.showDividersBetweenSections ==
-                    showDividersBetweenSections));
+                .equals(other._collectionEntries, _collectionEntries));
   }
 
   @override
   int get hashCode => Object.hash(
-      runtimeType,
-      const DeepCollectionEquality().hash(_collectionEntries),
-      showDividersBetweenSections);
+      runtimeType, const DeepCollectionEquality().hash(_collectionEntries));
 
   @override
   String toString() {
-    return 'CollectionState.loaded(collectionEntries: $collectionEntries, showDividersBetweenSections: $showDividersBetweenSections)';
+    return 'CollectionState.loaded(collectionEntries: $collectionEntries)';
   }
 }
 
@@ -352,9 +332,7 @@ abstract mixin class _$LoadedCopyWith<$Res>
   factory _$LoadedCopyWith(_Loaded value, $Res Function(_Loaded) _then) =
       __$LoadedCopyWithImpl;
   @useResult
-  $Res call(
-      {List<CollectionEntry> collectionEntries,
-      bool showDividersBetweenSections});
+  $Res call({List<CollectionEntry> collectionEntries});
 }
 
 /// @nodoc
@@ -369,17 +347,12 @@ class __$LoadedCopyWithImpl<$Res> implements _$LoadedCopyWith<$Res> {
   @pragma('vm:prefer-inline')
   $Res call({
     Object? collectionEntries = null,
-    Object? showDividersBetweenSections = null,
   }) {
     return _then(_Loaded(
       collectionEntries: null == collectionEntries
           ? _self._collectionEntries
           : collectionEntries // ignore: cast_nullable_to_non_nullable
               as List<CollectionEntry>,
-      showDividersBetweenSections: null == showDividersBetweenSections
-          ? _self.showDividersBetweenSections
-          : showDividersBetweenSections // ignore: cast_nullable_to_non_nullable
-              as bool,
     ));
   }
 }

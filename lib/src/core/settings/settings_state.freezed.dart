@@ -3,7 +3,7 @@
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
-part of 'sort_state.dart';
+part of 'settings_state.dart';
 
 // **************************************************************************
 // FreezedGenerator
@@ -13,66 +13,82 @@ part of 'sort_state.dart';
 T _$identity<T>(T value) => value;
 
 /// @nodoc
-mixin _$SortState {
-  SortOption get option;
+mixin _$SettingsState {
+  SortOption get sortOption;
+  bool get showDividers;
 
-  /// Create a copy of SortState
+  /// Create a copy of SettingsState
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   @pragma('vm:prefer-inline')
-  $SortStateCopyWith<SortState> get copyWith =>
-      _$SortStateCopyWithImpl<SortState>(this as SortState, _$identity);
+  $SettingsStateCopyWith<SettingsState> get copyWith =>
+      _$SettingsStateCopyWithImpl<SettingsState>(
+          this as SettingsState, _$identity);
+
+  /// Serializes this SettingsState to a JSON map.
+  Map<String, dynamic> toJson();
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is SortState &&
-            (identical(other.option, option) || other.option == option));
+            other is SettingsState &&
+            (identical(other.sortOption, sortOption) ||
+                other.sortOption == sortOption) &&
+            (identical(other.showDividers, showDividers) ||
+                other.showDividers == showDividers));
   }
 
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(runtimeType, option);
+  int get hashCode => Object.hash(runtimeType, sortOption, showDividers);
 
   @override
   String toString() {
-    return 'SortState(option: $option)';
+    return 'SettingsState(sortOption: $sortOption, showDividers: $showDividers)';
   }
 }
 
 /// @nodoc
-abstract mixin class $SortStateCopyWith<$Res> {
-  factory $SortStateCopyWith(SortState value, $Res Function(SortState) _then) =
-      _$SortStateCopyWithImpl;
+abstract mixin class $SettingsStateCopyWith<$Res> {
+  factory $SettingsStateCopyWith(
+          SettingsState value, $Res Function(SettingsState) _then) =
+      _$SettingsStateCopyWithImpl;
   @useResult
-  $Res call({SortOption option});
+  $Res call({SortOption sortOption, bool showDividers});
 }
 
 /// @nodoc
-class _$SortStateCopyWithImpl<$Res> implements $SortStateCopyWith<$Res> {
-  _$SortStateCopyWithImpl(this._self, this._then);
+class _$SettingsStateCopyWithImpl<$Res>
+    implements $SettingsStateCopyWith<$Res> {
+  _$SettingsStateCopyWithImpl(this._self, this._then);
 
-  final SortState _self;
-  final $Res Function(SortState) _then;
+  final SettingsState _self;
+  final $Res Function(SettingsState) _then;
 
-  /// Create a copy of SortState
+  /// Create a copy of SettingsState
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? option = null,
+    Object? sortOption = null,
+    Object? showDividers = null,
   }) {
     return _then(_self.copyWith(
-      option: null == option
-          ? _self.option
-          : option // ignore: cast_nullable_to_non_nullable
+      sortOption: null == sortOption
+          ? _self.sortOption
+          : sortOption // ignore: cast_nullable_to_non_nullable
               as SortOption,
+      showDividers: null == showDividers
+          ? _self.showDividers
+          : showDividers // ignore: cast_nullable_to_non_nullable
+              as bool,
     ));
   }
 }
 
-/// Adds pattern-matching-related methods to [SortState].
-extension SortStatePatterns on SortState {
+/// Adds pattern-matching-related methods to [SettingsState].
+extension SettingsStatePatterns on SettingsState {
   /// A variant of `map` that fallback to returning `orElse`.
   ///
   /// It is equivalent to doing:
@@ -87,12 +103,12 @@ extension SortStatePatterns on SortState {
 
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>(
-    TResult Function(_SortState value)? $default, {
+    TResult Function(_SettingsState value)? $default, {
     required TResult orElse(),
   }) {
     final _that = this;
     switch (_that) {
-      case _SortState() when $default != null:
+      case _SettingsState() when $default != null:
         return $default(_that);
       case _:
         return orElse();
@@ -114,11 +130,11 @@ extension SortStatePatterns on SortState {
 
   @optionalTypeArgs
   TResult map<TResult extends Object?>(
-    TResult Function(_SortState value) $default,
+    TResult Function(_SettingsState value) $default,
   ) {
     final _that = this;
     switch (_that) {
-      case _SortState():
+      case _SettingsState():
         return $default(_that);
       case _:
         throw StateError('Unexpected subclass');
@@ -139,11 +155,11 @@ extension SortStatePatterns on SortState {
 
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>(
-    TResult? Function(_SortState value)? $default,
+    TResult? Function(_SettingsState value)? $default,
   ) {
     final _that = this;
     switch (_that) {
-      case _SortState() when $default != null:
+      case _SettingsState() when $default != null:
         return $default(_that);
       case _:
         return null;
@@ -164,13 +180,13 @@ extension SortStatePatterns on SortState {
 
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>(
-    TResult Function(SortOption option)? $default, {
+    TResult Function(SortOption sortOption, bool showDividers)? $default, {
     required TResult orElse(),
   }) {
     final _that = this;
     switch (_that) {
-      case _SortState() when $default != null:
-        return $default(_that.option);
+      case _SettingsState() when $default != null:
+        return $default(_that.sortOption, _that.showDividers);
       case _:
         return orElse();
     }
@@ -191,12 +207,12 @@ extension SortStatePatterns on SortState {
 
   @optionalTypeArgs
   TResult when<TResult extends Object?>(
-    TResult Function(SortOption option) $default,
+    TResult Function(SortOption sortOption, bool showDividers) $default,
   ) {
     final _that = this;
     switch (_that) {
-      case _SortState():
-        return $default(_that.option);
+      case _SettingsState():
+        return $default(_that.sortOption, _that.showDividers);
       case _:
         throw StateError('Unexpected subclass');
     }
@@ -216,12 +232,12 @@ extension SortStatePatterns on SortState {
 
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>(
-    TResult? Function(SortOption option)? $default,
+    TResult? Function(SortOption sortOption, bool showDividers)? $default,
   ) {
     final _that = this;
     switch (_that) {
-      case _SortState() when $default != null:
-        return $default(_that.option);
+      case _SettingsState() when $default != null:
+        return $default(_that.sortOption, _that.showDividers);
       case _:
         return null;
     }
@@ -229,68 +245,92 @@ extension SortStatePatterns on SortState {
 }
 
 /// @nodoc
-
-class _SortState implements SortState {
-  const _SortState({required this.option});
+@JsonSerializable()
+class _SettingsState implements SettingsState {
+  const _SettingsState(
+      {this.sortOption = SortOption.nameAZ, this.showDividers = false});
+  factory _SettingsState.fromJson(Map<String, dynamic> json) =>
+      _$SettingsStateFromJson(json);
 
   @override
-  final SortOption option;
+  @JsonKey()
+  final SortOption sortOption;
+  @override
+  @JsonKey()
+  final bool showDividers;
 
-  /// Create a copy of SortState
+  /// Create a copy of SettingsState
   /// with the given fields replaced by the non-null parameter values.
   @override
   @JsonKey(includeFromJson: false, includeToJson: false)
   @pragma('vm:prefer-inline')
-  _$SortStateCopyWith<_SortState> get copyWith =>
-      __$SortStateCopyWithImpl<_SortState>(this, _$identity);
+  _$SettingsStateCopyWith<_SettingsState> get copyWith =>
+      __$SettingsStateCopyWithImpl<_SettingsState>(this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$SettingsStateToJson(
+      this,
+    );
+  }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _SortState &&
-            (identical(other.option, option) || other.option == option));
+            other is _SettingsState &&
+            (identical(other.sortOption, sortOption) ||
+                other.sortOption == sortOption) &&
+            (identical(other.showDividers, showDividers) ||
+                other.showDividers == showDividers));
   }
 
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(runtimeType, option);
+  int get hashCode => Object.hash(runtimeType, sortOption, showDividers);
 
   @override
   String toString() {
-    return 'SortState(option: $option)';
+    return 'SettingsState(sortOption: $sortOption, showDividers: $showDividers)';
   }
 }
 
 /// @nodoc
-abstract mixin class _$SortStateCopyWith<$Res>
-    implements $SortStateCopyWith<$Res> {
-  factory _$SortStateCopyWith(
-          _SortState value, $Res Function(_SortState) _then) =
-      __$SortStateCopyWithImpl;
+abstract mixin class _$SettingsStateCopyWith<$Res>
+    implements $SettingsStateCopyWith<$Res> {
+  factory _$SettingsStateCopyWith(
+          _SettingsState value, $Res Function(_SettingsState) _then) =
+      __$SettingsStateCopyWithImpl;
   @override
   @useResult
-  $Res call({SortOption option});
+  $Res call({SortOption sortOption, bool showDividers});
 }
 
 /// @nodoc
-class __$SortStateCopyWithImpl<$Res> implements _$SortStateCopyWith<$Res> {
-  __$SortStateCopyWithImpl(this._self, this._then);
+class __$SettingsStateCopyWithImpl<$Res>
+    implements _$SettingsStateCopyWith<$Res> {
+  __$SettingsStateCopyWithImpl(this._self, this._then);
 
-  final _SortState _self;
-  final $Res Function(_SortState) _then;
+  final _SettingsState _self;
+  final $Res Function(_SettingsState) _then;
 
-  /// Create a copy of SortState
+  /// Create a copy of SettingsState
   /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
   $Res call({
-    Object? option = null,
+    Object? sortOption = null,
+    Object? showDividers = null,
   }) {
-    return _then(_SortState(
-      option: null == option
-          ? _self.option
-          : option // ignore: cast_nullable_to_non_nullable
+    return _then(_SettingsState(
+      sortOption: null == sortOption
+          ? _self.sortOption
+          : sortOption // ignore: cast_nullable_to_non_nullable
               as SortOption,
+      showDividers: null == showDividers
+          ? _self.showDividers
+          : showDividers // ignore: cast_nullable_to_non_nullable
+              as bool,
     ));
   }
 }

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ygo_collector/src/core/constants/dimensions.dart';
-import 'package:ygo_collector/src/features/collection/presentation/cubit/collection_cubit.dart';
-import 'package:ygo_collector/src/features/collection/presentation/cubit/collection_state.dart';
+import 'package:ygo_collector/src/core/settings/settings_cubit.dart';
+import 'package:ygo_collector/src/core/settings/settings_state.dart';
 
 class CollectionOptionsBottomSheet extends StatelessWidget {
   const CollectionOptionsBottomSheet({super.key});
@@ -26,17 +26,12 @@ class CollectionOptionsBottomSheet extends StatelessWidget {
                   ),
             ),
             const SizedBox(height: Dimensions.md),
-            BlocBuilder<CollectionCubit, CollectionState>(
+            BlocBuilder<SettingsCubit, SettingsState>(
               builder: (context, state) {
-                final showDividers = state.maybeWhen(
-                  loaded: (_, showDividers) => showDividers,
-                  orElse: () => false,
-                );
-
                 return SwitchListTile(
-                  value: showDividers,
+                  value: state.showDividers,
                   onChanged: (value) {
-                    context.read<CollectionCubit>().setShowDividersBetweenSections(value);
+                    context.read<SettingsCubit>().setShowDividers(value);
                   },
                   title: const Text('Show section dividers'),
                   subtitle: Text(

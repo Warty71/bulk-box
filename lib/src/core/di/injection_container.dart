@@ -2,7 +2,7 @@ import 'package:get_it/get_it.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ygo_collector/src/core/database/app_database.dart';
 import 'package:ygo_collector/src/core/database/card_dao.dart';
-import 'package:ygo_collector/src/features/sorting/presentation/cubits/sort_cubit.dart';
+import 'package:ygo_collector/src/core/settings/settings_cubit.dart';
 import 'package:ygo_collector/src/features/ygo_cards/data/datasources/local/image_local_datasource.dart';
 import 'package:ygo_collector/src/features/ygo_cards/data/datasources/remote/ygopro_api_datasource.dart';
 import 'package:ygo_collector/src/features/search/data/repositories/search_repository_impl.dart';
@@ -51,14 +51,14 @@ Future<void> _initializeCore() async {
 }
 
 Future<void> _initializeFeatures() async {
+  // Settings (persisted via hydrated_bloc)
+  _initializeSettings();
+
   // Search Feature
   _initializeSearchFeature();
 
   // Collection Feature
   _initializeCollectionFeature();
-
-  // Sorting Feature
-  _initializeSortingFeature();
 
   // Home Feature (latest sets)
   _initializeHomeFeature();
@@ -107,9 +107,8 @@ void _initializeCollectionFeature() {
   );
 }
 
-void _initializeSortingFeature() {
-  // Cubit
+void _initializeSettings() {
   getIt.registerLazySingleton(
-    () => SortCubit(),
+    () => SettingsCubit(),
   );
 }

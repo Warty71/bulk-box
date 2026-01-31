@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:ygo_collector/src/features/sorting/presentation/cubits/sort_cubit.dart';
-import 'package:ygo_collector/src/features/sorting/presentation/cubits/sort_state.dart';
+import 'package:ygo_collector/src/core/settings/settings_cubit.dart';
+import 'package:ygo_collector/src/core/settings/settings_state.dart';
 import 'package:ygo_collector/src/features/sorting/domain/entities/sort_options.dart';
 
 class SortButton extends StatelessWidget {
@@ -9,12 +9,12 @@ class SortButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<SortCubit, SortState>(
+    return BlocBuilder<SettingsCubit, SettingsState>(
       builder: (context, state) {
         return IconButton(
           icon: const Icon(Icons.sort),
           onPressed: () {
-            _showSortSheet(context, state.option);
+            _showSortSheet(context, state.sortOption);
           },
         );
       },
@@ -33,7 +33,7 @@ class SortButton extends StatelessWidget {
               value: option,
               groupValue: selected,
               onChanged: (value) {
-                context.read<SortCubit>().setSort(value!);
+                context.read<SettingsCubit>().setSortOption(value!);
                 Navigator.pop(context);
               },
             );
