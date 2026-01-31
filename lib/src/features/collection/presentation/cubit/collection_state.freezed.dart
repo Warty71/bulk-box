@@ -157,7 +157,7 @@ extension CollectionStatePatterns on CollectionState {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? initial,
     TResult Function()? loading,
-    TResult Function(List<CollectionItemEntity> items)? loaded,
+    TResult Function(List<CollectionItemWithCard> itemsWithCards)? loaded,
     TResult Function(String message)? error,
     required TResult orElse(),
   }) {
@@ -168,7 +168,7 @@ extension CollectionStatePatterns on CollectionState {
       case _Loading() when loading != null:
         return loading();
       case _Loaded() when loaded != null:
-        return loaded(_that.items);
+        return loaded(_that.itemsWithCards);
       case _Error() when error != null:
         return error(_that.message);
       case _:
@@ -193,7 +193,8 @@ extension CollectionStatePatterns on CollectionState {
   TResult when<TResult extends Object?>({
     required TResult Function() initial,
     required TResult Function() loading,
-    required TResult Function(List<CollectionItemEntity> items) loaded,
+    required TResult Function(List<CollectionItemWithCard> itemsWithCards)
+        loaded,
     required TResult Function(String message) error,
   }) {
     final _that = this;
@@ -203,7 +204,7 @@ extension CollectionStatePatterns on CollectionState {
       case _Loading():
         return loading();
       case _Loaded():
-        return loaded(_that.items);
+        return loaded(_that.itemsWithCards);
       case _Error():
         return error(_that.message);
       case _:
@@ -227,7 +228,7 @@ extension CollectionStatePatterns on CollectionState {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? initial,
     TResult? Function()? loading,
-    TResult? Function(List<CollectionItemEntity> items)? loaded,
+    TResult? Function(List<CollectionItemWithCard> itemsWithCards)? loaded,
     TResult? Function(String message)? error,
   }) {
     final _that = this;
@@ -237,7 +238,7 @@ extension CollectionStatePatterns on CollectionState {
       case _Loading() when loading != null:
         return loading();
       case _Loaded() when loaded != null:
-        return loaded(_that.items);
+        return loaded(_that.itemsWithCards);
       case _Error() when error != null:
         return error(_that.message);
       case _:
@@ -289,14 +290,14 @@ class _Loading implements CollectionState {
 /// @nodoc
 
 class _Loaded implements CollectionState {
-  const _Loaded({required final List<CollectionItemEntity> items})
-      : _items = items;
+  const _Loaded({required final List<CollectionItemWithCard> itemsWithCards})
+      : _itemsWithCards = itemsWithCards;
 
-  final List<CollectionItemEntity> _items;
-  List<CollectionItemEntity> get items {
-    if (_items is EqualUnmodifiableListView) return _items;
+  final List<CollectionItemWithCard> _itemsWithCards;
+  List<CollectionItemWithCard> get itemsWithCards {
+    if (_itemsWithCards is EqualUnmodifiableListView) return _itemsWithCards;
     // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(_items);
+    return EqualUnmodifiableListView(_itemsWithCards);
   }
 
   /// Create a copy of CollectionState
@@ -311,16 +312,17 @@ class _Loaded implements CollectionState {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _Loaded &&
-            const DeepCollectionEquality().equals(other._items, _items));
+            const DeepCollectionEquality()
+                .equals(other._itemsWithCards, _itemsWithCards));
   }
 
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, const DeepCollectionEquality().hash(_items));
+  int get hashCode => Object.hash(
+      runtimeType, const DeepCollectionEquality().hash(_itemsWithCards));
 
   @override
   String toString() {
-    return 'CollectionState.loaded(items: $items)';
+    return 'CollectionState.loaded(itemsWithCards: $itemsWithCards)';
   }
 }
 
@@ -330,7 +332,7 @@ abstract mixin class _$LoadedCopyWith<$Res>
   factory _$LoadedCopyWith(_Loaded value, $Res Function(_Loaded) _then) =
       __$LoadedCopyWithImpl;
   @useResult
-  $Res call({List<CollectionItemEntity> items});
+  $Res call({List<CollectionItemWithCard> itemsWithCards});
 }
 
 /// @nodoc
@@ -344,13 +346,13 @@ class __$LoadedCopyWithImpl<$Res> implements _$LoadedCopyWith<$Res> {
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   $Res call({
-    Object? items = null,
+    Object? itemsWithCards = null,
   }) {
     return _then(_Loaded(
-      items: null == items
-          ? _self._items
-          : items // ignore: cast_nullable_to_non_nullable
-              as List<CollectionItemEntity>,
+      itemsWithCards: null == itemsWithCards
+          ? _self._itemsWithCards
+          : itemsWithCards // ignore: cast_nullable_to_non_nullable
+              as List<CollectionItemWithCard>,
     ));
   }
 }
