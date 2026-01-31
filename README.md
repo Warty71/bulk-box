@@ -70,6 +70,6 @@ If you want to try it:
 
 ```bash
 git clone https://github.com/Warty71/ygo-collector.git
-cd ygo-collector
+cd bulk-box
 flutter pub get
 flutter run
