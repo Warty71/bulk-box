@@ -156,7 +156,7 @@ extension SearchStatePatterns on SearchState {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? initial,
     TResult Function()? loading,
-    TResult Function(List<YgoCard> cards, String lastQuery)? loaded,
+    TResult Function(List<Card> cards, String lastQuery)? loaded,
     TResult Function(String message)? error,
     required TResult orElse(),
   }) {
@@ -192,7 +192,7 @@ extension SearchStatePatterns on SearchState {
   TResult when<TResult extends Object?>({
     required TResult Function() initial,
     required TResult Function() loading,
-    required TResult Function(List<YgoCard> cards, String lastQuery) loaded,
+    required TResult Function(List<Card> cards, String lastQuery) loaded,
     required TResult Function(String message) error,
   }) {
     final _that = this;
@@ -226,7 +226,7 @@ extension SearchStatePatterns on SearchState {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? initial,
     TResult? Function()? loading,
-    TResult? Function(List<YgoCard> cards, String lastQuery)? loaded,
+    TResult? Function(List<Card> cards, String lastQuery)? loaded,
     TResult? Function(String message)? error,
   }) {
     final _that = this;
@@ -288,11 +288,11 @@ class _Loading implements SearchState {
 /// @nodoc
 
 class _Loaded implements SearchState {
-  const _Loaded({required final List<YgoCard> cards, required this.lastQuery})
+  const _Loaded({required final List<Card> cards, required this.lastQuery})
       : _cards = cards;
 
-  final List<YgoCard> _cards;
-  List<YgoCard> get cards {
+  final List<Card> _cards;
+  List<Card> get cards {
     if (_cards is EqualUnmodifiableListView) return _cards;
     // ignore: implicit_dynamic_type
     return EqualUnmodifiableListView(_cards);
@@ -333,7 +333,7 @@ abstract mixin class _$LoadedCopyWith<$Res>
   factory _$LoadedCopyWith(_Loaded value, $Res Function(_Loaded) _then) =
       __$LoadedCopyWithImpl;
   @useResult
-  $Res call({List<YgoCard> cards, String lastQuery});
+  $Res call({List<Card> cards, String lastQuery});
 }
 
 /// @nodoc
@@ -354,7 +354,7 @@ class __$LoadedCopyWithImpl<$Res> implements _$LoadedCopyWith<$Res> {
       cards: null == cards
           ? _self._cards
           : cards // ignore: cast_nullable_to_non_nullable
-              as List<YgoCard>,
+              as List<Card>,
       lastQuery: null == lastQuery
           ? _self.lastQuery
           : lastQuery // ignore: cast_nullable_to_non_nullable

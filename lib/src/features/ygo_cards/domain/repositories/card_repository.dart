@@ -1,8 +1,8 @@
-import 'package:ygo_collector/src/features/ygo_cards/data/entities/ygo_card.dart';
+import 'package:ygo_collector/src/core/database/app_database.dart';
 
 abstract class CardRepository {
-  Future<List<YgoCard>> searchCards(String query);
-  Future<YgoCard> getCardDetails(int cardId);
+  Future<List<Card>> searchCards(String query);
+  Future<Card> getCardDetails(int cardId);
   Future<String> getLocalImagePath(int cardId);
   Future<void> saveCardImage(int cardId, List<int> imageBytes);
   Future<bool> isCardImageSaved(int cardId);

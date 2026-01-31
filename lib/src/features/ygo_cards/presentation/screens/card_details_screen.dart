@@ -1,15 +1,15 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ygo_collector/src/core/constants/dimensions.dart';
-import 'package:ygo_collector/src/features/search/presentation/cubit/search_cubit.dart';
+import 'package:ygo_collector/src/core/database/app_database.dart' as db;
+import 'package:ygo_collector/src/core/database/card_extensions.dart';
 import 'package:ygo_collector/src/features/collection/presentation/widgets/add_card_bottom_sheet.dart';
-
-import 'dart:io';
-
-import 'package:ygo_collector/src/features/ygo_cards/data/entities/ygo_card.dart';
+import 'package:ygo_collector/src/features/search/presentation/cubit/search_cubit.dart';
 
 class CardDetailsScreen extends StatelessWidget {
-  final YgoCard card;
+  final db.Card card;
 
   const CardDetailsScreen({
     super.key,
@@ -95,7 +95,7 @@ class CardDetailsScreen extends StatelessWidget {
               context,
               title: 'Set Information',
               children: [
-                for (final set in card.cardSets)
+                for (final set in card.parsedCardSets)
                   Card(
                     margin: const EdgeInsets.only(bottom: Dimensions.sm),
                     child: Padding(

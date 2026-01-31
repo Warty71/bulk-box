@@ -9,7 +9,7 @@ void initSearchModule(GetIt getIt) {
     () => SearchRepositoryImpl(
       getIt(), // YGOProApiDatasource
       getIt(), // ImageLocalDatasource
-      getIt(), // CardLocalDatasource
+      getIt(), // CardDao
     ),
   );
 

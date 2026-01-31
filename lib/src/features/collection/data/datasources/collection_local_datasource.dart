@@ -1,11 +1,30 @@
 import 'package:drift/drift.dart';
 import 'package:ygo_collector/src/core/database/app_database.dart';
+import 'package:ygo_collector/src/features/collection/domain/entities/collection_entry.dart';
 import 'package:ygo_collector/src/features/collection/domain/entities/collection_item.dart';
 
 class CollectionLocalDatasource {
   final AppDatabase _db;
 
   CollectionLocalDatasource(this._db);
+
+  Future<List<CollectionEntry>> getCollectionWithCards() async {
+    final query = _db.select(_db.collectionItems).join([
+      innerJoin(_db.cards, _db.cards.id.equalsExp(_db.collectionItems.cardId)),
+    ]);
+    return await query.map((row) {
+      final item = row.readTable(_db.collectionItems);
+      final card = row.readTable(_db.cards);
+      return CollectionEntry(
+        card: card,
+        setCode: item.setCode,
+        setRarity: item.setRarity,
+        quantity: item.quantity,
+        condition: item.condition,
+        dateAdded: item.dateAdded,
+      );
+    }).get();
+  }
 
   /// Get all collection items
   Future<List<CollectionItemEntity>> getAllCollectionItems() async {
@@ -63,7 +82,6 @@ class CollectionLocalDatasource {
       await _db.into(_db.collectionItems).insert(
             CollectionItemsCompanion(
               cardId: Value(item.cardId),
-              cardName: Value(item.cardName),
               setCode: Value(item.setCode),
               setRarity: Value(item.setRarity),
               quantity: Value(item.quantity),
@@ -129,7 +147,6 @@ class CollectionLocalDatasource {
   CollectionItemEntity _mapToEntity(CollectionItem item) {
     return CollectionItemEntity(
       cardId: item.cardId,
-      cardName: item.cardName,
       setCode: item.setCode,
       setRarity: item.setRarity,
       quantity: item.quantity,

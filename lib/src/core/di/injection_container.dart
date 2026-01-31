@@ -1,8 +1,8 @@
 import 'package:get_it/get_it.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ygo_collector/src/core/database/app_database.dart';
+import 'package:ygo_collector/src/core/database/card_dao.dart';
 import 'package:ygo_collector/src/features/sorting/presentation/cubits/sort_cubit.dart';
-import 'package:ygo_collector/src/features/ygo_cards/data/datasources/local/card_local_datasource.dart';
 import 'package:ygo_collector/src/features/ygo_cards/data/datasources/local/image_local_datasource.dart';
 import 'package:ygo_collector/src/features/ygo_cards/data/datasources/remote/ygopro_api_datasource.dart';
 import 'package:ygo_collector/src/features/search/data/repositories/search_repository_impl.dart';
@@ -43,7 +43,7 @@ Future<void> _initializeCore() async {
   );
 
   getIt.registerLazySingleton(
-    () => CardLocalDatasource(getIt()),
+    () => CardDao(getIt<AppDatabase>()),
   );
 }
 
@@ -64,7 +64,7 @@ void _initializeSearchFeature() {
     () => SearchRepositoryImpl(
       getIt(), // YGOProApiDatasource
       getIt(), // ImageLocalDatasource
-      getIt(), // CardLocalDatasource
+      getIt(), // CardDao
     ),
   );
 
@@ -87,7 +87,7 @@ void _initializeCollectionFeature() {
 
   // Cubit
   getIt.registerLazySingleton(
-    () => CollectionCubit(getIt(), getIt()),
+    () => CollectionCubit(getIt()),
   );
 }
 

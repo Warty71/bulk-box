@@ -15,7 +15,6 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$CollectionItemEntity {
   int get cardId;
-  String get cardName;
   String get setCode;
   String get setRarity;
   int get quantity;
@@ -36,8 +35,6 @@ mixin _$CollectionItemEntity {
         (other.runtimeType == runtimeType &&
             other is CollectionItemEntity &&
             (identical(other.cardId, cardId) || other.cardId == cardId) &&
-            (identical(other.cardName, cardName) ||
-                other.cardName == cardName) &&
             (identical(other.setCode, setCode) || other.setCode == setCode) &&
             (identical(other.setRarity, setRarity) ||
                 other.setRarity == setRarity) &&
@@ -50,12 +47,12 @@ mixin _$CollectionItemEntity {
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, cardId, cardName, setCode,
-      setRarity, quantity, condition, dateAdded);
+  int get hashCode => Object.hash(
+      runtimeType, cardId, setCode, setRarity, quantity, condition, dateAdded);
 
   @override
   String toString() {
-    return 'CollectionItemEntity(cardId: $cardId, cardName: $cardName, setCode: $setCode, setRarity: $setRarity, quantity: $quantity, condition: $condition, dateAdded: $dateAdded)';
+    return 'CollectionItemEntity(cardId: $cardId, setCode: $setCode, setRarity: $setRarity, quantity: $quantity, condition: $condition, dateAdded: $dateAdded)';
   }
 }
 
@@ -67,7 +64,6 @@ abstract mixin class $CollectionItemEntityCopyWith<$Res> {
   @useResult
   $Res call(
       {int cardId,
-      String cardName,
       String setCode,
       String setRarity,
       int quantity,
@@ -89,7 +85,6 @@ class _$CollectionItemEntityCopyWithImpl<$Res>
   @override
   $Res call({
     Object? cardId = null,
-    Object? cardName = null,
     Object? setCode = null,
     Object? setRarity = null,
     Object? quantity = null,
@@ -101,10 +96,6 @@ class _$CollectionItemEntityCopyWithImpl<$Res>
           ? _self.cardId
           : cardId // ignore: cast_nullable_to_non_nullable
               as int,
-      cardName: null == cardName
-          ? _self.cardName
-          : cardName // ignore: cast_nullable_to_non_nullable
-              as String,
       setCode: null == setCode
           ? _self.setCode
           : setCode // ignore: cast_nullable_to_non_nullable
@@ -222,22 +213,16 @@ extension CollectionItemEntityPatterns on CollectionItemEntity {
 
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>(
-    TResult Function(
-            int cardId,
-            String cardName,
-            String setCode,
-            String setRarity,
-            int quantity,
-            String? condition,
-            DateTime dateAdded)?
+    TResult Function(int cardId, String setCode, String setRarity, int quantity,
+            String? condition, DateTime dateAdded)?
         $default, {
     required TResult orElse(),
   }) {
     final _that = this;
     switch (_that) {
       case _CollectionItemEntity() when $default != null:
-        return $default(_that.cardId, _that.cardName, _that.setCode,
-            _that.setRarity, _that.quantity, _that.condition, _that.dateAdded);
+        return $default(_that.cardId, _that.setCode, _that.setRarity,
+            _that.quantity, _that.condition, _that.dateAdded);
       case _:
         return orElse();
     }
@@ -258,21 +243,15 @@ extension CollectionItemEntityPatterns on CollectionItemEntity {
 
   @optionalTypeArgs
   TResult when<TResult extends Object?>(
-    TResult Function(
-            int cardId,
-            String cardName,
-            String setCode,
-            String setRarity,
-            int quantity,
-            String? condition,
-            DateTime dateAdded)
+    TResult Function(int cardId, String setCode, String setRarity, int quantity,
+            String? condition, DateTime dateAdded)
         $default,
   ) {
     final _that = this;
     switch (_that) {
       case _CollectionItemEntity():
-        return $default(_that.cardId, _that.cardName, _that.setCode,
-            _that.setRarity, _that.quantity, _that.condition, _that.dateAdded);
+        return $default(_that.cardId, _that.setCode, _that.setRarity,
+            _that.quantity, _that.condition, _that.dateAdded);
       case _:
         throw StateError('Unexpected subclass');
     }
@@ -292,21 +271,15 @@ extension CollectionItemEntityPatterns on CollectionItemEntity {
 
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>(
-    TResult? Function(
-            int cardId,
-            String cardName,
-            String setCode,
-            String setRarity,
-            int quantity,
-            String? condition,
-            DateTime dateAdded)?
+    TResult? Function(int cardId, String setCode, String setRarity,
+            int quantity, String? condition, DateTime dateAdded)?
         $default,
   ) {
     final _that = this;
     switch (_that) {
       case _CollectionItemEntity() when $default != null:
-        return $default(_that.cardId, _that.cardName, _that.setCode,
-            _that.setRarity, _that.quantity, _that.condition, _that.dateAdded);
+        return $default(_that.cardId, _that.setCode, _that.setRarity,
+            _that.quantity, _that.condition, _that.dateAdded);
       case _:
         return null;
     }
@@ -318,7 +291,6 @@ extension CollectionItemEntityPatterns on CollectionItemEntity {
 class _CollectionItemEntity implements CollectionItemEntity {
   const _CollectionItemEntity(
       {required this.cardId,
-      required this.cardName,
       required this.setCode,
       required this.setRarity,
       required this.quantity,
@@ -327,8 +299,6 @@ class _CollectionItemEntity implements CollectionItemEntity {
 
   @override
   final int cardId;
-  @override
-  final String cardName;
   @override
   final String setCode;
   @override
@@ -355,8 +325,6 @@ class _CollectionItemEntity implements CollectionItemEntity {
         (other.runtimeType == runtimeType &&
             other is _CollectionItemEntity &&
             (identical(other.cardId, cardId) || other.cardId == cardId) &&
-            (identical(other.cardName, cardName) ||
-                other.cardName == cardName) &&
             (identical(other.setCode, setCode) || other.setCode == setCode) &&
             (identical(other.setRarity, setRarity) ||
                 other.setRarity == setRarity) &&
@@ -369,12 +337,12 @@ class _CollectionItemEntity implements CollectionItemEntity {
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, cardId, cardName, setCode,
-      setRarity, quantity, condition, dateAdded);
+  int get hashCode => Object.hash(
+      runtimeType, cardId, setCode, setRarity, quantity, condition, dateAdded);
 
   @override
   String toString() {
-    return 'CollectionItemEntity(cardId: $cardId, cardName: $cardName, setCode: $setCode, setRarity: $setRarity, quantity: $quantity, condition: $condition, dateAdded: $dateAdded)';
+    return 'CollectionItemEntity(cardId: $cardId, setCode: $setCode, setRarity: $setRarity, quantity: $quantity, condition: $condition, dateAdded: $dateAdded)';
   }
 }
 
@@ -388,7 +356,6 @@ abstract mixin class _$CollectionItemEntityCopyWith<$Res>
   @useResult
   $Res call(
       {int cardId,
-      String cardName,
       String setCode,
       String setRarity,
       int quantity,
@@ -410,7 +377,6 @@ class __$CollectionItemEntityCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   $Res call({
     Object? cardId = null,
-    Object? cardName = null,
     Object? setCode = null,
     Object? setRarity = null,
     Object? quantity = null,
@@ -422,10 +388,6 @@ class __$CollectionItemEntityCopyWithImpl<$Res>
           ? _self.cardId
           : cardId // ignore: cast_nullable_to_non_nullable
               as int,
-      cardName: null == cardName
-          ? _self.cardName
-          : cardName // ignore: cast_nullable_to_non_nullable
-              as String,
       setCode: null == setCode
           ? _self.setCode
           : setCode // ignore: cast_nullable_to_non_nullable

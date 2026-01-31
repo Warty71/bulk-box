@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:ygo_collector/src/features/collection/domain/entities/collection_item_with_card.dart';
+import 'package:ygo_collector/src/features/collection/domain/entities/collection_entry.dart';
 import 'package:ygo_collector/src/features/collection/presentation/cubit/collection_cubit.dart';
 import 'package:ygo_collector/src/features/collection/presentation/cubit/collection_state.dart';
 import 'package:ygo_collector/src/features/collection/presentation/widgets/collection_grid_view.dart';
@@ -24,8 +24,8 @@ class CollectionView extends StatelessWidget {
             initial: () => const Center(child: Text('No items in collection')),
             loading: () => const Center(child: CircularProgressIndicator()),
             error: (m) => Center(child: Text('Error: $m')),
-            loaded: (itemsWithCards) {
-              if (itemsWithCards.isEmpty) {
+            loaded: (collectionEntries) {
+              if (collectionEntries.isEmpty) {
                 return const Center(child: Text('No items in collection'));
               }
 
@@ -35,12 +35,11 @@ class CollectionView extends StatelessWidget {
               );
 
               // Apply sorting
-              final sortedItems =
-                  List<CollectionItemWithCard>.from(itemsWithCards);
+              final sortedItems = List<CollectionEntry>.from(collectionEntries);
 
               sortCollectionItems(sortedItems, sortOption);
 
-              return CollectionGridView(itemsWithCards: sortedItems);
+              return CollectionGridView(collectionEntries: sortedItems);
             },
           );
         },

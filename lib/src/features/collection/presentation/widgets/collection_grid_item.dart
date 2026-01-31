@@ -1,18 +1,18 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:ygo_collector/src/core/di/injection_container.dart' as di;
+import 'package:ygo_collector/src/features/collection/domain/entities/collection_entry.dart';
 import 'package:ygo_collector/src/features/collection/presentation/widgets/collection_card_details_bottom_sheet.dart';
-import 'package:ygo_collector/src/features/ygo_cards/data/entities/ygo_card.dart';
 import 'package:ygo_collector/src/features/search/domain/repositories/search_repository.dart';
 
 /// Grid item widget for displaying a card in the collection grid view
 class CollectionGridItem extends StatelessWidget {
-  final YgoCard card;
+  final CollectionEntry entry;
   final int totalQuantity;
 
   const CollectionGridItem({
     super.key,
-    required this.card,
+    required this.entry,
     required this.totalQuantity,
   });
 
@@ -27,14 +27,16 @@ class CollectionGridItem extends StatelessWidget {
           showModalBottomSheet(
             context: context,
             isScrollControlled: true,
-            builder: (context) => CollectionCardDetailsBottomSheet(card: card),
+            builder: (context) =>
+                CollectionCardDetailsBottomSheet(card: entry.card),
           );
         },
         child: Stack(
           children: [
             // Card Image
             FutureBuilder<String>(
-              future: di.getIt<SearchRepository>().getCardImagePath(card.id),
+              future:
+                  di.getIt<SearchRepository>().getCardImagePath(entry.card.id),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return const Center(

@@ -1,28 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:ygo_collector/src/core/constants/dimensions.dart';
-import 'package:ygo_collector/src/features/collection/domain/entities/collection_item_with_card.dart';
+import 'package:ygo_collector/src/features/collection/domain/entities/collection_entry.dart';
 import 'package:ygo_collector/src/features/collection/presentation/widgets/collection_grid_item.dart';
-import 'package:ygo_collector/src/features/ygo_cards/data/entities/ygo_card.dart';
 
 /// Grid view for displaying unique cards in the collection
 class CollectionGridView extends StatelessWidget {
-  const CollectionGridView({super.key, required this.itemsWithCards});
+  const CollectionGridView({super.key, required this.collectionEntries});
 
-  final List<CollectionItemWithCard> itemsWithCards;
+  final List<CollectionEntry> collectionEntries;
 
   /// Returns total quantity per cardId
   Map<int, int> _getQuantitiesByCardId() {
     final quantities = <int, int>{};
-    for (final entry in itemsWithCards) {
-      final id = entry.item.cardId;
-      quantities[id] = (quantities[id] ?? 0) + entry.item.quantity;
+    for (final entry in collectionEntries) {
+      final id = entry.card.id;
+      quantities[id] = (quantities[id] ?? 0) + entry.quantity;
     }
     return quantities;
   }
 
   /// Returns the first `YgoCard` for a given cardId
-  YgoCard _getCardById(int cardId) {
-    return itemsWithCards.firstWhere((e) => e.item.cardId == cardId).card;
+  CollectionEntry _getCardById(int cardId) {
+    return collectionEntries.firstWhere((e) => e.card.id == cardId);
   }
 
   @override
@@ -43,10 +42,10 @@ class CollectionGridView extends StatelessWidget {
         final cardId = uniqueCardIds[index];
         final totalQuantity = quantitiesByCardId[cardId]!;
 
-        final card = _getCardById(cardId);
+        final entry = _getCardById(cardId);
 
         return CollectionGridItem(
-          card: card,
+          entry: entry,
           totalQuantity: totalQuantity,
         );
       },

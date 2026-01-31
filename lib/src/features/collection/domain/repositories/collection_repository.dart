@@ -1,6 +1,9 @@
 import 'package:ygo_collector/src/features/collection/domain/entities/collection_item.dart';
+import 'package:ygo_collector/src/features/collection/domain/entities/collection_entry.dart';
 
 abstract class CollectionRepository {
+  Future<List<CollectionEntry>> getCollectionWithCards();
+
   /// Get all collection items
   Future<List<CollectionItemEntity>> getAllCollectionItems();
 

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ygo_collector/src/core/constants/dimensions.dart';
 import 'package:ygo_collector/src/core/widgets/debouncer.dart';
-import 'package:ygo_collector/src/features/ygo_cards/data/entities/ygo_card.dart';
+import 'package:ygo_collector/src/core/database/app_database.dart' as db;
 import 'package:ygo_collector/src/features/search/presentation/cubit/search_cubit.dart';
 import 'package:ygo_collector/src/features/search/presentation/cubit/search_state.dart';
 import 'dart:io';
@@ -66,7 +66,8 @@ class _SearchViewState extends State<SearchView> {
                   borderRadius: BorderRadius.circular(Dimensions.radiusMd),
                 ),
                 filled: true,
-                fillColor: theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
+                fillColor: theme.colorScheme.surfaceContainerHighest
+                    .withValues(alpha: 0.3),
               ),
               onChanged: (query) {
                 _debounce.run(() {
@@ -152,7 +153,7 @@ class _SearchViewState extends State<SearchView> {
 }
 
 class _SearchCardItem extends StatelessWidget {
-  final YgoCard card;
+  final db.Card card;
 
   const _SearchCardItem({required this.card});
 

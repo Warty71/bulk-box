@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:ygo_collector/src/core/constants/dimensions.dart';
+import 'package:ygo_collector/src/core/database/app_database.dart' as db;
+import 'package:ygo_collector/src/core/database/card_extensions.dart';
 import 'package:ygo_collector/src/core/di/injection_container.dart' as di;
 import 'package:ygo_collector/src/features/collection/domain/entities/collection_item.dart';
 import 'package:ygo_collector/src/features/collection/presentation/cubit/collection_cubit.dart';
-import 'package:ygo_collector/src/features/ygo_cards/data/entities/ygo_card.dart';
 
+/// Bottom sheet for adding/editing card quantities in collection.
+/// Works for both adding new cards and editing existing ones.
 class AddCardBottomSheet extends StatefulWidget {
-  final YgoCard card;
+  final db.Card card;
 
   const AddCardBottomSheet({
     super.key,
@@ -19,23 +22,24 @@ class AddCardBottomSheet extends StatefulWidget {
 
 class _AddCardBottomSheetState extends State<AddCardBottomSheet> {
   final Map<String, int> _quantities = {};
+  bool _isLoading = true;
 
   @override
   void initState() {
     super.initState();
+    _loadData();
+  }
+
+  Future<void> _loadData() async {
     // Initialize quantities to 0 for all card sets
-    for (final set in widget.card.cardSets) {
+    for (final set in widget.card.parsedCardSets) {
       final key = '${set.setCode}_${set.setRarity}';
       _quantities[key] = 0;
     }
-    // Load existing quantities
-    _loadExistingQuantities();
-  }
 
-  Future<void> _loadExistingQuantities() async {
+    // Load existing quantities from collection
     final cubit = di.getIt<CollectionCubit>();
-    final existingItems =
-        await cubit.getCollectionItemsByCardId(widget.card.id);
+    final existingItems = await cubit.getCollectionItemsByCardId(widget.card.id);
 
     if (mounted) {
       setState(() {
@@ -43,6 +47,7 @@ class _AddCardBottomSheetState extends State<AddCardBottomSheet> {
           final key = '${item.setCode}_${item.setRarity}';
           _quantities[key] = item.quantity;
         }
+        _isLoading = false;
       });
     }
   }
@@ -59,19 +64,16 @@ class _AddCardBottomSheetState extends State<AddCardBottomSheet> {
     final cubit = di.getIt<CollectionCubit>();
     final now = DateTime.now();
 
-    // Fetch existing items once before the loop
     final existingItems = await cubit.getCollectionItemsByCardId(widget.card.id);
 
-    for (final set in widget.card.cardSets) {
+    for (final set in widget.card.parsedCardSets) {
       final key = '${set.setCode}_${set.setRarity}';
       final quantity = _quantities[key] ?? 0;
 
-      // Check if this specific set/rarity combination already exists
       final existingItem = existingItems.firstWhere(
         (item) => item.setCode == set.setCode && item.setRarity == set.setRarity,
         orElse: () => CollectionItemEntity(
           cardId: -1,
-          cardName: '',
           setCode: '',
           setRarity: '',
           quantity: 0,
@@ -81,7 +83,6 @@ class _AddCardBottomSheetState extends State<AddCardBottomSheet> {
 
       if (quantity > 0) {
         if (existingItem.cardId != -1) {
-          // Item exists, update quantity (replace, not add)
           await cubit.updateQuantity(
             widget.card.id,
             set.setCode,
@@ -89,10 +90,8 @@ class _AddCardBottomSheetState extends State<AddCardBottomSheet> {
             quantity,
           );
         } else {
-          // Item doesn't exist, add it
           final item = CollectionItemEntity(
             cardId: widget.card.id,
-            cardName: widget.card.name,
             setCode: set.setCode,
             setRarity: set.setRarity,
             quantity: quantity,
@@ -101,7 +100,6 @@ class _AddCardBottomSheetState extends State<AddCardBottomSheet> {
           await cubit.addCollectionItem(item);
         }
       } else {
-        // If quantity is 0, remove the item (only if it exists)
         if (existingItem.cardId != -1) {
           await cubit.deleteCollectionItem(
             widget.card.id,
@@ -120,6 +118,7 @@ class _AddCardBottomSheetState extends State<AddCardBottomSheet> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final cardSets = widget.card.parsedCardSets;
 
     return Container(
       padding: EdgeInsets.only(
@@ -150,57 +149,68 @@ class _AddCardBottomSheetState extends State<AddCardBottomSheet> {
           const Divider(),
 
           // Card Sets List
-          Flexible(
-            child: ListView.builder(
-              shrinkWrap: true,
-              itemCount: widget.card.cardSets.length,
-              itemBuilder: (context, index) {
-                final set = widget.card.cardSets[index];
-                final key = '${set.setCode}_${set.setRarity}';
-                final quantity = _quantities[key] ?? 0;
+          if (_isLoading)
+            const Padding(
+              padding: EdgeInsets.all(Dimensions.xl),
+              child: Center(child: CircularProgressIndicator()),
+            )
+          else if (cardSets.isEmpty)
+            const Padding(
+              padding: EdgeInsets.all(Dimensions.xl),
+              child: Center(child: Text('No sets available for this card')),
+            )
+          else
+            Flexible(
+              child: ListView.builder(
+                shrinkWrap: true,
+                itemCount: cardSets.length,
+                itemBuilder: (context, index) {
+                  final set = cardSets[index];
+                  final key = '${set.setCode}_${set.setRarity}';
+                  final quantity = _quantities[key] ?? 0;
 
-                return ListTile(
-                  title: Text(set.setName),
-                  subtitle: Text('${set.setCode} - ${set.setRarity}'),
-                  trailing: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      IconButton(
-                        icon: const Icon(Icons.remove),
-                        onPressed: () => _updateQuantity(
-                          set.setCode,
-                          set.setRarity,
-                          -1,
+                  return ListTile(
+                    title: Text(set.setName),
+                    subtitle: Text('${set.setCode} - ${set.setRarity}'),
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        IconButton(
+                          icon: const Icon(Icons.remove),
+                          onPressed: () => _updateQuantity(
+                            set.setCode,
+                            set.setRarity,
+                            -1,
+                          ),
                         ),
-                      ),
-                      SizedBox(
-                        width: 50,
-                        child: Text(
-                          '$quantity',
-                          textAlign: TextAlign.center,
-                          style: theme.textTheme.titleMedium,
+                        SizedBox(
+                          width: 50,
+                          child: Text(
+                            '$quantity',
+                            textAlign: TextAlign.center,
+                            style: theme.textTheme.titleMedium,
+                          ),
                         ),
-                      ),
-                      IconButton(
-                        icon: const Icon(Icons.add),
-                        onPressed: () => _updateQuantity(
-                          set.setCode,
-                          set.setRarity,
-                          1,
+                        IconButton(
+                          icon: const Icon(Icons.add),
+                          onPressed: () => _updateQuantity(
+                            set.setCode,
+                            set.setRarity,
+                            1,
+                          ),
                         ),
-                      ),
-                    ],
-                  ),
-                );
-              },
+                      ],
+                    ),
+                  );
+                },
+              ),
             ),
-          ),
 
           // Save Button
           Padding(
             padding: const EdgeInsets.all(Dimensions.md),
             child: FilledButton(
-              onPressed: _save,
+              onPressed: _isLoading ? null : _save,
               child: const Text('Save'),
             ),
           ),

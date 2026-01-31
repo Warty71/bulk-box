@@ -1,9 +1,8 @@
-// `collectionWithCards` is List<CollectionItemWithCard>
-import 'package:ygo_collector/src/features/collection/domain/entities/collection_item_with_card.dart';
+import 'package:ygo_collector/src/features/collection/domain/entities/collection_entry.dart';
 import 'package:ygo_collector/src/features/sorting/domain/entities/sort_options.dart';
 
 void sortCollectionItems(
-  List<CollectionItemWithCard> collectionWithCards,
+  List<CollectionEntry> collectionWithCards,
   SortOption sortOption,
 ) {
   collectionWithCards.sort((a, b) {
