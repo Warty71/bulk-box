@@ -31,11 +31,6 @@ class HomeNavBar extends StatelessWidget {
           selectedIcon: Icon(Icons.search),
           label: 'Search',
         ),
-        NavigationDestination(
-          icon: Icon(Icons.person_outline),
-          selectedIcon: Icon(Icons.person),
-          label: 'Profile',
-        ),
       ],
     );
   }
