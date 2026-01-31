@@ -48,6 +48,19 @@ class YGOProApiDatasource {
     }
   }
 
+  Future<List<Map<String, dynamic>>> getCardSets() async {
+    try {
+      final response = await _dio.get('/cardsets.php');
+      final data = response.data;
+      if (data is! List) return [];
+      return List<Map<String, dynamic>>.from(
+        data.map((e) => e is Map<String, dynamic> ? e : <String, dynamic>{}),
+      );
+    } catch (e) {
+      rethrow;
+    }
+  }
+
   Future<List<int>> getCardImage(int cardId) async {
     try {
       // First get the card info to get the actual image URL

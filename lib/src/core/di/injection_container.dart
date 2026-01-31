@@ -12,6 +12,9 @@ import 'package:ygo_collector/src/features/collection/data/datasources/collectio
 import 'package:ygo_collector/src/features/collection/data/repositories/collection_repository_impl.dart';
 import 'package:ygo_collector/src/features/collection/domain/repositories/collection_repository.dart';
 import 'package:ygo_collector/src/features/collection/presentation/cubit/collection_cubit.dart';
+import 'package:ygo_collector/src/features/home/presentation/cubit/latest_sets_cubit.dart';
+import 'package:ygo_collector/src/features/ygo_cards/data/repositories/set_list_repository_impl.dart';
+import 'package:ygo_collector/src/features/ygo_cards/domain/repositories/set_list_repository.dart';
 
 final getIt = GetIt.instance;
 
@@ -56,6 +59,19 @@ Future<void> _initializeFeatures() async {
 
   // Sorting Feature
   _initializeSortingFeature();
+
+  // Home Feature (latest sets)
+  _initializeHomeFeature();
+}
+
+void _initializeHomeFeature() {
+  getIt.registerLazySingleton<SetListRepository>(
+    () => SetListRepositoryImpl(getIt<YGOProApiDatasource>()),
+  );
+
+  getIt.registerFactory(
+    () => LatestSetsCubit(getIt<SetListRepository>()),
+  );
 }
 
 void _initializeSearchFeature() {
