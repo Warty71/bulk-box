@@ -202,21 +202,18 @@ class Card extends DataClass implements Insertable<Card> {
   final int? def;
   final String imageUrl;
   final String cardSetsJson;
-
-  const Card({
-    required this.id,
-    required this.name,
-    required this.type,
-    required this.description,
-    required this.race,
-    this.attribute,
-    this.level,
-    this.atk,
-    this.def,
-    required this.imageUrl,
-    required this.cardSetsJson,
-  });
-
+  const Card(
+      {required this.id,
+      required this.name,
+      required this.type,
+      required this.description,
+      required this.race,
+      this.attribute,
+      this.level,
+      this.atk,
+      this.def,
+      required this.imageUrl,
+      required this.cardSetsJson});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -296,19 +293,18 @@ class Card extends DataClass implements Insertable<Card> {
     };
   }
 
-  Card copyWith({
-    int? id,
-    String? name,
-    String? type,
-    String? description,
-    String? race,
-    Value<String?> attribute = const Value.absent(),
-    Value<int?> level = const Value.absent(),
-    Value<int?> atk = const Value.absent(),
-    Value<int?> def = const Value.absent(),
-    String? imageUrl,
-    String? cardSetsJson,
-  }) =>
+  Card copyWith(
+          {int? id,
+          String? name,
+          String? type,
+          String? description,
+          String? race,
+          Value<String?> attribute = const Value.absent(),
+          Value<int?> level = const Value.absent(),
+          Value<int?> atk = const Value.absent(),
+          Value<int?> def = const Value.absent(),
+          String? imageUrl,
+          String? cardSetsJson}) =>
       Card(
         id: id ?? this.id,
         name: name ?? this.name,
@@ -322,7 +318,6 @@ class Card extends DataClass implements Insertable<Card> {
         imageUrl: imageUrl ?? this.imageUrl,
         cardSetsJson: cardSetsJson ?? this.cardSetsJson,
       );
-
   Card copyWithCompanion(CardsCompanion data) {
     return Card(
       id: data.id.present ? data.id.value : this.id,

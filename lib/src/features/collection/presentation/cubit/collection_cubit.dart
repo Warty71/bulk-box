@@ -96,4 +96,16 @@ class CollectionCubit extends Cubit<CollectionState> {
     sortCollectionItems(sorted, option);
     return sorted;
   }
+
+  void setShowDividersBetweenSections(bool value) {
+    emit(state.when(
+      initial: () => const CollectionState.initial(),
+      loading: () => const CollectionState.loading(),
+      loaded: (collectionEntries, showDividersBetweenSections) =>
+          CollectionState.loaded(
+              collectionEntries: collectionEntries,
+              showDividersBetweenSections: value),
+      error: (message) => CollectionState.error(message),
+    ));
+  }
 }

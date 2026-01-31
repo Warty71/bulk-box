@@ -34,7 +34,8 @@ class _CollectionCardDetailsBottomSheetState
 
   Future<void> _loadCollectionData() async {
     final cubit = di.getIt<CollectionCubit>();
-    final existingItems = await cubit.getCollectionItemsByCardId(widget.card.id);
+    final existingItems =
+        await cubit.getCollectionItemsByCardId(widget.card.id);
 
     if (mounted) {
       setState(() {
@@ -59,14 +60,16 @@ class _CollectionCardDetailsBottomSheetState
     final cubit = di.getIt<CollectionCubit>();
     final now = DateTime.now();
 
-    final existingItems = await cubit.getCollectionItemsByCardId(widget.card.id);
+    final existingItems =
+        await cubit.getCollectionItemsByCardId(widget.card.id);
 
     for (final set in widget.card.parsedCardSets) {
       final key = '${set.setCode}_${set.setRarity}';
       final quantity = _quantities[key] ?? 0;
 
       final existingItem = existingItems.firstWhere(
-        (item) => item.setCode == set.setCode && item.setRarity == set.setRarity,
+        (item) =>
+            item.setCode == set.setCode && item.setRarity == set.setRarity,
         orElse: () => CollectionItemEntity(
           cardId: -1,
           setCode: '',

@@ -4,8 +4,10 @@ import 'package:ygo_collector/src/features/collection/domain/entities/collection
 import 'package:ygo_collector/src/features/collection/presentation/cubit/collection_cubit.dart';
 import 'package:ygo_collector/src/features/collection/presentation/cubit/collection_state.dart';
 import 'package:ygo_collector/src/features/collection/presentation/widgets/collection_grid_view.dart';
+import 'package:ygo_collector/src/features/collection/presentation/widgets/collection_options_button.dart';
 import 'package:ygo_collector/src/features/sorting/domain/comparators/ygo_card_sorters.dart';
 import 'package:ygo_collector/src/features/sorting/presentation/cubits/sort_cubit.dart';
+import 'package:ygo_collector/src/features/sorting/presentation/cubits/sort_state.dart';
 import 'package:ygo_collector/src/features/sorting/presentation/widgets/sort_button.dart';
 
 class CollectionView extends StatelessWidget {
@@ -16,7 +18,7 @@ class CollectionView extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('My Collection'),
-        actions: [const SortButton()],
+        actions: [const SortButton(), const CollectionOptionsButton()],
       ),
       body: BlocBuilder<CollectionCubit, CollectionState>(
         builder: (context, state) {
@@ -24,22 +26,25 @@ class CollectionView extends StatelessWidget {
             initial: () => const Center(child: Text('No items in collection')),
             loading: () => const Center(child: CircularProgressIndicator()),
             error: (m) => Center(child: Text('Error: $m')),
-            loaded: (collectionEntries) {
+            loaded: (collectionEntries, showDividersBetweenSections) {
               if (collectionEntries.isEmpty) {
                 return const Center(child: Text('No items in collection'));
               }
 
-              // Get current sort option
-              final sortOption = context.select(
-                (SortCubit cubit) => cubit.state.option,
+              return BlocBuilder<SortCubit, SortState>(
+                builder: (context, sortState) {
+                  final sortOption = sortState.option;
+                  final sortedItems =
+                      List<CollectionEntry>.from(collectionEntries);
+                  sortCollectionItems(sortedItems, sortOption);
+
+                  return CollectionGridView(
+                    collectionEntries: sortedItems,
+                    showDividersBetweenSections: showDividersBetweenSections,
+                    sortOption: sortOption,
+                  );
+                },
               );
-
-              // Apply sorting
-              final sortedItems = List<CollectionEntry>.from(collectionEntries);
-
-              sortCollectionItems(sortedItems, sortOption);
-
-              return CollectionGridView(collectionEntries: sortedItems);
             },
           );
         },
