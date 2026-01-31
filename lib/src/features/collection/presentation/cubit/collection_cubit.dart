@@ -12,12 +12,19 @@ class CollectionCubit extends Cubit<CollectionState> {
 
   /// Load all collection items
   Future<void> loadCollectionItems() async {
+    final preserveShowDividers = state.maybeWhen(
+      loaded: (_, showDividers) => showDividers,
+      orElse: () => false,
+    );
+
     emit(const CollectionState.loading());
 
     try {
       final collectionEntries = await _repository.getCollectionWithCards();
 
-      emit(CollectionState.loaded(collectionEntries: collectionEntries));
+      emit(CollectionState.loaded(
+          collectionEntries: collectionEntries,
+          showDividersBetweenSections: preserveShowDividers));
     } catch (e) {
       emit(CollectionState.error(e.toString()));
     }
