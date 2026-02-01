@@ -95,4 +95,15 @@ class CollectionCubit extends Cubit<CollectionState> {
     sortCollectionItems(sorted, option);
     return sorted;
   }
+
+  /// Toggle search bar visibility.
+  void toggleSearchBar() {
+    emit(state.maybeWhen(
+      loaded: (collectionEntries, searchBarVisible) => CollectionState.loaded(
+        collectionEntries: collectionEntries,
+        searchBarVisible: !searchBarVisible,
+      ),
+      orElse: () => state,
+    ));
+  }
 }

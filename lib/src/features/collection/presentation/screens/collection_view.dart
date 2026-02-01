@@ -1,3 +1,5 @@
+import 'package:bulk_box/src/features/collection/presentation/widgets/collection_search_bar.dart';
+import 'package:bulk_box/src/features/collection/presentation/widgets/collection_search_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:bulk_box/src/core/settings/settings_cubit.dart';
@@ -18,36 +20,106 @@ class CollectionView extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('My Collection'),
-        actions: [const SortButton(), const CollectionOptionsButton()],
+        actions: const [
+          SortButton(),
+          CollectionOptionsButton(),
+        ],
       ),
-      body: BlocBuilder<CollectionCubit, CollectionState>(
-        builder: (context, collectionState) {
-          return collectionState.when(
-            initial: () => const Center(child: Text('No items in collection')),
-            loading: () => const Center(child: CircularProgressIndicator()),
-            error: (m) => Center(child: Text('Error: $m')),
-            loaded: (collectionEntries) {
-              if (collectionEntries.isEmpty) {
-                return const Center(child: Text('No items in collection'));
-              }
+      body: const _CollectionBody(),
+      floatingActionButton: const CollectionSearchButton(),
+    );
+  }
+}
 
-              return BlocBuilder<SettingsCubit, SettingsState>(
-                builder: (context, settings) {
-                  final sortedItems =
-                      List<CollectionEntry>.from(collectionEntries);
-                  sortCollectionItems(sortedItems, settings.sortOption);
+class _CollectionBody extends StatelessWidget {
+  const _CollectionBody();
 
-                  return CollectionGridView(
-                    collectionEntries: sortedItems,
-                    showDividersBetweenSections: settings.showDividers,
-                    sortOption: settings.sortOption,
-                  );
-                },
-              );
-            },
-          );
-        },
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<CollectionCubit, CollectionState>(
+      buildWhen: (prev, curr) => prev.runtimeType != curr.runtimeType,
+      builder: (context, state) {
+        return state.when(
+          initial: () => const Center(child: Text('No items in collection')),
+          loading: () => const Center(child: CircularProgressIndicator()),
+          error: (m) => Center(child: Text('Error: $m')),
+          loaded: (_, __) => const _LoadedCollection(),
+        );
+      },
+    );
+  }
+}
+
+class _LoadedCollection extends StatelessWidget {
+  const _LoadedCollection();
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: const [
+        _SearchBarSection(),
+        Expanded(child: _GridSection()),
+      ],
+    );
+  }
+}
+
+class _SearchBarSection extends StatelessWidget {
+  const _SearchBarSection();
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocSelector<CollectionCubit, CollectionState, bool>(
+      selector: (state) => state.maybeWhen(
+        loaded: (_, visible) => visible,
+        orElse: () => false,
       ),
+      builder: (context, searchBarVisible) {
+        return AnimatedSize(
+          duration: const Duration(milliseconds: 250),
+          curve: Curves.easeInOut,
+          alignment: Alignment.topCenter,
+          child: searchBarVisible
+              ? const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                  child: CollectionSearchBar(),
+                )
+              : const SizedBox.shrink(),
+        );
+      },
+    );
+  }
+}
+
+class _GridSection extends StatelessWidget {
+  const _GridSection();
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocSelector<CollectionCubit, CollectionState,
+        List<CollectionEntry>>(
+      selector: (state) => state.maybeWhen(
+        loaded: (entries, _) => entries,
+        orElse: () => const [],
+      ),
+      builder: (context, collectionEntries) {
+        if (collectionEntries.isEmpty) {
+          return const Center(child: Text('No items in collection'));
+        }
+
+        return BlocBuilder<SettingsCubit, SettingsState>(
+          builder: (context, settings) {
+            final sortedItems = List<CollectionEntry>.from(collectionEntries);
+            sortCollectionItems(sortedItems, settings.sortOption);
+
+            return CollectionGridView(
+              collectionEntries: sortedItems,
+              showDividersBetweenSections: settings.showDividers,
+              sortOption: settings.sortOption,
+            );
+          },
+        );
+      },
     );
   }
 }
