@@ -10,6 +10,7 @@ abstract class CollectionState with _$CollectionState {
   const factory CollectionState.loaded({
     required List<CollectionEntry> collectionEntries,
     @Default(false) bool searchBarVisible,
+    @Default('') String searchQuery,
   }) = _Loaded;
   const factory CollectionState.error(String message) = _Error;
 }

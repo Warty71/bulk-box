@@ -43,7 +43,7 @@ class _CollectionBody extends StatelessWidget {
           initial: () => const Center(child: Text('No items in collection')),
           loading: () => const Center(child: CircularProgressIndicator()),
           error: (m) => Center(child: Text('Error: $m')),
-          loaded: (_, __) => const _LoadedCollection(),
+          loaded: (_, __, ___) => const _LoadedCollection(),
         );
       },
     );
@@ -71,7 +71,7 @@ class _SearchBarSection extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocSelector<CollectionCubit, CollectionState, bool>(
       selector: (state) => state.maybeWhen(
-        loaded: (_, visible) => visible,
+        loaded: (_, visible, __) => visible,
         orElse: () => false,
       ),
       builder: (context, searchBarVisible) {
@@ -99,7 +99,7 @@ class _GridSection extends StatelessWidget {
     return BlocSelector<CollectionCubit, CollectionState,
         List<CollectionEntry>>(
       selector: (state) => state.maybeWhen(
-        loaded: (entries, _) => entries,
+        loaded: (entries, __, ___) => entries,
         orElse: () => const [],
       ),
       builder: (context, collectionEntries) {

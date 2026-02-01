@@ -157,8 +157,8 @@ extension CollectionStatePatterns on CollectionState {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? initial,
     TResult Function()? loading,
-    TResult Function(
-            List<CollectionEntry> collectionEntries, bool searchBarVisible)?
+    TResult Function(List<CollectionEntry> collectionEntries,
+            bool searchBarVisible, String searchQuery)?
         loaded,
     TResult Function(String message)? error,
     required TResult orElse(),
@@ -170,7 +170,8 @@ extension CollectionStatePatterns on CollectionState {
       case _Loading() when loading != null:
         return loading();
       case _Loaded() when loaded != null:
-        return loaded(_that.collectionEntries, _that.searchBarVisible);
+        return loaded(
+            _that.collectionEntries, _that.searchBarVisible, _that.searchQuery);
       case _Error() when error != null:
         return error(_that.message);
       case _:
@@ -195,8 +196,8 @@ extension CollectionStatePatterns on CollectionState {
   TResult when<TResult extends Object?>({
     required TResult Function() initial,
     required TResult Function() loading,
-    required TResult Function(
-            List<CollectionEntry> collectionEntries, bool searchBarVisible)
+    required TResult Function(List<CollectionEntry> collectionEntries,
+            bool searchBarVisible, String searchQuery)
         loaded,
     required TResult Function(String message) error,
   }) {
@@ -207,7 +208,8 @@ extension CollectionStatePatterns on CollectionState {
       case _Loading():
         return loading();
       case _Loaded():
-        return loaded(_that.collectionEntries, _that.searchBarVisible);
+        return loaded(
+            _that.collectionEntries, _that.searchBarVisible, _that.searchQuery);
       case _Error():
         return error(_that.message);
       case _:
@@ -231,8 +233,8 @@ extension CollectionStatePatterns on CollectionState {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? initial,
     TResult? Function()? loading,
-    TResult? Function(
-            List<CollectionEntry> collectionEntries, bool searchBarVisible)?
+    TResult? Function(List<CollectionEntry> collectionEntries,
+            bool searchBarVisible, String searchQuery)?
         loaded,
     TResult? Function(String message)? error,
   }) {
@@ -243,7 +245,8 @@ extension CollectionStatePatterns on CollectionState {
       case _Loading() when loading != null:
         return loading();
       case _Loaded() when loaded != null:
-        return loaded(_that.collectionEntries, _that.searchBarVisible);
+        return loaded(
+            _that.collectionEntries, _that.searchBarVisible, _that.searchQuery);
       case _Error() when error != null:
         return error(_that.message);
       case _:
@@ -297,7 +300,8 @@ class _Loading implements CollectionState {
 class _Loaded implements CollectionState {
   const _Loaded(
       {required final List<CollectionEntry> collectionEntries,
-      this.searchBarVisible = false})
+      this.searchBarVisible = false,
+      this.searchQuery = ''})
       : _collectionEntries = collectionEntries;
 
   final List<CollectionEntry> _collectionEntries;
@@ -310,6 +314,8 @@ class _Loaded implements CollectionState {
 
   @JsonKey()
   final bool searchBarVisible;
+  @JsonKey()
+  final String searchQuery;
 
   /// Create a copy of CollectionState
   /// with the given fields replaced by the non-null parameter values.
@@ -326,18 +332,21 @@ class _Loaded implements CollectionState {
             const DeepCollectionEquality()
                 .equals(other._collectionEntries, _collectionEntries) &&
             (identical(other.searchBarVisible, searchBarVisible) ||
-                other.searchBarVisible == searchBarVisible));
+                other.searchBarVisible == searchBarVisible) &&
+            (identical(other.searchQuery, searchQuery) ||
+                other.searchQuery == searchQuery));
   }
 
   @override
   int get hashCode => Object.hash(
       runtimeType,
       const DeepCollectionEquality().hash(_collectionEntries),
-      searchBarVisible);
+      searchBarVisible,
+      searchQuery);
 
   @override
   String toString() {
-    return 'CollectionState.loaded(collectionEntries: $collectionEntries, searchBarVisible: $searchBarVisible)';
+    return 'CollectionState.loaded(collectionEntries: $collectionEntries, searchBarVisible: $searchBarVisible, searchQuery: $searchQuery)';
   }
 }
 
@@ -347,7 +356,10 @@ abstract mixin class _$LoadedCopyWith<$Res>
   factory _$LoadedCopyWith(_Loaded value, $Res Function(_Loaded) _then) =
       __$LoadedCopyWithImpl;
   @useResult
-  $Res call({List<CollectionEntry> collectionEntries, bool searchBarVisible});
+  $Res call(
+      {List<CollectionEntry> collectionEntries,
+      bool searchBarVisible,
+      String searchQuery});
 }
 
 /// @nodoc
@@ -363,6 +375,7 @@ class __$LoadedCopyWithImpl<$Res> implements _$LoadedCopyWith<$Res> {
   $Res call({
     Object? collectionEntries = null,
     Object? searchBarVisible = null,
+    Object? searchQuery = null,
   }) {
     return _then(_Loaded(
       collectionEntries: null == collectionEntries
@@ -373,6 +386,10 @@ class __$LoadedCopyWithImpl<$Res> implements _$LoadedCopyWith<$Res> {
           ? _self.searchBarVisible
           : searchBarVisible // ignore: cast_nullable_to_non_nullable
               as bool,
+      searchQuery: null == searchQuery
+          ? _self.searchQuery
+          : searchQuery // ignore: cast_nullable_to_non_nullable
+              as String,
     ));
   }
 }

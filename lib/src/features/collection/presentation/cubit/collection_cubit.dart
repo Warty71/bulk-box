@@ -10,13 +10,21 @@ class CollectionCubit extends Cubit<CollectionState> {
   final CollectionRepository _repository;
   CollectionCubit(this._repository) : super(const CollectionState.initial());
 
+  /// All collection entries loaded from the repository.
+  List<CollectionEntry> _allEntries = [];
+
   /// Load all collection items
   Future<void> loadCollectionItems() async {
     emit(const CollectionState.loading());
 
     try {
-      final collectionEntries = await _repository.getCollectionWithCards();
-      emit(CollectionState.loaded(collectionEntries: collectionEntries));
+      final entries = await _repository.getCollectionWithCards();
+
+      _allEntries = entries; // Cache master list.
+
+      emit(CollectionState.loaded(
+        collectionEntries: entries,
+      ));
     } catch (e) {
       emit(CollectionState.error(e.toString()));
     }
@@ -98,12 +106,38 @@ class CollectionCubit extends Cubit<CollectionState> {
 
   /// Toggle search bar visibility.
   void toggleSearchBar() {
-    emit(state.maybeWhen(
-      loaded: (collectionEntries, searchBarVisible) => CollectionState.loaded(
-        collectionEntries: collectionEntries,
-        searchBarVisible: !searchBarVisible,
-      ),
-      orElse: () => state,
-    ));
+    state.maybeWhen(
+      loaded: (entries, visible, query) {
+        emit(CollectionState.loaded(
+          collectionEntries: entries,
+          searchBarVisible: !visible,
+          searchQuery: query,
+        ));
+      },
+      orElse: () {},
+    );
+  }
+
+  /// Search for a collection entry by name or set code.
+  void search(String query) {
+    state.maybeWhen(
+      loaded: (_, searchBarVisible, __) {
+        final lower = query.toLowerCase();
+
+        final filtered = _allEntries.where((entry) {
+          final name = entry.card.name.toLowerCase();
+          final set = entry.setCode.toLowerCase();
+
+          return name.contains(lower) || set.contains(lower);
+        }).toList();
+
+        emit(CollectionState.loaded(
+          collectionEntries: filtered,
+          searchBarVisible: searchBarVisible,
+          searchQuery: query,
+        ));
+      },
+      orElse: () {},
+    );
   }
 }
