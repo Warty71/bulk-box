@@ -155,11 +155,24 @@ class SearchRepositoryImpl implements SearchRepository {
     }
   }
 
+  /// Deduplicates card sets by [CardSetModel.setCode] and [CardSetModel.setRarity].
+  /// Keeps first occurrence when duplicates exist (e.g. API returning same set twice).
+  static List<CardSetModel> _deduplicateCardSets(List<CardSetModel> sets) {
+    final seen = <String>{};
+    return sets.where((s) {
+      final key = '${s.setCode}|${s.setRarity}';
+      if (seen.contains(key)) return false;
+      seen.add(key);
+      return true;
+    }).toList();
+  }
+
   Card _cardModelToDriftCard(CardModel model) {
     final imageUrl =
         model.cardImages.isNotEmpty ? model.cardImages.first.imageUrl : '';
+    final uniqueSets = _deduplicateCardSets(model.cardSets);
     final cardSetsJson = jsonEncode(
-      model.cardSets
+      uniqueSets
           .map((s) => {
                 'set_name': s.setName,
                 'set_code': s.setCode,

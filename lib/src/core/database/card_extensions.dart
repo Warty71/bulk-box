@@ -25,11 +25,12 @@ class ParsedCardSet {
 }
 
 extension CardX on Card {
-  /// Parses [cardSetsJson] into a list of [ParsedCardSet].
+  /// Parses [cardSetsJson] into a list of [ParsedCardSet], deduplicated by
+  /// set code and rarity so identical sets (e.g. duplicate API entries) appear once.
   List<ParsedCardSet> get parsedCardSets {
     try {
       final list = jsonDecode(cardSetsJson) as List;
-      return list.map((e) {
+      final parsed = list.map((e) {
         final m = e as Map<String, dynamic>;
         return ParsedCardSet(
           setName: m['set_name'] as String? ?? '',
@@ -41,8 +42,20 @@ extension CardX on Card {
           setUrl: m['set_url'] as String?,
         );
       }).toList();
+      return _deduplicateParsedCardSets(parsed);
     } catch (_) {
       return [];
     }
   }
+}
+
+/// Deduplicates parsed card sets by set code and rarity (keeps first occurrence).
+List<ParsedCardSet> _deduplicateParsedCardSets(List<ParsedCardSet> sets) {
+  final seen = <String>{};
+  return sets.where((s) {
+    final key = '${s.setCode}|${s.setRarity}';
+    if (seen.contains(key)) return false;
+    seen.add(key);
+    return true;
+  }).toList();
 }
