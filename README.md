@@ -69,7 +69,7 @@ Basically: **don’t expect magic**, expect progress when motivation hits.
 If you want to try it:
 
 ```bash
-git clone https://github.com/Warty71/ygo-collector.git
+git clone https://github.com/Warty71/bulk-box.git
 cd bulk-box
 flutter pub get
 flutter run
