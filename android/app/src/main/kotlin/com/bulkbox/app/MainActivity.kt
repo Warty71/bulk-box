@@ -1,4 +1,4 @@
-package com.example.bulkbox
+package com.bulkbox.app
 
 import io.flutter.embedding.android.FlutterActivity
 
