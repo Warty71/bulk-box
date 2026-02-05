@@ -16,51 +16,57 @@ class CollectionBoxesGridView extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => di.getIt<BoxesCubit>()..loadBoxes(),
-      child: Scaffold(
-        appBar: AppBar(
-          title: const Text('Boxes'),
-        ),
-        body: BlocBuilder<BoxesCubit, BoxesState>(
-          builder: (context, state) {
-            if (state is BoxesLoading) {
-              return const Center(child: CircularProgressIndicator());
-            }
-            if (state is BoxesError) {
-              return Center(child: Text('Error: ${state.message}'));
-            }
-            if (state is BoxesLoaded) {
-              final items = [
-                _GridItem.unboxed(),
-                ...state.boxes.map((b) => _GridItem.box(b)),
-              ];
-              return GridView.builder(
-                padding: const EdgeInsets.all(Dimensions.md),
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  mainAxisSpacing: Dimensions.md,
-                  crossAxisSpacing: Dimensions.md,
-                  childAspectRatio: 0.85,
-                ),
-                itemCount: items.length,
-                itemBuilder: (context, index) {
-                  final item = items[index];
-                  return _BoxGridCard(
-                    item: item,
-                    onTap: () => _onTap(context, item),
-                    onDelete: item.isUnboxed
-                        ? null
-                        : () => _confirmDeleteBox(context, item.box!),
+      child: Builder(
+        builder: (context) {
+          // Context here is under BlocProvider, so dialogs can read BoxesCubit
+          return Scaffold(
+            appBar: AppBar(
+              title: const Text('Boxes'),
+            ),
+            body: BlocBuilder<BoxesCubit, BoxesState>(
+              builder: (context, state) {
+                if (state is BoxesLoading) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+                if (state is BoxesError) {
+                  return Center(child: Text('Error: ${state.message}'));
+                }
+                if (state is BoxesLoaded) {
+                  final items = [
+                    _GridItem.unboxed(),
+                    ...state.boxes.map((b) => _GridItem.box(b)),
+                  ];
+                  return GridView.builder(
+                    padding: const EdgeInsets.all(Dimensions.md),
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                      mainAxisSpacing: Dimensions.md,
+                      crossAxisSpacing: Dimensions.md,
+                      childAspectRatio: 0.85,
+                    ),
+                    itemCount: items.length,
+                    itemBuilder: (context, index) {
+                      final item = items[index];
+                      return _BoxGridCard(
+                        item: item,
+                        onTap: () => _onTap(context, item),
+                        onDelete: item.isUnboxed
+                            ? null
+                            : () => _confirmDeleteBox(context, item.box!),
+                      );
+                    },
                   );
-                },
-              );
-            }
-            return const SizedBox.shrink();
-          },
-        ),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () => _showCreateBoxDialog(context),
-          child: const Icon(Icons.add),
-        ),
+                }
+                return const SizedBox.shrink();
+              },
+            ),
+            floatingActionButton: FloatingActionButton(
+              onPressed: () => _showCreateBoxDialog(context),
+              child: const Icon(Icons.add),
+            ),
+          );
+        },
       ),
     );
   }

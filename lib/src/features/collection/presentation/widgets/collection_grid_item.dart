@@ -1,7 +1,9 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:bulk_box/src/core/di/injection_container.dart' as di;
 import 'package:bulk_box/src/features/collection/domain/entities/collection_entry.dart';
+import 'package:bulk_box/src/features/collection/presentation/cubit/collection_cubit.dart';
 import 'package:bulk_box/src/features/collection/presentation/widgets/collection_card_details_bottom_sheet.dart';
 import 'package:bulk_box/src/features/search/domain/repositories/search_repository.dart';
 
@@ -84,12 +86,15 @@ class CollectionGridItem extends StatelessWidget {
       margin: EdgeInsets.zero,
       child: InkWell(
         onTap: () {
+          final collectionCubit = context.read<CollectionCubit>();
           showModalBottomSheet(
             context: context,
             isScrollControlled: true,
             useSafeArea: true,
-            builder: (context) =>
-                CollectionCardDetailsBottomSheet(entry: entry),
+            builder: (context) => CollectionCardDetailsBottomSheet(
+              entry: entry,
+              collectionCubit: collectionCubit,
+            ),
           );
         },
         child: Stack(

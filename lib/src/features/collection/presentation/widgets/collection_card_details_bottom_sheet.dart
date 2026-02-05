@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:bulk_box/src/core/constants/dimensions.dart';
 import 'package:bulk_box/src/core/di/injection_container.dart' as di;
 import 'package:bulk_box/src/features/collection/domain/entities/collection_entry.dart';
-import 'package:bulk_box/src/features/collection/domain/repositories/box_repository.dart';
 import 'package:bulk_box/src/features/collection/presentation/cubit/collection_cubit.dart';
+import 'package:bulk_box/src/features/collection/domain/repositories/box_repository.dart';
 
 String _shortSetCode(String setCode) {
   final i = setCode.indexOf('-');
@@ -30,13 +30,17 @@ String _shortRarity(String setRarity) {
 }
 
 /// Bottom sheet for a single collection entry (one card + set + rarity).
-/// Shows card info, quantity for this version only, and a placeholder for boxes.
+/// Shows card info, quantity for this version only, and move-to-box.
+/// [collectionCubit] must be the same instance the collection view listens to
+/// so the list updates immediately after move/save.
 class CollectionCardDetailsBottomSheet extends StatefulWidget {
   final CollectionEntry entry;
+  final CollectionCubit collectionCubit;
 
   const CollectionCardDetailsBottomSheet({
     super.key,
     required this.entry,
+    required this.collectionCubit,
   });
 
   @override
@@ -98,8 +102,7 @@ class _CollectionCardDetailsBottomSheetState
 
     if (selected == null || !mounted) return;
 
-    final cubit = di.getIt<CollectionCubit>();
-    await cubit.assignItemToBox(
+    await widget.collectionCubit.assignItemToBox(
       widget.entry.card.id,
       widget.entry.setCode,
       widget.entry.setRarity,
@@ -115,16 +118,17 @@ class _CollectionCardDetailsBottomSheetState
     if (_isSaving) return;
     setState(() => _isSaving = true);
 
-    final cubit = di.getIt<CollectionCubit>();
     final cardId = widget.entry.card.id;
     final setCode = widget.entry.setCode;
     final setRarity = widget.entry.setRarity;
 
     try {
       if (_quantity == 0) {
-        await cubit.deleteCollectionItem(cardId, setCode, setRarity);
+        await widget.collectionCubit.deleteCollectionItem(
+            cardId, setCode, setRarity);
       } else {
-        await cubit.updateQuantity(cardId, setCode, setRarity, _quantity);
+        await widget.collectionCubit.updateQuantity(
+            cardId, setCode, setRarity, _quantity);
       }
       if (mounted) Navigator.of(context).pop();
     } finally {
