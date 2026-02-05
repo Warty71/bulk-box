@@ -11,25 +11,18 @@ class CollectionSectionedGridView extends StatelessWidget {
     super.key,
     required this.collectionEntries,
     required this.sortOption,
-    required this.getQuantitiesByCardId,
-    required this.getCardById,
     required this.groupBySection,
   });
 
   final List<CollectionEntry> collectionEntries;
   final SortOption sortOption;
-  final Map<int, int> Function() getQuantitiesByCardId;
-  final CollectionEntry Function(int) getCardById;
   final Map<String, List<CollectionEntry>> Function(
     List<CollectionEntry>,
-    Map<int, int>,
   ) groupBySection;
 
   @override
   Widget build(BuildContext context) {
-    final quantitiesByCardId = getQuantitiesByCardId();
-    final groups = groupBySection(collectionEntries, quantitiesByCardId);
-
+    final groups = groupBySection(collectionEntries);
     final sectionKeys = groups.keys.toList()..sort((a, b) => a.compareTo(b));
 
     return CustomScrollView(
@@ -46,11 +39,9 @@ class CollectionSectionedGridView extends StatelessWidget {
               delegate: SliverChildBuilderDelegate(
                 (context, index) {
                   final entry = groups[sectionKey]![index];
-                  final totalQuantity = quantitiesByCardId[entry.card.id]!;
-
                   return CollectionGridItem(
                     entry: entry,
-                    totalQuantity: totalQuantity,
+                    totalQuantity: entry.quantity,
                   );
                 },
                 childCount: groups[sectionKey]!.length,

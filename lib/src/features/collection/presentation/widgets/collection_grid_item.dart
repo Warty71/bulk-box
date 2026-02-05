@@ -5,6 +5,32 @@ import 'package:bulk_box/src/features/collection/domain/entities/collection_entr
 import 'package:bulk_box/src/features/collection/presentation/widgets/collection_card_details_bottom_sheet.dart';
 import 'package:bulk_box/src/features/search/domain/repositories/search_repository.dart';
 
+/// Short set code: first part before hyphen (e.g. DUNE-EN001 -> DUNE).
+String _shortSetCode(String setCode) {
+  final i = setCode.indexOf('-');
+  return i > 0 ? setCode.substring(0, i) : setCode;
+}
+
+/// Short rarity label (e.g. Super Rare -> SR, Secret Rare -> ScR).
+String _shortRarity(String setRarity) {
+  const map = {
+    'Common': 'C',
+    'Rare': 'R',
+    'Super Rare': 'SR',
+    'Secret Rare': 'ScR',
+    'Ultra Rare': 'UR',
+    'Ultimate Rare': 'UtR',
+    'Ghost Rare': 'GR',
+    'Gold Rare': 'GdR',
+    'Premium Gold Rare': 'PGR',
+    'Platinum Rare': 'PtR',
+    'Starlight Rare': 'StR',
+    'Quarter Century Rare': 'QCR',
+    'Collector\'s Rare': 'CR',
+  };
+  return map[setRarity] ?? setRarity;
+}
+
 /// Grid item widget for displaying a card in the collection grid view
 class CollectionGridItem extends StatelessWidget {
   final CollectionEntry entry;
@@ -15,6 +41,40 @@ class CollectionGridItem extends StatelessWidget {
     required this.entry,
     required this.totalQuantity,
   });
+
+  static Widget _badge(
+    BuildContext context, {
+    required String label,
+    Color? backgroundColor,
+  }) {
+    final theme = Theme.of(context);
+    final bg = backgroundColor ?? theme.colorScheme.surfaceContainerHighest;
+    final fg = theme.colorScheme.onSurface;
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
+      decoration: BoxDecoration(
+        color: bg,
+        borderRadius: BorderRadius.circular(10),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.2),
+            blurRadius: 2,
+            offset: const Offset(0, 1),
+          ),
+        ],
+      ),
+      child: Text(
+        label,
+        style: theme.textTheme.labelSmall?.copyWith(
+          color: fg,
+          fontWeight: FontWeight.w600,
+          fontSize: 10,
+        ),
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -66,6 +126,19 @@ class CollectionGridItem extends StatelessWidget {
                   },
                 );
               },
+            ),
+            // Print cluster: set + rarity in a row (bottom-left)
+            Positioned(
+              left: 8,
+              bottom: 8,
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  _badge(context, label: _shortSetCode(entry.setCode)),
+                  const SizedBox(width: 4),
+                  _badge(context, label: _shortRarity(entry.setRarity)),
+                ],
+              ),
             ),
             // Quantity Badge
             Positioned(
