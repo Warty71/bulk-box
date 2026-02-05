@@ -10,13 +10,14 @@ import 'package:bulk_box/src/features/collection/presentation/cubit/boxes_cubit.
 class BoxGridCard extends StatelessWidget {
   final BoxOrUnboxed item;
   final VoidCallback onTap;
-  final VoidCallback? onDelete;
+  /// Optional trailing widget (e.g. [PopupMenuButton]) for user boxes; null for Unboxed.
+  final Widget? trailing;
 
   const BoxGridCard({
     super.key,
     required this.item,
     required this.onTap,
-    this.onDelete,
+    this.trailing,
   });
 
   @override
@@ -30,14 +31,13 @@ class BoxGridCard extends StatelessWidget {
         title: 'Unboxed',
         subtitle: 'Items not in any box',
         onTap: onTap,
-        onDelete: null,
       );
     }
 
     return _BoxGridCardWithCount(
       box: item.box!,
       onTap: onTap,
-      onDelete: onDelete,
+      trailing: trailing,
     );
   }
 }
@@ -45,12 +45,12 @@ class BoxGridCard extends StatelessWidget {
 class _BoxGridCardWithCount extends StatelessWidget {
   final Box box;
   final VoidCallback onTap;
-  final VoidCallback? onDelete;
+  final Widget? trailing;
 
   const _BoxGridCardWithCount({
     required this.box,
     required this.onTap,
-    this.onDelete,
+    this.trailing,
   });
 
   @override
@@ -68,7 +68,7 @@ class _BoxGridCardWithCount extends StatelessWidget {
           title: box.name,
           subtitle: '$count item${count == 1 ? '' : 's'}',
           onTap: onTap,
-          onDelete: onDelete,
+          trailing: trailing,
         );
       },
     );

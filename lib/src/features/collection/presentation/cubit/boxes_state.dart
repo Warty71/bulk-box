@@ -1,25 +1,12 @@
+import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:bulk_box/src/features/collection/domain/entities/box.dart';
 
-abstract class BoxesState {
-  const BoxesState();
-}
+part 'boxes_state.freezed.dart';
 
-class BoxesInitial extends BoxesState {
-  const BoxesInitial();
-}
-
-class BoxesLoading extends BoxesState {
-  const BoxesLoading();
-}
-
-class BoxesLoaded extends BoxesState {
-  final List<Box> boxes;
-
-  const BoxesLoaded(this.boxes);
-}
-
-class BoxesError extends BoxesState {
-  final String message;
-
-  const BoxesError(this.message);
+@freezed
+abstract class BoxesState with _$BoxesState {
+  const factory BoxesState.initial() = _Initial;
+  const factory BoxesState.loading() = _Loading;
+  const factory BoxesState.loaded(List<Box> boxes) = _Loaded;
+  const factory BoxesState.error(String message) = _Error;
 }

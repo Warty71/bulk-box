@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:bulk_box/src/core/constants/dimensions.dart';
 
-/// A tappable card with icon, title, subtitle, and optional delete action.
+/// A tappable card with icon, title, subtitle, and optional trailing action (e.g. menu or delete).
 class TappableInfoCard extends StatelessWidget {
   final IconData icon;
   final Color backgroundColor;
   final String title;
   final String subtitle;
   final VoidCallback onTap;
+  /// If null, no trailing action. If set, replaces the default delete button.
   final VoidCallback? onDelete;
+  /// If set, shown instead of [onDelete] button (e.g. [PopupMenuButton]).
+  final Widget? trailing;
 
   const TappableInfoCard({
     super.key,
@@ -18,6 +21,7 @@ class TappableInfoCard extends StatelessWidget {
     required this.subtitle,
     required this.onTap,
     this.onDelete,
+    this.trailing,
   });
 
   @override
@@ -75,7 +79,13 @@ class TappableInfoCard extends StatelessWidget {
                 ),
               ),
             ),
-            if (onDelete != null)
+            if (trailing != null)
+              Positioned(
+                top: 0,
+                right: 0,
+                child: trailing!,
+              )
+            else if (onDelete != null)
               Positioned(
                 top: 0,
                 right: 0,

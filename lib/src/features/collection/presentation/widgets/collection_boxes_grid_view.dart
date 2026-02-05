@@ -8,6 +8,7 @@ import 'package:bulk_box/src/features/collection/presentation/utils/collection_n
 import 'package:bulk_box/src/features/collection/presentation/widgets/box_grid_card.dart';
 import 'package:bulk_box/src/features/collection/presentation/widgets/boxes_state_view.dart';
 import 'package:bulk_box/src/core/widgets/app_dialogs.dart';
+import 'package:bulk_box/src/features/collection/domain/entities/box.dart';
 
 /// 2-column grid of boxes (Unboxed + user boxes). No app bar.
 /// Tap a box to open cards in that box; FAB to create a new box.
@@ -16,9 +17,31 @@ class CollectionBoxesGridView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => di.getIt<BoxesCubit>()..loadBoxes(),
-      child: Builder(
+    return BlocProvider.value(
+      value: di.getIt<BoxesCubit>(),
+      child: _CollectionBoxesGridBody(),
+    );
+  }
+}
+
+class _CollectionBoxesGridBody extends StatefulWidget {
+  @override
+  State<_CollectionBoxesGridBody> createState() =>
+      _CollectionBoxesGridBodyState();
+}
+
+class _CollectionBoxesGridBodyState extends State<_CollectionBoxesGridBody> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<BoxesCubit>().loadBoxes();
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Builder(
         builder: (context) {
           return Scaffold(
             appBar: AppBar(
@@ -45,12 +68,9 @@ class CollectionBoxesGridView extends StatelessWidget {
                     return BoxGridCard(
                       item: item,
                       onTap: () => context.pushCollectionBox(item.box),
-                      onDelete: item.isUnboxed
+                      trailing: item.isUnboxed
                           ? null
-                          : () => AppDialogs.showDeleteBoxConfirmation(
-                                context,
-                                box: item.box!,
-                              ),
+                          : _boxMenu(context, item.box!),
                     );
                   },
                 );
@@ -62,7 +82,44 @@ class CollectionBoxesGridView extends StatelessWidget {
             ),
           );
         },
-      ),
+      );
+  }
+
+  static Widget _boxMenu(BuildContext context, Box box) {
+    final theme = Theme.of(context);
+    return PopupMenuButton<String>(
+      icon: const Icon(Icons.more_vert),
+      onSelected: (value) {
+        if (value == 'edit') {
+          AppDialogs.showEditBox(context, box: box);
+        } else if (value == 'delete') {
+          AppDialogs.showDeleteBoxConfirmation(context, box: box);
+        }
+      },
+      itemBuilder: (context) => [
+        const PopupMenuItem(
+          value: 'edit',
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(Icons.edit_outlined, size: 20),
+              SizedBox(width: 12),
+              Text('Edit name'),
+            ],
+          ),
+        ),
+        PopupMenuItem(
+          value: 'delete',
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(Icons.delete_outline, size: 20, color: theme.colorScheme.error),
+              const SizedBox(width: 12),
+              Text('Delete', style: TextStyle(color: theme.colorScheme.error)),
+            ],
+          ),
+        ),
+      ],
     );
   }
 }

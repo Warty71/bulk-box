@@ -8,6 +8,7 @@ import 'package:bulk_box/src/features/collection/domain/entities/collection_entr
 import 'package:bulk_box/src/features/collection/domain/entities/collection_item.dart';
 import 'package:bulk_box/src/features/collection/domain/repositories/box_repository.dart';
 import 'package:bulk_box/src/features/collection/presentation/widgets/slot_tile.dart';
+import 'package:bulk_box/src/features/collection/presentation/cubit/boxes_cubit.dart';
 import 'package:bulk_box/src/features/collection/presentation/cubit/collection_cubit.dart';
 
 /// Bottom sheet for one card+set+rarity: shows slots (quantities per box)
@@ -163,6 +164,7 @@ class _CollectionCardDetailsBottomSheetState
         if (qtyInCurrentBox == 0) {
           Navigator.of(context).pop();
         }
+        di.getIt<BoxesCubit>().loadBoxes();
       },
     );
   }

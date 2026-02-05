@@ -17,16 +17,12 @@ class BoxesStateView extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<BoxesCubit, BoxesState>(
       builder: (context, state) {
-        if (state is BoxesLoading) {
-          return const Center(child: CircularProgressIndicator());
-        }
-        if (state is BoxesError) {
-          return Center(child: Text('Error: ${state.message}'));
-        }
-        if (state is BoxesLoaded) {
-          return contentBuilder(state.boxes);
-        }
-        return const SizedBox.shrink();
+        return state.when(
+          initial: () => const SizedBox.shrink(),
+          loading: () => const Center(child: CircularProgressIndicator()),
+          loaded: (boxes) => contentBuilder(boxes),
+          error: (message) => Center(child: Text('Error: $message')),
+        );
       },
     );
   }

@@ -113,8 +113,8 @@ void _initializeCollectionFeature() {
     () => CollectionRepositoryImpl(getIt()),
   );
 
-  // Cubits
-  getIt.registerFactory(
+  // Cubits (BoxesCubit singleton so box list/counts refresh after moving cards)
+  getIt.registerLazySingleton(
     () => BoxesCubit(getIt<BoxRepository>()),
   );
 

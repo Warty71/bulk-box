@@ -52,6 +52,51 @@ class AppDialogs {
     context.read<BoxesCubit>().createBox(name: name);
   }
 
+  /// Shows "Edit box" dialog; on Save, calls [BoxesCubit.updateBox] with the new name.
+  static Future<void> showEditBox(BuildContext context, {required Box box}) async {
+    final nameController = TextEditingController(text: box.name);
+
+    await showDialog<void>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: const Text('Edit box'),
+        content: TextField(
+          controller: nameController,
+          decoration: const InputDecoration(
+            labelText: 'Box name',
+            hintText: 'e.g. Starlight Rares',
+          ),
+          autofocus: true,
+          onSubmitted: (_) => _submitEdit(context, dialogContext, box.id, nameController),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(dialogContext).pop(),
+            child: const Text('Cancel'),
+          ),
+          FilledButton(
+            onPressed: () =>
+                _submitEdit(context, dialogContext, box.id, nameController),
+            child: const Text('Save'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  static void _submitEdit(
+    BuildContext context,
+    BuildContext dialogContext,
+    int boxId,
+    TextEditingController nameController,
+  ) {
+    final name = nameController.text.trim();
+    if (name.isEmpty) return;
+
+    Navigator.of(dialogContext).pop();
+    context.read<BoxesCubit>().updateBox(boxId, name: name);
+  }
+
   /// Shows "Delete box?" confirmation; on confirm, calls [BoxesCubit.deleteBox].
   /// Requires [BoxesCubit] in context.
   static Future<void> showDeleteBoxConfirmation(

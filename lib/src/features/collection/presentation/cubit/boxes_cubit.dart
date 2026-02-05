@@ -5,16 +5,16 @@ import 'package:bulk_box/src/features/collection/presentation/cubit/boxes_state.
 class BoxesCubit extends Cubit<BoxesState> {
   final BoxRepository _repository;
 
-  BoxesCubit(this._repository) : super(const BoxesInitial());
+  BoxesCubit(this._repository) : super(const BoxesState.initial());
 
   Future<void> loadBoxes() async {
-    emit(const BoxesLoading());
+    emit(const BoxesState.loading());
 
     try {
       final boxes = await _repository.getBoxes();
-      emit(BoxesLoaded(boxes));
+      emit(BoxesState.loaded(boxes));
     } catch (e) {
-      emit(BoxesError(e.toString()));
+      emit(BoxesState.error(e.toString()));
     }
   }
 
@@ -23,7 +23,7 @@ class BoxesCubit extends Cubit<BoxesState> {
       await _repository.createBox(name: name, color: color);
       await loadBoxes();
     } catch (e) {
-      emit(BoxesError(e.toString()));
+      emit(BoxesState.error(e.toString()));
     }
   }
 
@@ -32,7 +32,7 @@ class BoxesCubit extends Cubit<BoxesState> {
       await _repository.updateBox(id, name: name, color: color);
       await loadBoxes();
     } catch (e) {
-      emit(BoxesError(e.toString()));
+      emit(BoxesState.error(e.toString()));
     }
   }
 
@@ -41,7 +41,7 @@ class BoxesCubit extends Cubit<BoxesState> {
       await _repository.deleteBox(id);
       await loadBoxes();
     } catch (e) {
-      emit(BoxesError(e.toString()));
+      emit(BoxesState.error(e.toString()));
     }
   }
 
