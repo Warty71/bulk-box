@@ -7,31 +7,21 @@ class CollectionPlainGridView extends StatelessWidget {
   const CollectionPlainGridView({
     super.key,
     required this.collectionEntries,
-    required this.getQuantitiesByCardId,
-    required this.getCardById,
   });
 
   final List<CollectionEntry> collectionEntries;
-  final Map<int, int> Function() getQuantitiesByCardId;
-  final CollectionEntry Function(int) getCardById;
 
   @override
   Widget build(BuildContext context) {
-    final quantitiesByCardId = getQuantitiesByCardId();
-    final uniqueCardIds = quantitiesByCardId.keys.toList();
-
     return GridView.builder(
       padding: collectionGridPadding,
       gridDelegate: collectionGridDelegate,
-      itemCount: uniqueCardIds.length,
+      itemCount: collectionEntries.length,
       itemBuilder: (context, index) {
-        final cardId = uniqueCardIds[index];
-        final totalQuantity = quantitiesByCardId[cardId]!;
-        final entry = getCardById(cardId);
-
+        final entry = collectionEntries[index];
         return CollectionGridItem(
           entry: entry,
-          totalQuantity: totalQuantity,
+          totalQuantity: entry.quantity,
         );
       },
     );

@@ -1,19 +1,41 @@
 import 'package:flutter/material.dart';
 import 'package:bulk_box/src/core/constants/dimensions.dart';
-import 'package:bulk_box/src/core/database/app_database.dart' as db;
-import 'package:bulk_box/src/core/database/card_extensions.dart';
 import 'package:bulk_box/src/core/di/injection_container.dart' as di;
-import 'package:bulk_box/src/features/collection/domain/entities/collection_item.dart';
+import 'package:bulk_box/src/features/collection/domain/entities/collection_entry.dart';
 import 'package:bulk_box/src/features/collection/presentation/cubit/collection_cubit.dart';
 
-/// Bottom sheet that displays all versions/rarities of a card in the collection.
-/// Used when tapping a card in the collection grid.
+String _shortSetCode(String setCode) {
+  final i = setCode.indexOf('-');
+  return i > 0 ? setCode.substring(0, i) : setCode;
+}
+
+String _shortRarity(String setRarity) {
+  const map = {
+    'Common': 'C',
+    'Rare': 'R',
+    'Super Rare': 'SR',
+    'Secret Rare': 'ScR',
+    'Ultra Rare': 'UR',
+    'Ultimate Rare': 'UtR',
+    'Ghost Rare': 'GR',
+    'Gold Rare': 'GdR',
+    'Premium Gold Rare': 'PGR',
+    'Platinum Rare': 'PtR',
+    'Starlight Rare': 'StR',
+    'Quarter Century Rare': 'QCR',
+    "Collector's Rare": 'CR',
+  };
+  return map[setRarity] ?? setRarity;
+}
+
+/// Bottom sheet for a single collection entry (one card + set + rarity).
+/// Shows card info, quantity for this version only, and a placeholder for boxes.
 class CollectionCardDetailsBottomSheet extends StatefulWidget {
-  final db.Card card;
+  final CollectionEntry entry;
 
   const CollectionCardDetailsBottomSheet({
     super.key,
-    required this.card,
+    required this.entry,
   });
 
   @override
@@ -23,100 +45,46 @@ class CollectionCardDetailsBottomSheet extends StatefulWidget {
 
 class _CollectionCardDetailsBottomSheetState
     extends State<CollectionCardDetailsBottomSheet> {
-  final Map<String, int> _quantities = {};
-  bool _isLoading = true;
+  late int _quantity;
+  bool _isSaving = false;
 
   @override
   void initState() {
     super.initState();
-    _loadCollectionData();
+    _quantity = widget.entry.quantity;
   }
 
-  Future<void> _loadCollectionData() async {
-    final cubit = di.getIt<CollectionCubit>();
-    final existingItems =
-        await cubit.getCollectionItemsByCardId(widget.card.id);
-
-    if (mounted) {
-      setState(() {
-        for (final item in existingItems) {
-          final key = '${item.setCode}_${item.setRarity}';
-          _quantities[key] = item.quantity;
-        }
-        _isLoading = false;
-      });
-    }
-  }
-
-  void _updateQuantity(String setCode, String setRarity, int delta) {
+  void _updateQuantity(int delta) {
     setState(() {
-      final key = '${setCode}_$setRarity';
-      final current = _quantities[key] ?? 0;
-      _quantities[key] = (current + delta).clamp(0, 999);
+      _quantity = (_quantity + delta).clamp(0, 999);
     });
   }
 
   Future<void> _save() async {
+    if (_isSaving) return;
+    setState(() => _isSaving = true);
+
     final cubit = di.getIt<CollectionCubit>();
-    final now = DateTime.now();
+    final cardId = widget.entry.card.id;
+    final setCode = widget.entry.setCode;
+    final setRarity = widget.entry.setRarity;
 
-    final existingItems =
-        await cubit.getCollectionItemsByCardId(widget.card.id);
-
-    for (final set in widget.card.parsedCardSets) {
-      final key = '${set.setCode}_${set.setRarity}';
-      final quantity = _quantities[key] ?? 0;
-
-      final existingItem = existingItems.firstWhere(
-        (item) =>
-            item.setCode == set.setCode && item.setRarity == set.setRarity,
-        orElse: () => CollectionItemEntity(
-          cardId: -1,
-          setCode: '',
-          setRarity: '',
-          quantity: 0,
-          dateAdded: now,
-        ),
-      );
-
-      if (quantity > 0) {
-        if (existingItem.cardId != -1) {
-          await cubit.updateQuantity(
-            widget.card.id,
-            set.setCode,
-            set.setRarity,
-            quantity,
-          );
-        } else {
-          final item = CollectionItemEntity(
-            cardId: widget.card.id,
-            setCode: set.setCode,
-            setRarity: set.setRarity,
-            quantity: quantity,
-            dateAdded: now,
-          );
-          await cubit.addCollectionItem(item);
-        }
+    try {
+      if (_quantity == 0) {
+        await cubit.deleteCollectionItem(cardId, setCode, setRarity);
       } else {
-        if (existingItem.cardId != -1) {
-          await cubit.deleteCollectionItem(
-            widget.card.id,
-            set.setCode,
-            set.setRarity,
-          );
-        }
+        await cubit.updateQuantity(cardId, setCode, setRarity, _quantity);
       }
-    }
-
-    if (mounted) {
-      Navigator.of(context).pop();
+      if (mounted) Navigator.of(context).pop();
+    } finally {
+      if (mounted) setState(() => _isSaving = false);
     }
   }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final cardSets = widget.card.parsedCardSets;
+    final entry = widget.entry;
 
     return Container(
       padding: EdgeInsets.only(
@@ -126,93 +94,174 @@ class _CollectionCardDetailsBottomSheetState
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          // Header
+          // Header: title and close on same row; set/rarity below
           Padding(
-            padding: const EdgeInsets.all(Dimensions.md),
-            child: Row(
+            padding: const EdgeInsets.only(
+              top: Dimensions.md,
+              right: Dimensions.md,
+              bottom: Dimensions.md,
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              mainAxisSize: MainAxisSize.min,
               children: [
-                Expanded(
-                  child: Text(
-                    widget.card.name,
-                    style: theme.textTheme.titleLarge,
-                  ),
+                Row(
+                  children: [
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: Dimensions.md),
+                        child: Text(
+                          entry.card.name,
+                          style: theme.textTheme.titleLarge,
+                        ),
+                      ),
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.close),
+                      onPressed: () => Navigator.of(context).pop(),
+                    ),
+                  ],
                 ),
-                IconButton(
-                  icon: const Icon(Icons.close),
-                  onPressed: () => Navigator.of(context).pop(),
+                Padding(
+                  padding: const EdgeInsets.only(left: Dimensions.md),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      _infoChip(
+                        context,
+                        label: 'Set',
+                        value: _shortSetCode(entry.setCode),
+                      ),
+                      const SizedBox(width: Dimensions.sm),
+                      _infoChip(
+                        context,
+                        label: 'Rarity',
+                        value: _shortRarity(entry.setRarity),
+                      ),
+                    ],
+                  ),
                 ),
               ],
             ),
           ),
           const Divider(),
 
-          // Card Sets List
-          if (_isLoading)
-            const Padding(
-              padding: EdgeInsets.all(Dimensions.xl),
-              child: Center(child: CircularProgressIndicator()),
-            )
-          else if (cardSets.isEmpty)
-            const Padding(
-              padding: EdgeInsets.all(Dimensions.xl),
-              child: Center(child: Text('No sets available for this card')),
-            )
-          else
-            Flexible(
-              child: ListView.builder(
-                shrinkWrap: true,
-                itemCount: cardSets.length,
-                itemBuilder: (context, index) {
-                  final set = cardSets[index];
-                  final key = '${set.setCode}_${set.setRarity}';
-                  final quantity = _quantities[key] ?? 0;
-
-                  return ListTile(
-                    title: Text(set.setName),
-                    subtitle: Text('${set.setCode} - ${set.setRarity}'),
-                    trailing: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        IconButton(
-                          icon: const Icon(Icons.remove),
-                          onPressed: () => _updateQuantity(
-                            set.setCode,
-                            set.setRarity,
-                            -1,
-                          ),
-                        ),
-                        SizedBox(
-                          width: 50,
-                          child: Text(
-                            '$quantity',
-                            textAlign: TextAlign.center,
-                            style: theme.textTheme.titleMedium,
-                          ),
-                        ),
-                        IconButton(
-                          icon: const Icon(Icons.add),
-                          onPressed: () => _updateQuantity(
-                            set.setCode,
-                            set.setRarity,
-                            1,
-                          ),
-                        ),
-                      ],
+          // Quantity for this version only
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: Dimensions.md),
+            child: Row(
+              children: [
+                Text(
+                  'Quantity',
+                  style: theme.textTheme.titleMedium,
+                ),
+                const Spacer(),
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    IconButton(
+                      icon: const Icon(Icons.remove),
+                      onPressed:
+                          _quantity > 0 ? () => _updateQuantity(-1) : null,
                     ),
-                  );
-                },
-              ),
+                    SizedBox(
+                      width: 48,
+                      child: Text(
+                        '$_quantity',
+                        textAlign: TextAlign.center,
+                        style: theme.textTheme.titleLarge,
+                      ),
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.add),
+                      onPressed:
+                          _quantity < 999 ? () => _updateQuantity(1) : null,
+                    ),
+                  ],
+                ),
+              ],
             ),
+          ),
+          const SizedBox(height: Dimensions.xs),
 
-          // Save Button
+          // Save button
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: Dimensions.md),
+            child: FilledButton(
+              onPressed: _isSaving ? null : _save,
+              child: _isSaving
+                  ? const SizedBox(
+                      height: 20,
+                      width: 20,
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    )
+                  : const Text('Save'),
+            ),
+          ),
+
+          // Placeholder: boxes (future)
+          const Divider(),
           Padding(
             padding: const EdgeInsets.all(Dimensions.md),
-            child: FilledButton(
-              onPressed: _isLoading ? null : _save,
-              child: const Text('Save'),
+            child: Container(
+              padding: const EdgeInsets.symmetric(
+                vertical: Dimensions.lg,
+                horizontal: Dimensions.md,
+              ),
+              decoration: BoxDecoration(
+                color: theme.colorScheme.surfaceContainerHighest
+                    .withValues(alpha: 0.5),
+                borderRadius: BorderRadius.circular(Dimensions.radiusMd),
+              ),
+              child: Row(
+                children: [
+                  Icon(
+                    Icons.inbox_outlined,
+                    size: Dimensions.iconLg,
+                    color: theme.colorScheme.onSurfaceVariant,
+                  ),
+                  const SizedBox(width: Dimensions.md),
+                  Expanded(
+                    child: Text(
+                      'Move to box',
+                      style: theme.textTheme.titleSmall?.copyWith(
+                        color: theme.colorScheme.onSurfaceVariant,
+                      ),
+                    ),
+                  ),
+                  Text(
+                    'Coming soon',
+                    style: theme.textTheme.labelSmall?.copyWith(
+                      color: theme.colorScheme.outline,
+                      fontStyle: FontStyle.italic,
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _infoChip(
+    BuildContext context, {
+    required String label,
+    required String value,
+  }) {
+    final theme = Theme.of(context);
+    return Container(
+      padding: const EdgeInsets.symmetric(
+        horizontal: Dimensions.sm,
+      ),
+      decoration: BoxDecoration(
+        color: theme.colorScheme.surfaceContainerHighest,
+        borderRadius: BorderRadius.circular(Dimensions.radiusSm),
+      ),
+      child: Text(
+        '$label: $value',
+        style: theme.textTheme.labelLarge,
       ),
     );
   }
