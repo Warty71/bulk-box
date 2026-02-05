@@ -2,55 +2,51 @@ import 'package:bulk_box/src/features/collection/domain/entities/collection_item
 import 'package:bulk_box/src/features/collection/domain/entities/collection_entry.dart';
 
 abstract class CollectionRepository {
-  /// [boxId] null = all items; [unboxedOnly] true = only unboxed items.
+  /// [boxId] null = all slots; [unboxedOnly] true = only unboxed slots.
   Future<List<CollectionEntry>> getCollectionWithCards({
     int? boxId,
     bool unboxedOnly = false,
   });
 
-  /// Get all collection items
   Future<List<CollectionItemEntity>> getAllCollectionItems();
 
-  /// Get collection items for a specific card
+  /// All slots for a card (any set/rarity).
   Future<List<CollectionItemEntity>> getCollectionItemsByCardId(int cardId);
 
-  /// Get a specific collection item by cardId, setCode, and setRarity
-  Future<CollectionItemEntity?> getCollectionItem(
+  /// All slots for one card+set+rarity (where each copy is).
+  Future<List<CollectionItemEntity>> getSlotsForCard(
     int cardId,
     String setCode,
     String setRarity,
   );
 
-  /// Add or update a collection item (increment quantity if exists)
+  /// Add or increment slot (card+set+rarity+box).
   Future<void> addCollectionItem(CollectionItemEntity item);
 
-  /// Update quantity of a collection item
-  Future<void> updateQuantity(
-    int cardId,
-    String setCode,
-    String setRarity,
-    int quantity,
-  );
-
-  /// Remove a collection item (or decrease quantity)
-  Future<void> removeCollectionItem(
-    int cardId,
-    String setCode,
-    String setRarity,
-  );
-
-  /// Delete a collection item completely
-  Future<void> deleteCollectionItem(
-    int cardId,
-    String setCode,
-    String setRarity,
-  );
-
-  /// Assign a collection item to a box (or unboxed when [boxId] is null).
-  Future<void> assignItemToBox(
+  /// Update quantity for one slot; delete slot if quantity <= 0.
+  Future<void> updateSlotQuantity(
     int cardId,
     String setCode,
     String setRarity,
     int? boxId,
+    int quantity,
+  );
+
+  /// Delete one slot.
+  Future<void> deleteSlot(
+    int cardId,
+    String setCode,
+    String setRarity,
+    int? boxId,
+  );
+
+  /// Move [amount] from one slot to another.
+  Future<void> moveBetweenSlots(
+    int cardId,
+    String setCode,
+    String setRarity,
+    int? fromBoxId,
+    int? toBoxId,
+    int amount,
   );
 }

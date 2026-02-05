@@ -46,61 +46,79 @@ class CollectionCubit extends Cubit<CollectionState> {
       await _reloadWithCurrentFilter();
     } catch (e) {
       emit(CollectionState.error(e.toString()));
+      rethrow;
     }
   }
 
-  /// Update quantity of a collection item
-  Future<void> updateQuantity(
+  /// All slots for one card+set+rarity.
+  Future<List<CollectionItemEntity>> getSlotsForCard(
     int cardId,
     String setCode,
     String setRarity,
+  ) async {
+    try {
+      return await _repository.getSlotsForCard(cardId, setCode, setRarity);
+    } catch (e) {
+      return [];
+    }
+  }
+
+  /// Update quantity for one slot; delete slot if quantity <= 0.
+  Future<void> updateSlotQuantity(
+    int cardId,
+    String setCode,
+    String setRarity,
+    int? boxId,
     int quantity,
   ) async {
     try {
-      await _repository.updateQuantity(cardId, setCode, setRarity, quantity);
+      await _repository.updateSlotQuantity(
+        cardId,
+        setCode,
+        setRarity,
+        boxId,
+        quantity,
+      );
       await _reloadWithCurrentFilter();
     } catch (e) {
       emit(CollectionState.error(e.toString()));
+      rethrow;
     }
   }
 
-  /// Remove one quantity from a collection item
-  Future<void> removeCollectionItem(
-    int cardId,
-    String setCode,
-    String setRarity,
-  ) async {
-    try {
-      await _repository.removeCollectionItem(cardId, setCode, setRarity);
-      await _reloadWithCurrentFilter();
-    } catch (e) {
-      emit(CollectionState.error(e.toString()));
-    }
-  }
-
-  /// Delete a collection item completely
-  Future<void> deleteCollectionItem(
-    int cardId,
-    String setCode,
-    String setRarity,
-  ) async {
-    try {
-      await _repository.deleteCollectionItem(cardId, setCode, setRarity);
-      await _reloadWithCurrentFilter();
-    } catch (e) {
-      emit(CollectionState.error(e.toString()));
-    }
-  }
-
-  /// Assign a collection item to a box (or unboxed when [boxId] is null).
-  Future<void> assignItemToBox(
+  /// Delete one slot.
+  Future<void> deleteSlot(
     int cardId,
     String setCode,
     String setRarity,
     int? boxId,
   ) async {
     try {
-      await _repository.assignItemToBox(cardId, setCode, setRarity, boxId);
+      await _repository.deleteSlot(cardId, setCode, setRarity, boxId);
+      await _reloadWithCurrentFilter();
+    } catch (e) {
+      emit(CollectionState.error(e.toString()));
+    }
+  }
+
+  /// Move [amount] from one slot to another.
+  Future<void> moveBetweenSlots(
+    int cardId,
+    String setCode,
+    String setRarity,
+    int? fromBoxId,
+    int? toBoxId,
+    int amount,
+  ) async {
+    try {
+      await _repository.moveBetweenSlots(
+        cardId,
+        setCode,
+        setRarity,
+        fromBoxId,
+        toBoxId,
+        amount,
+      );
       await _reloadWithCurrentFilter();
     } catch (e) {
       emit(CollectionState.error(e.toString()));

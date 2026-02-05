@@ -2,8 +2,10 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:bulk_box/src/core/di/injection_container.dart' as di;
+import 'package:bulk_box/src/core/enums/rarity.dart';
 import 'package:bulk_box/src/features/collection/domain/entities/collection_entry.dart';
 import 'package:bulk_box/src/features/collection/presentation/cubit/collection_cubit.dart';
+import 'package:bulk_box/src/features/collection/presentation/cubit/collection_state.dart';
 import 'package:bulk_box/src/features/collection/presentation/widgets/collection_card_details_bottom_sheet.dart';
 import 'package:bulk_box/src/features/search/domain/repositories/search_repository.dart';
 
@@ -11,26 +13,6 @@ import 'package:bulk_box/src/features/search/domain/repositories/search_reposito
 String _shortSetCode(String setCode) {
   final i = setCode.indexOf('-');
   return i > 0 ? setCode.substring(0, i) : setCode;
-}
-
-/// Short rarity label (e.g. Super Rare -> SR, Secret Rare -> ScR).
-String _shortRarity(String setRarity) {
-  const map = {
-    'Common': 'C',
-    'Rare': 'R',
-    'Super Rare': 'SR',
-    'Secret Rare': 'ScR',
-    'Ultra Rare': 'UR',
-    'Ultimate Rare': 'UtR',
-    'Ghost Rare': 'GR',
-    'Gold Rare': 'GdR',
-    'Premium Gold Rare': 'PGR',
-    'Platinum Rare': 'PtR',
-    'Starlight Rare': 'StR',
-    'Quarter Century Rare': 'QCR',
-    'Collector\'s Rare': 'CR',
-  };
-  return map[setRarity] ?? setRarity;
 }
 
 /// Grid item widget for displaying a card in the collection grid view
@@ -87,6 +69,11 @@ class CollectionGridItem extends StatelessWidget {
       child: InkWell(
         onTap: () {
           final collectionCubit = context.read<CollectionCubit>();
+          final state = collectionCubit.state;
+          final currentBoxId = state.maybeWhen(
+            loaded: (_, __, ___, boxId, ____) => boxId,
+            orElse: () => null,
+          );
           showModalBottomSheet(
             context: context,
             isScrollControlled: true,
@@ -94,6 +81,7 @@ class CollectionGridItem extends StatelessWidget {
             builder: (context) => CollectionCardDetailsBottomSheet(
               entry: entry,
               collectionCubit: collectionCubit,
+              currentBoxId: currentBoxId,
             ),
           );
         },
@@ -141,7 +129,7 @@ class CollectionGridItem extends StatelessWidget {
                 children: [
                   _badge(context, label: _shortSetCode(entry.setCode)),
                   const SizedBox(width: 4),
-                  _badge(context, label: _shortRarity(entry.setRarity)),
+                  _badge(context, label: Rarity.getShortRarity(entry.setRarity)),
                 ],
               ),
             ),

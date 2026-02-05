@@ -850,6 +850,14 @@ class $CollectionItemsTable extends CollectionItems
   late final GeneratedColumn<String> setRarity = GeneratedColumn<String>(
       'set_rarity', aliasedName, false,
       type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _boxIdMeta = const VerificationMeta('boxId');
+  @override
+  late final GeneratedColumn<int> boxId = GeneratedColumn<int>(
+      'box_id', aliasedName, true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('REFERENCES boxes (id)'));
   static const VerificationMeta _quantityMeta =
       const VerificationMeta('quantity');
   @override
@@ -872,17 +880,9 @@ class $CollectionItemsTable extends CollectionItems
       type: DriftSqlType.dateTime,
       requiredDuringInsert: false,
       defaultValue: currentDateAndTime);
-  static const VerificationMeta _boxIdMeta = const VerificationMeta('boxId');
-  @override
-  late final GeneratedColumn<int> boxId = GeneratedColumn<int>(
-      'box_id', aliasedName, true,
-      type: DriftSqlType.int,
-      requiredDuringInsert: false,
-      defaultConstraints:
-          GeneratedColumn.constraintIsAlways('REFERENCES boxes (id)'));
   @override
   List<GeneratedColumn> get $columns =>
-      [cardId, setCode, setRarity, quantity, condition, dateAdded, boxId];
+      [cardId, setCode, setRarity, boxId, quantity, condition, dateAdded];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -911,6 +911,10 @@ class $CollectionItemsTable extends CollectionItems
     } else if (isInserting) {
       context.missing(_setRarityMeta);
     }
+    if (data.containsKey('box_id')) {
+      context.handle(
+          _boxIdMeta, boxId.isAcceptableOrUnknown(data['box_id']!, _boxIdMeta));
+    }
     if (data.containsKey('quantity')) {
       context.handle(_quantityMeta,
           quantity.isAcceptableOrUnknown(data['quantity']!, _quantityMeta));
@@ -923,15 +927,11 @@ class $CollectionItemsTable extends CollectionItems
       context.handle(_dateAddedMeta,
           dateAdded.isAcceptableOrUnknown(data['date_added']!, _dateAddedMeta));
     }
-    if (data.containsKey('box_id')) {
-      context.handle(
-          _boxIdMeta, boxId.isAcceptableOrUnknown(data['box_id']!, _boxIdMeta));
-    }
     return context;
   }
 
   @override
-  Set<GeneratedColumn> get $primaryKey => {cardId, setCode, setRarity};
+  Set<GeneratedColumn> get $primaryKey => {cardId, setCode, setRarity, boxId};
   @override
   CollectionItem map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
@@ -942,14 +942,14 @@ class $CollectionItemsTable extends CollectionItems
           .read(DriftSqlType.string, data['${effectivePrefix}set_code'])!,
       setRarity: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}set_rarity'])!,
+      boxId: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}box_id']),
       quantity: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}quantity'])!,
       condition: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}condition']),
       dateAdded: attachedDatabase.typeMapping
           .read(DriftSqlType.dateTime, data['${effectivePrefix}date_added'])!,
-      boxId: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}box_id']),
     );
   }
 
@@ -963,32 +963,32 @@ class CollectionItem extends DataClass implements Insertable<CollectionItem> {
   final int cardId;
   final String setCode;
   final String setRarity;
+  final int? boxId;
   final int quantity;
   final String? condition;
   final DateTime dateAdded;
-  final int? boxId;
   const CollectionItem(
       {required this.cardId,
       required this.setCode,
       required this.setRarity,
+      this.boxId,
       required this.quantity,
       this.condition,
-      required this.dateAdded,
-      this.boxId});
+      required this.dateAdded});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['card_id'] = Variable<int>(cardId);
     map['set_code'] = Variable<String>(setCode);
     map['set_rarity'] = Variable<String>(setRarity);
+    if (!nullToAbsent || boxId != null) {
+      map['box_id'] = Variable<int>(boxId);
+    }
     map['quantity'] = Variable<int>(quantity);
     if (!nullToAbsent || condition != null) {
       map['condition'] = Variable<String>(condition);
     }
     map['date_added'] = Variable<DateTime>(dateAdded);
-    if (!nullToAbsent || boxId != null) {
-      map['box_id'] = Variable<int>(boxId);
-    }
     return map;
   }
 
@@ -997,13 +997,13 @@ class CollectionItem extends DataClass implements Insertable<CollectionItem> {
       cardId: Value(cardId),
       setCode: Value(setCode),
       setRarity: Value(setRarity),
+      boxId:
+          boxId == null && nullToAbsent ? const Value.absent() : Value(boxId),
       quantity: Value(quantity),
       condition: condition == null && nullToAbsent
           ? const Value.absent()
           : Value(condition),
       dateAdded: Value(dateAdded),
-      boxId:
-          boxId == null && nullToAbsent ? const Value.absent() : Value(boxId),
     );
   }
 
@@ -1014,10 +1014,10 @@ class CollectionItem extends DataClass implements Insertable<CollectionItem> {
       cardId: serializer.fromJson<int>(json['cardId']),
       setCode: serializer.fromJson<String>(json['setCode']),
       setRarity: serializer.fromJson<String>(json['setRarity']),
+      boxId: serializer.fromJson<int?>(json['boxId']),
       quantity: serializer.fromJson<int>(json['quantity']),
       condition: serializer.fromJson<String?>(json['condition']),
       dateAdded: serializer.fromJson<DateTime>(json['dateAdded']),
-      boxId: serializer.fromJson<int?>(json['boxId']),
     );
   }
   @override
@@ -1027,10 +1027,10 @@ class CollectionItem extends DataClass implements Insertable<CollectionItem> {
       'cardId': serializer.toJson<int>(cardId),
       'setCode': serializer.toJson<String>(setCode),
       'setRarity': serializer.toJson<String>(setRarity),
+      'boxId': serializer.toJson<int?>(boxId),
       'quantity': serializer.toJson<int>(quantity),
       'condition': serializer.toJson<String?>(condition),
       'dateAdded': serializer.toJson<DateTime>(dateAdded),
-      'boxId': serializer.toJson<int?>(boxId),
     };
   }
 
@@ -1038,28 +1038,28 @@ class CollectionItem extends DataClass implements Insertable<CollectionItem> {
           {int? cardId,
           String? setCode,
           String? setRarity,
+          Value<int?> boxId = const Value.absent(),
           int? quantity,
           Value<String?> condition = const Value.absent(),
-          DateTime? dateAdded,
-          Value<int?> boxId = const Value.absent()}) =>
+          DateTime? dateAdded}) =>
       CollectionItem(
         cardId: cardId ?? this.cardId,
         setCode: setCode ?? this.setCode,
         setRarity: setRarity ?? this.setRarity,
+        boxId: boxId.present ? boxId.value : this.boxId,
         quantity: quantity ?? this.quantity,
         condition: condition.present ? condition.value : this.condition,
         dateAdded: dateAdded ?? this.dateAdded,
-        boxId: boxId.present ? boxId.value : this.boxId,
       );
   CollectionItem copyWithCompanion(CollectionItemsCompanion data) {
     return CollectionItem(
       cardId: data.cardId.present ? data.cardId.value : this.cardId,
       setCode: data.setCode.present ? data.setCode.value : this.setCode,
       setRarity: data.setRarity.present ? data.setRarity.value : this.setRarity,
+      boxId: data.boxId.present ? data.boxId.value : this.boxId,
       quantity: data.quantity.present ? data.quantity.value : this.quantity,
       condition: data.condition.present ? data.condition.value : this.condition,
       dateAdded: data.dateAdded.present ? data.dateAdded.value : this.dateAdded,
-      boxId: data.boxId.present ? data.boxId.value : this.boxId,
     );
   }
 
@@ -1069,17 +1069,17 @@ class CollectionItem extends DataClass implements Insertable<CollectionItem> {
           ..write('cardId: $cardId, ')
           ..write('setCode: $setCode, ')
           ..write('setRarity: $setRarity, ')
+          ..write('boxId: $boxId, ')
           ..write('quantity: $quantity, ')
           ..write('condition: $condition, ')
-          ..write('dateAdded: $dateAdded, ')
-          ..write('boxId: $boxId')
+          ..write('dateAdded: $dateAdded')
           ..write(')'))
         .toString();
   }
 
   @override
   int get hashCode => Object.hash(
-      cardId, setCode, setRarity, quantity, condition, dateAdded, boxId);
+      cardId, setCode, setRarity, boxId, quantity, condition, dateAdded);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -1087,39 +1087,39 @@ class CollectionItem extends DataClass implements Insertable<CollectionItem> {
           other.cardId == this.cardId &&
           other.setCode == this.setCode &&
           other.setRarity == this.setRarity &&
+          other.boxId == this.boxId &&
           other.quantity == this.quantity &&
           other.condition == this.condition &&
-          other.dateAdded == this.dateAdded &&
-          other.boxId == this.boxId);
+          other.dateAdded == this.dateAdded);
 }
 
 class CollectionItemsCompanion extends UpdateCompanion<CollectionItem> {
   final Value<int> cardId;
   final Value<String> setCode;
   final Value<String> setRarity;
+  final Value<int?> boxId;
   final Value<int> quantity;
   final Value<String?> condition;
   final Value<DateTime> dateAdded;
-  final Value<int?> boxId;
   final Value<int> rowid;
   const CollectionItemsCompanion({
     this.cardId = const Value.absent(),
     this.setCode = const Value.absent(),
     this.setRarity = const Value.absent(),
+    this.boxId = const Value.absent(),
     this.quantity = const Value.absent(),
     this.condition = const Value.absent(),
     this.dateAdded = const Value.absent(),
-    this.boxId = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   CollectionItemsCompanion.insert({
     required int cardId,
     required String setCode,
     required String setRarity,
+    this.boxId = const Value.absent(),
     this.quantity = const Value.absent(),
     this.condition = const Value.absent(),
     this.dateAdded = const Value.absent(),
-    this.boxId = const Value.absent(),
     this.rowid = const Value.absent(),
   })  : cardId = Value(cardId),
         setCode = Value(setCode),
@@ -1128,20 +1128,20 @@ class CollectionItemsCompanion extends UpdateCompanion<CollectionItem> {
     Expression<int>? cardId,
     Expression<String>? setCode,
     Expression<String>? setRarity,
+    Expression<int>? boxId,
     Expression<int>? quantity,
     Expression<String>? condition,
     Expression<DateTime>? dateAdded,
-    Expression<int>? boxId,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
       if (cardId != null) 'card_id': cardId,
       if (setCode != null) 'set_code': setCode,
       if (setRarity != null) 'set_rarity': setRarity,
+      if (boxId != null) 'box_id': boxId,
       if (quantity != null) 'quantity': quantity,
       if (condition != null) 'condition': condition,
       if (dateAdded != null) 'date_added': dateAdded,
-      if (boxId != null) 'box_id': boxId,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -1150,19 +1150,19 @@ class CollectionItemsCompanion extends UpdateCompanion<CollectionItem> {
       {Value<int>? cardId,
       Value<String>? setCode,
       Value<String>? setRarity,
+      Value<int?>? boxId,
       Value<int>? quantity,
       Value<String?>? condition,
       Value<DateTime>? dateAdded,
-      Value<int?>? boxId,
       Value<int>? rowid}) {
     return CollectionItemsCompanion(
       cardId: cardId ?? this.cardId,
       setCode: setCode ?? this.setCode,
       setRarity: setRarity ?? this.setRarity,
+      boxId: boxId ?? this.boxId,
       quantity: quantity ?? this.quantity,
       condition: condition ?? this.condition,
       dateAdded: dateAdded ?? this.dateAdded,
-      boxId: boxId ?? this.boxId,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -1179,6 +1179,9 @@ class CollectionItemsCompanion extends UpdateCompanion<CollectionItem> {
     if (setRarity.present) {
       map['set_rarity'] = Variable<String>(setRarity.value);
     }
+    if (boxId.present) {
+      map['box_id'] = Variable<int>(boxId.value);
+    }
     if (quantity.present) {
       map['quantity'] = Variable<int>(quantity.value);
     }
@@ -1187,9 +1190,6 @@ class CollectionItemsCompanion extends UpdateCompanion<CollectionItem> {
     }
     if (dateAdded.present) {
       map['date_added'] = Variable<DateTime>(dateAdded.value);
-    }
-    if (boxId.present) {
-      map['box_id'] = Variable<int>(boxId.value);
     }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
@@ -1203,10 +1203,10 @@ class CollectionItemsCompanion extends UpdateCompanion<CollectionItem> {
           ..write('cardId: $cardId, ')
           ..write('setCode: $setCode, ')
           ..write('setRarity: $setRarity, ')
+          ..write('boxId: $boxId, ')
           ..write('quantity: $quantity, ')
           ..write('condition: $condition, ')
           ..write('dateAdded: $dateAdded, ')
-          ..write('boxId: $boxId, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -1820,10 +1820,10 @@ typedef $$CollectionItemsTableCreateCompanionBuilder = CollectionItemsCompanion
   required int cardId,
   required String setCode,
   required String setRarity,
+  Value<int?> boxId,
   Value<int> quantity,
   Value<String?> condition,
   Value<DateTime> dateAdded,
-  Value<int?> boxId,
   Value<int> rowid,
 });
 typedef $$CollectionItemsTableUpdateCompanionBuilder = CollectionItemsCompanion
@@ -1831,10 +1831,10 @@ typedef $$CollectionItemsTableUpdateCompanionBuilder = CollectionItemsCompanion
   Value<int> cardId,
   Value<String> setCode,
   Value<String> setRarity,
+  Value<int?> boxId,
   Value<int> quantity,
   Value<String?> condition,
   Value<DateTime> dateAdded,
-  Value<int?> boxId,
   Value<int> rowid,
 });
 
@@ -2094,40 +2094,40 @@ class $$CollectionItemsTableTableManager extends RootTableManager<
             Value<int> cardId = const Value.absent(),
             Value<String> setCode = const Value.absent(),
             Value<String> setRarity = const Value.absent(),
+            Value<int?> boxId = const Value.absent(),
             Value<int> quantity = const Value.absent(),
             Value<String?> condition = const Value.absent(),
             Value<DateTime> dateAdded = const Value.absent(),
-            Value<int?> boxId = const Value.absent(),
             Value<int> rowid = const Value.absent(),
           }) =>
               CollectionItemsCompanion(
             cardId: cardId,
             setCode: setCode,
             setRarity: setRarity,
+            boxId: boxId,
             quantity: quantity,
             condition: condition,
             dateAdded: dateAdded,
-            boxId: boxId,
             rowid: rowid,
           ),
           createCompanionCallback: ({
             required int cardId,
             required String setCode,
             required String setRarity,
+            Value<int?> boxId = const Value.absent(),
             Value<int> quantity = const Value.absent(),
             Value<String?> condition = const Value.absent(),
             Value<DateTime> dateAdded = const Value.absent(),
-            Value<int?> boxId = const Value.absent(),
             Value<int> rowid = const Value.absent(),
           }) =>
               CollectionItemsCompanion.insert(
             cardId: cardId,
             setCode: setCode,
             setRarity: setRarity,
+            boxId: boxId,
             quantity: quantity,
             condition: condition,
             dateAdded: dateAdded,
-            boxId: boxId,
             rowid: rowid,
           ),
           withReferenceMapper: (p0) => p0

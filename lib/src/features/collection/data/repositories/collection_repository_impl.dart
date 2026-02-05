@@ -32,12 +32,12 @@ class CollectionRepositoryImpl implements CollectionRepository {
   }
 
   @override
-  Future<CollectionItemEntity?> getCollectionItem(
+  Future<List<CollectionItemEntity>> getSlotsForCard(
     int cardId,
     String setCode,
     String setRarity,
   ) async {
-    return await _localDatasource.getCollectionItem(cardId, setCode, setRarity);
+    return await _localDatasource.getSlotsForCard(cardId, setCode, setRarity);
   }
 
   @override
@@ -46,45 +46,48 @@ class CollectionRepositoryImpl implements CollectionRepository {
   }
 
   @override
-  Future<void> updateQuantity(
+  Future<void> updateSlotQuantity(
     int cardId,
     String setCode,
     String setRarity,
+    int? boxId,
     int quantity,
   ) async {
-    await _localDatasource.updateQuantity(cardId, setCode, setRarity, quantity);
+    await _localDatasource.updateSlotQuantity(
+      cardId,
+      setCode,
+      setRarity,
+      boxId,
+      quantity,
+    );
   }
 
   @override
-  Future<void> removeCollectionItem(
-    int cardId,
-    String setCode,
-    String setRarity,
-  ) async {
-    await _localDatasource.decreaseQuantity(cardId, setCode, setRarity);
-  }
-
-  @override
-  Future<void> deleteCollectionItem(
-    int cardId,
-    String setCode,
-    String setRarity,
-  ) async {
-    await _localDatasource.deleteCollectionItem(cardId, setCode, setRarity);
-  }
-
-  @override
-  Future<void> assignItemToBox(
+  Future<void> deleteSlot(
     int cardId,
     String setCode,
     String setRarity,
     int? boxId,
   ) async {
-    await _localDatasource.assignItemToBox(
+    await _localDatasource.deleteSlot(cardId, setCode, setRarity, boxId);
+  }
+
+  @override
+  Future<void> moveBetweenSlots(
+    int cardId,
+    String setCode,
+    String setRarity,
+    int? fromBoxId,
+    int? toBoxId,
+    int amount,
+  ) async {
+    await _localDatasource.moveBetweenSlots(
       cardId,
       setCode,
       setRarity,
-      boxId,
+      fromBoxId,
+      toBoxId,
+      amount,
     );
   }
 }

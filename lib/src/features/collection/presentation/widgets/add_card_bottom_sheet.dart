@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:bulk_box/src/core/constants/dimensions.dart';
 import 'package:bulk_box/src/core/database/app_database.dart' as db;
+import 'package:bulk_box/src/core/database/card_dao.dart';
 import 'package:bulk_box/src/core/database/card_extensions.dart';
 import 'package:bulk_box/src/core/di/injection_container.dart' as di;
 import 'package:bulk_box/src/features/collection/domain/entities/box.dart';
@@ -25,8 +26,24 @@ class AddCardBottomSheet extends StatefulWidget {
 class _AddCardBottomSheetState extends State<AddCardBottomSheet> {
   final Map<String, int> _quantities = {};
   bool _isLoading = true;
+  bool _isSaving = false;
   List<Box> _boxes = [];
   int? _selectedBoxId;
+
+  /// Use API sets when present; otherwise one synthetic set so the user can still add the card.
+  List<ParsedCardSet> get _effectiveCardSets {
+    final p = widget.card.parsedCardSets;
+    if (p.isEmpty) {
+      return [
+        ParsedCardSet(
+          setName: 'Unknown',
+          setCode: 'N/A',
+          setRarity: 'N/A',
+        ),
+      ];
+    }
+    return p;
+  }
 
   @override
   void initState() {
@@ -39,12 +56,12 @@ class _AddCardBottomSheetState extends State<AddCardBottomSheet> {
     final boxes = await boxRepo.getBoxes();
     if (mounted) setState(() => _boxes = boxes);
     // Initialize quantities to 0 for all card sets
-    for (final set in widget.card.parsedCardSets) {
+    for (final set in _effectiveCardSets) {
       final key = '${set.setCode}_${set.setRarity}';
       _quantities[key] = 0;
     }
 
-    // Load existing quantities from collection
+    // Load existing quantities from collection (sum across all slots per set+rarity)
     final cubit = di.getIt<CollectionCubit>();
     final existingItems =
         await cubit.getCollectionItemsByCardId(widget.card.id);
@@ -53,7 +70,7 @@ class _AddCardBottomSheetState extends State<AddCardBottomSheet> {
       setState(() {
         for (final item in existingItems) {
           final key = '${item.setCode}_${item.setRarity}';
-          _quantities[key] = item.quantity;
+          _quantities[key] = (_quantities[key] ?? 0) + item.quantity;
         }
         _isLoading = false;
       });
@@ -69,67 +86,80 @@ class _AddCardBottomSheetState extends State<AddCardBottomSheet> {
   }
 
   Future<void> _save() async {
-    final cubit = di.getIt<CollectionCubit>();
-    final now = DateTime.now();
+    if (_isSaving) return;
+    setState(() => _isSaving = true);
 
-    final existingItems =
-        await cubit.getCollectionItemsByCardId(widget.card.id);
+    try {
+      // Ensure card is in DB (e.g. when opened from search, insert may not have completed).
+      await di.getIt<CardDao>().insertOrUpdateCards([widget.card]);
 
-    for (final set in widget.card.parsedCardSets) {
-      final key = '${set.setCode}_${set.setRarity}';
-      final quantity = _quantities[key] ?? 0;
+      final cubit = di.getIt<CollectionCubit>();
+      final now = DateTime.now();
 
-      final existingItem = existingItems.firstWhere(
-        (item) =>
-            item.setCode == set.setCode && item.setRarity == set.setRarity,
-        orElse: () => CollectionItemEntity(
-          cardId: -1,
-          setCode: '',
-          setRarity: '',
-          quantity: 0,
-          dateAdded: now,
-        ),
-      );
+      for (final set in _effectiveCardSets) {
+        final key = '${set.setCode}_${set.setRarity}';
+        final newTotal = _quantities[key] ?? 0;
+        final slots = await cubit.getSlotsForCard(
+          widget.card.id,
+          set.setCode,
+          set.setRarity,
+        );
+        final oldTotal = slots.fold<int>(0, (sum, s) => sum + s.quantity);
+        final delta = newTotal - oldTotal;
 
-      if (quantity > 0) {
-        if (existingItem.cardId != -1) {
-          await cubit.updateQuantity(
-            widget.card.id,
-            set.setCode,
-            set.setRarity,
-            quantity,
-          );
-        } else {
-          final item = CollectionItemEntity(
-            cardId: widget.card.id,
-            setCode: set.setCode,
-            setRarity: set.setRarity,
-            quantity: quantity,
-            dateAdded: now,
-            boxId: _selectedBoxId,
-          );
-          await cubit.addCollectionItem(item);
-        }
-      } else {
-        if (existingItem.cardId != -1) {
-          await cubit.deleteCollectionItem(
-            widget.card.id,
-            set.setCode,
-            set.setRarity,
-          );
+        if (delta > 0) {
+          for (var i = 0; i < delta; i++) {
+            await cubit.addCollectionItem(
+              CollectionItemEntity(
+                cardId: widget.card.id,
+                setCode: set.setCode,
+                setRarity: set.setRarity,
+                quantity: 1,
+                dateAdded: now,
+                boxId: _selectedBoxId,
+              ),
+            );
+          }
+        } else if (delta < 0) {
+          final selectedSlot = slots.isEmpty
+              ? null
+              : (slots.where((s) => s.boxId == _selectedBoxId).firstOrNull ??
+                  slots.first);
+          if (selectedSlot != null) {
+            var remove = -delta;
+            var q = selectedSlot.quantity;
+            while (remove > 0 && q > 0) {
+              q--;
+              remove--;
+              await cubit.updateSlotQuantity(
+                widget.card.id,
+                set.setCode,
+                set.setRarity,
+                selectedSlot.boxId,
+                q,
+              );
+            }
+          }
         }
       }
-    }
 
-    if (mounted) {
-      Navigator.of(context).pop();
+      if (mounted) {
+        Navigator.of(context).pop();
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() => _isSaving = false);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Could not save: $e')),
+        );
+      }
     }
   }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final cardSets = widget.card.parsedCardSets;
+    final cardSets = _effectiveCardSets;
 
     return Container(
       padding: EdgeInsets.only(
@@ -247,8 +277,14 @@ class _AddCardBottomSheetState extends State<AddCardBottomSheet> {
           Padding(
             padding: const EdgeInsets.all(Dimensions.md),
             child: FilledButton(
-              onPressed: _isLoading ? null : _save,
-              child: const Text('Save'),
+              onPressed: (_isLoading || _isSaving) ? null : _save,
+              child: _isSaving
+                  ? const SizedBox(
+                      height: 20,
+                      width: 20,
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    )
+                  : const Text('Save'),
             ),
           ),
         ],
