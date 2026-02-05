@@ -1,6 +1,7 @@
 import 'package:get_it/get_it.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:bulk_box/src/core/database/app_database.dart';
+import 'package:bulk_box/src/core/database/box_dao.dart';
 import 'package:bulk_box/src/core/database/card_dao.dart';
 import 'package:bulk_box/src/core/settings/settings_cubit.dart';
 import 'package:bulk_box/src/features/ygo_cards/data/datasources/local/image_local_datasource.dart';
@@ -9,8 +10,11 @@ import 'package:bulk_box/src/features/search/data/repositories/search_repository
 import 'package:bulk_box/src/features/search/domain/repositories/search_repository.dart';
 import 'package:bulk_box/src/features/search/presentation/cubit/search_cubit.dart';
 import 'package:bulk_box/src/features/collection/data/datasources/collection_local_datasource.dart';
+import 'package:bulk_box/src/features/collection/data/repositories/box_repository_impl.dart';
 import 'package:bulk_box/src/features/collection/data/repositories/collection_repository_impl.dart';
+import 'package:bulk_box/src/features/collection/domain/repositories/box_repository.dart';
 import 'package:bulk_box/src/features/collection/domain/repositories/collection_repository.dart';
+import 'package:bulk_box/src/features/collection/presentation/cubit/boxes_cubit.dart';
 import 'package:bulk_box/src/features/collection/presentation/cubit/collection_cubit.dart';
 import 'package:bulk_box/src/features/home/presentation/cubit/latest_sets_cubit.dart';
 import 'package:bulk_box/src/features/ygo_cards/data/repositories/set_list_repository_impl.dart';
@@ -47,6 +51,10 @@ Future<void> _initializeCore() async {
 
   getIt.registerLazySingleton(
     () => CardDao(getIt<AppDatabase>()),
+  );
+
+  getIt.registerLazySingleton(
+    () => BoxDao(getIt<AppDatabase>()),
   );
 }
 
@@ -96,13 +104,21 @@ void _initializeCollectionFeature() {
     () => CollectionLocalDatasource(getIt<AppDatabase>()),
   );
 
-  // Repository
+  // Repositories
+  getIt.registerLazySingleton<BoxRepository>(
+    () => BoxRepositoryImpl(getIt<BoxDao>()),
+  );
+
   getIt.registerLazySingleton<CollectionRepository>(
     () => CollectionRepositoryImpl(getIt()),
   );
 
-  // Cubit
+  // Cubits (BoxesCubit singleton so box list/counts refresh after moving cards)
   getIt.registerLazySingleton(
+    () => BoxesCubit(getIt<BoxRepository>()),
+  );
+
+  getIt.registerFactory(
     () => CollectionCubit(getIt()),
   );
 }

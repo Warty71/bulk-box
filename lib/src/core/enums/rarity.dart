@@ -6,10 +6,13 @@ enum Rarity {
   ultraRare('Ultra Rare', 'UR'),
   secretRare('Secret Rare', 'ScR'),
   ultimateRare('Ultimate Rare', 'UtR'),
-  ghostRare('Ghost Rare', 'GHR'),
-  platinumRare('Platinum Rare', 'PlR'),
-  goldRare('Gold Rare', 'GR'),
+  ghostRare('Ghost Rare', 'GR'),
+  platinumRare('Platinum Rare', 'PtR'),
+  goldRare('Gold Rare', 'GdR'),
+  premiumGoldRare('Premium Gold Rare', 'PGR'),
   starlightRare('Starlight Rare', 'StR'),
+  quarterCenturySecretRare('Quarter Century Secret Rare', 'QCR'),
+  collectorsRare("Collector's Rare", 'CR'),
   ;
 
   const Rarity(this.fullName, this.shortName);
@@ -18,7 +21,7 @@ enum Rarity {
   final String shortName;
 
   /// Gets the short abbreviation for a rarity string
-  /// 
+  ///
   /// Returns the short name if the rarity is known, otherwise
   /// returns the first 3 characters uppercase as a fallback.
   static String getShortRarity(String rarity) {
@@ -26,7 +29,7 @@ enum Rarity {
     if (rarityEnum != null) {
       return rarityEnum.shortName;
     }
-    
+
     // Fallback for unknown rarities
     if (rarity.length >= 3) {
       return rarity.substring(0, 3).toUpperCase();
@@ -35,19 +38,26 @@ enum Rarity {
   }
 
   /// Parses a rarity string into a Rarity enum value
-  /// 
+  ///
   /// Returns null if no matching rarity is found.
   static Rarity? fromString(String rarity) {
     final lowerRarity = rarity.toLowerCase().trim();
-    
+
     // First, try exact matches
     for (final rarityEnum in Rarity.values) {
       if (lowerRarity == rarityEnum.fullName.toLowerCase()) {
         return rarityEnum;
       }
     }
-    
+
     // Then, check more specific rarities first (longer names first to avoid matching "rare" too early)
+    if (lowerRarity.contains('quarter century') ||
+        (lowerRarity.contains('qcr'))) {
+      return Rarity.quarterCenturySecretRare;
+    }
+    if (lowerRarity.contains("collector") && lowerRarity.contains('rare')) {
+      return Rarity.collectorsRare;
+    }
     if (lowerRarity.contains('starlight') && lowerRarity.contains('rare')) {
       return Rarity.starlightRare;
     }
@@ -63,23 +73,29 @@ enum Rarity {
     if (lowerRarity.contains('ghost') && lowerRarity.contains('rare')) {
       return Rarity.ghostRare;
     }
+    if (lowerRarity.contains('premium gold') && lowerRarity.contains('rare')) {
+      return Rarity.premiumGoldRare;
+    }
     if (lowerRarity.contains('gold') && lowerRarity.contains('rare')) {
       return Rarity.goldRare;
     }
-    if (lowerRarity.contains('super') && lowerRarity.contains('rare') && 
-        !lowerRarity.contains('ultra') && !lowerRarity.contains('secret')) {
+    if (lowerRarity.contains('super') &&
+        lowerRarity.contains('rare') &&
+        !lowerRarity.contains('ultra') &&
+        !lowerRarity.contains('secret')) {
       return Rarity.superRare;
     }
-    if (lowerRarity.contains('ultra') && lowerRarity.contains('rare') && 
+    if (lowerRarity.contains('ultra') &&
+        lowerRarity.contains('rare') &&
         !lowerRarity.contains('secret')) {
       return Rarity.ultraRare;
     }
     if (lowerRarity.contains('common') && !lowerRarity.contains('uncommon')) {
       return Rarity.common;
     }
-    if (lowerRarity.contains('rare') && 
-        !lowerRarity.contains('super') && 
-        !lowerRarity.contains('ultra') && 
+    if (lowerRarity.contains('rare') &&
+        !lowerRarity.contains('super') &&
+        !lowerRarity.contains('ultra') &&
         !lowerRarity.contains('secret') &&
         !lowerRarity.contains('ultimate') &&
         !lowerRarity.contains('ghost') &&
@@ -88,7 +104,7 @@ enum Rarity {
         !lowerRarity.contains('starlight')) {
       return Rarity.rare;
     }
-    
+
     return null;
   }
 }

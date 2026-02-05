@@ -37,6 +37,39 @@ class AppRouter {
               GoRoute(
                 path: '/collection',
                 builder: (context, state) => const CollectionScreen(),
+                routes: [
+                  GoRoute(
+                    path: 'box/:boxId',
+                    pageBuilder: (context, state) => CustomTransitionPage<void>(
+                      key: state.pageKey,
+                      child: CollectionScreen(
+                        boxId: state.pathParameters['boxId'] == 'unboxed'
+                            ? null
+                            : int.tryParse(
+                                state.pathParameters['boxId'] ?? '',
+                              ),
+                        filterUnboxed:
+                            state.pathParameters['boxId'] == 'unboxed',
+                        boxName: state.uri.queryParameters['name'],
+                      ),
+                      transitionsBuilder:
+                          (context, animation, secondaryAnimation, child) =>
+                              FadeTransition(
+                        opacity: animation,
+                        child: SlideTransition(
+                          position: Tween<Offset>(
+                            begin: const Offset(0.05, 0),
+                            end: Offset.zero,
+                          ).animate(CurvedAnimation(
+                            parent: animation,
+                            curve: Curves.easeOutCubic,
+                          )),
+                          child: child,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ],
           ),

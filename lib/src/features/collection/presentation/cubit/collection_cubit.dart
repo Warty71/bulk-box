@@ -13,17 +13,26 @@ class CollectionCubit extends Cubit<CollectionState> {
   /// All collection entries loaded from the repository.
   List<CollectionEntry> _allEntries = [];
 
-  /// Load all collection items
-  Future<void> loadCollectionItems() async {
+  /// Load collection items, optionally filtered by [boxId] or [unboxedOnly]. [boxName] is for display.
+  Future<void> loadCollectionItems({
+    int? boxId,
+    bool unboxedOnly = false,
+    String? boxName,
+  }) async {
     emit(const CollectionState.loading());
 
     try {
-      final entries = await _repository.getCollectionWithCards();
+      final entries = await _repository.getCollectionWithCards(
+        boxId: boxId,
+        unboxedOnly: unboxedOnly,
+      );
 
-      _allEntries = entries; // Cache master list.
+      _allEntries = entries;
 
       emit(CollectionState.loaded(
         collectionEntries: entries,
+        selectedBoxId: boxId,
+        selectedBoxName: boxName,
       ));
     } catch (e) {
       emit(CollectionState.error(e.toString()));
@@ -34,53 +43,97 @@ class CollectionCubit extends Cubit<CollectionState> {
   Future<void> addCollectionItem(CollectionItemEntity item) async {
     try {
       await _repository.addCollectionItem(item);
-      await loadCollectionItems();
+      await _reloadWithCurrentFilter();
     } catch (e) {
       emit(CollectionState.error(e.toString()));
+      rethrow;
     }
   }
 
-  /// Update quantity of a collection item
-  Future<void> updateQuantity(
+  /// All slots for one card+set+rarity.
+  Future<List<CollectionItemEntity>> getSlotsForCard(
     int cardId,
     String setCode,
     String setRarity,
+  ) async {
+    try {
+      return await _repository.getSlotsForCard(cardId, setCode, setRarity);
+    } catch (e) {
+      return [];
+    }
+  }
+
+  /// Update quantity for one slot; delete slot if quantity <= 0.
+  Future<void> updateSlotQuantity(
+    int cardId,
+    String setCode,
+    String setRarity,
+    int? boxId,
     int quantity,
   ) async {
     try {
-      await _repository.updateQuantity(cardId, setCode, setRarity, quantity);
-      await loadCollectionItems();
+      await _repository.updateSlotQuantity(
+        cardId,
+        setCode,
+        setRarity,
+        boxId,
+        quantity,
+      );
+      await _reloadWithCurrentFilter();
+    } catch (e) {
+      emit(CollectionState.error(e.toString()));
+      rethrow;
+    }
+  }
+
+  /// Delete one slot.
+  Future<void> deleteSlot(
+    int cardId,
+    String setCode,
+    String setRarity,
+    int? boxId,
+  ) async {
+    try {
+      await _repository.deleteSlot(cardId, setCode, setRarity, boxId);
+      await _reloadWithCurrentFilter();
     } catch (e) {
       emit(CollectionState.error(e.toString()));
     }
   }
 
-  /// Remove one quantity from a collection item
-  Future<void> removeCollectionItem(
+  /// Move [amount] from one slot to another.
+  Future<void> moveBetweenSlots(
     int cardId,
     String setCode,
     String setRarity,
+    int? fromBoxId,
+    int? toBoxId,
+    int amount,
   ) async {
     try {
-      await _repository.removeCollectionItem(cardId, setCode, setRarity);
-      await loadCollectionItems();
+      await _repository.moveBetweenSlots(
+        cardId,
+        setCode,
+        setRarity,
+        fromBoxId,
+        toBoxId,
+        amount,
+      );
+      await _reloadWithCurrentFilter();
     } catch (e) {
       emit(CollectionState.error(e.toString()));
     }
   }
 
-  /// Delete a collection item completely
-  Future<void> deleteCollectionItem(
-    int cardId,
-    String setCode,
-    String setRarity,
-  ) async {
-    try {
-      await _repository.deleteCollectionItem(cardId, setCode, setRarity);
-      await loadCollectionItems();
-    } catch (e) {
-      emit(CollectionState.error(e.toString()));
-    }
+  Future<void> _reloadWithCurrentFilter() async {
+    state.maybeWhen(
+      loaded: (_, __, ___, boxId, boxName) => loadCollectionItems(
+        boxId: boxId,
+        unboxedOnly: boxId == null && boxName == 'Unboxed',
+        boxName: boxName,
+      ),
+      orElse: () => loadCollectionItems(),
+    );
   }
 
   /// Get collection items for a specific card
@@ -107,11 +160,13 @@ class CollectionCubit extends Cubit<CollectionState> {
   /// Toggle search bar visibility.
   void toggleSearchBar() {
     state.maybeWhen(
-      loaded: (entries, visible, query) {
+      loaded: (entries, visible, query, boxId, boxName) {
         emit(CollectionState.loaded(
           collectionEntries: entries,
           searchBarVisible: !visible,
           searchQuery: query,
+          selectedBoxId: boxId,
+          selectedBoxName: boxName,
         ));
       },
       orElse: () {},
@@ -121,7 +176,7 @@ class CollectionCubit extends Cubit<CollectionState> {
   /// Search for a collection entry by name or set code.
   void search(String query) {
     state.maybeWhen(
-      loaded: (_, searchBarVisible, __) {
+      loaded: (_, searchBarVisible, __, boxId, boxName) {
         final lower = query.toLowerCase();
 
         final filtered = _allEntries.where((entry) {
@@ -135,6 +190,8 @@ class CollectionCubit extends Cubit<CollectionState> {
           collectionEntries: filtered,
           searchBarVisible: searchBarVisible,
           searchQuery: query,
+          selectedBoxId: boxId,
+          selectedBoxName: boxName,
         ));
       },
       orElse: () {},

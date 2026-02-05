@@ -3,7 +3,7 @@
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
-part of 'collection_state.dart';
+part of 'boxes_state.dart';
 
 // **************************************************************************
 // FreezedGenerator
@@ -13,11 +13,11 @@ part of 'collection_state.dart';
 T _$identity<T>(T value) => value;
 
 /// @nodoc
-mixin _$CollectionState {
+mixin _$BoxesState {
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
-        (other.runtimeType == runtimeType && other is CollectionState);
+        (other.runtimeType == runtimeType && other is BoxesState);
   }
 
   @override
@@ -25,18 +25,17 @@ mixin _$CollectionState {
 
   @override
   String toString() {
-    return 'CollectionState()';
+    return 'BoxesState()';
   }
 }
 
 /// @nodoc
-class $CollectionStateCopyWith<$Res> {
-  $CollectionStateCopyWith(
-      CollectionState _, $Res Function(CollectionState) __);
+class $BoxesStateCopyWith<$Res> {
+  $BoxesStateCopyWith(BoxesState _, $Res Function(BoxesState) __);
 }
 
-/// Adds pattern-matching-related methods to [CollectionState].
-extension CollectionStatePatterns on CollectionState {
+/// Adds pattern-matching-related methods to [BoxesState].
+extension BoxesStatePatterns on BoxesState {
   /// A variant of `map` that fallback to returning `orElse`.
   ///
   /// It is equivalent to doing:
@@ -157,13 +156,7 @@ extension CollectionStatePatterns on CollectionState {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? initial,
     TResult Function()? loading,
-    TResult Function(
-            List<CollectionEntry> collectionEntries,
-            bool searchBarVisible,
-            String searchQuery,
-            int? selectedBoxId,
-            String? selectedBoxName)?
-        loaded,
+    TResult Function(List<Box> boxes)? loaded,
     TResult Function(String message)? error,
     required TResult orElse(),
   }) {
@@ -174,8 +167,7 @@ extension CollectionStatePatterns on CollectionState {
       case _Loading() when loading != null:
         return loading();
       case _Loaded() when loaded != null:
-        return loaded(_that.collectionEntries, _that.searchBarVisible,
-            _that.searchQuery, _that.selectedBoxId, _that.selectedBoxName);
+        return loaded(_that.boxes);
       case _Error() when error != null:
         return error(_that.message);
       case _:
@@ -200,13 +192,7 @@ extension CollectionStatePatterns on CollectionState {
   TResult when<TResult extends Object?>({
     required TResult Function() initial,
     required TResult Function() loading,
-    required TResult Function(
-            List<CollectionEntry> collectionEntries,
-            bool searchBarVisible,
-            String searchQuery,
-            int? selectedBoxId,
-            String? selectedBoxName)
-        loaded,
+    required TResult Function(List<Box> boxes) loaded,
     required TResult Function(String message) error,
   }) {
     final _that = this;
@@ -216,8 +202,7 @@ extension CollectionStatePatterns on CollectionState {
       case _Loading():
         return loading();
       case _Loaded():
-        return loaded(_that.collectionEntries, _that.searchBarVisible,
-            _that.searchQuery, _that.selectedBoxId, _that.selectedBoxName);
+        return loaded(_that.boxes);
       case _Error():
         return error(_that.message);
       case _:
@@ -241,13 +226,7 @@ extension CollectionStatePatterns on CollectionState {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? initial,
     TResult? Function()? loading,
-    TResult? Function(
-            List<CollectionEntry> collectionEntries,
-            bool searchBarVisible,
-            String searchQuery,
-            int? selectedBoxId,
-            String? selectedBoxName)?
-        loaded,
+    TResult? Function(List<Box> boxes)? loaded,
     TResult? Function(String message)? error,
   }) {
     final _that = this;
@@ -257,8 +236,7 @@ extension CollectionStatePatterns on CollectionState {
       case _Loading() when loading != null:
         return loading();
       case _Loaded() when loaded != null:
-        return loaded(_that.collectionEntries, _that.searchBarVisible,
-            _that.searchQuery, _that.selectedBoxId, _that.selectedBoxName);
+        return loaded(_that.boxes);
       case _Error() when error != null:
         return error(_that.message);
       case _:
@@ -269,7 +247,7 @@ extension CollectionStatePatterns on CollectionState {
 
 /// @nodoc
 
-class _Initial implements CollectionState {
+class _Initial implements BoxesState {
   const _Initial();
 
   @override
@@ -283,13 +261,13 @@ class _Initial implements CollectionState {
 
   @override
   String toString() {
-    return 'CollectionState.initial()';
+    return 'BoxesState.initial()';
   }
 }
 
 /// @nodoc
 
-class _Loading implements CollectionState {
+class _Loading implements BoxesState {
   const _Loading();
 
   @override
@@ -303,41 +281,23 @@ class _Loading implements CollectionState {
 
   @override
   String toString() {
-    return 'CollectionState.loading()';
+    return 'BoxesState.loading()';
   }
 }
 
 /// @nodoc
 
-class _Loaded implements CollectionState {
-  const _Loaded(
-      {required final List<CollectionEntry> collectionEntries,
-      this.searchBarVisible = false,
-      this.searchQuery = '',
-      this.selectedBoxId,
-      this.selectedBoxName})
-      : _collectionEntries = collectionEntries;
+class _Loaded implements BoxesState {
+  const _Loaded(final List<Box> boxes) : _boxes = boxes;
 
-  final List<CollectionEntry> _collectionEntries;
-  List<CollectionEntry> get collectionEntries {
-    if (_collectionEntries is EqualUnmodifiableListView)
-      return _collectionEntries;
+  final List<Box> _boxes;
+  List<Box> get boxes {
+    if (_boxes is EqualUnmodifiableListView) return _boxes;
     // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(_collectionEntries);
+    return EqualUnmodifiableListView(_boxes);
   }
 
-  @JsonKey()
-  final bool searchBarVisible;
-  @JsonKey()
-  final String searchQuery;
-
-  /// When set, only items in this box are shown; null = all items.
-  final int? selectedBoxId;
-
-  /// Display name for selected box (e.g. "Unboxed" or box name).
-  final String? selectedBoxName;
-
-  /// Create a copy of CollectionState
+  /// Create a copy of BoxesState
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   @pragma('vm:prefer-inline')
@@ -349,45 +309,26 @@ class _Loaded implements CollectionState {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _Loaded &&
-            const DeepCollectionEquality()
-                .equals(other._collectionEntries, _collectionEntries) &&
-            (identical(other.searchBarVisible, searchBarVisible) ||
-                other.searchBarVisible == searchBarVisible) &&
-            (identical(other.searchQuery, searchQuery) ||
-                other.searchQuery == searchQuery) &&
-            (identical(other.selectedBoxId, selectedBoxId) ||
-                other.selectedBoxId == selectedBoxId) &&
-            (identical(other.selectedBoxName, selectedBoxName) ||
-                other.selectedBoxName == selectedBoxName));
+            const DeepCollectionEquality().equals(other._boxes, _boxes));
   }
 
   @override
-  int get hashCode => Object.hash(
-      runtimeType,
-      const DeepCollectionEquality().hash(_collectionEntries),
-      searchBarVisible,
-      searchQuery,
-      selectedBoxId,
-      selectedBoxName);
+  int get hashCode =>
+      Object.hash(runtimeType, const DeepCollectionEquality().hash(_boxes));
 
   @override
   String toString() {
-    return 'CollectionState.loaded(collectionEntries: $collectionEntries, searchBarVisible: $searchBarVisible, searchQuery: $searchQuery, selectedBoxId: $selectedBoxId, selectedBoxName: $selectedBoxName)';
+    return 'BoxesState.loaded(boxes: $boxes)';
   }
 }
 
 /// @nodoc
 abstract mixin class _$LoadedCopyWith<$Res>
-    implements $CollectionStateCopyWith<$Res> {
+    implements $BoxesStateCopyWith<$Res> {
   factory _$LoadedCopyWith(_Loaded value, $Res Function(_Loaded) _then) =
       __$LoadedCopyWithImpl;
   @useResult
-  $Res call(
-      {List<CollectionEntry> collectionEntries,
-      bool searchBarVisible,
-      String searchQuery,
-      int? selectedBoxId,
-      String? selectedBoxName});
+  $Res call({List<Box> boxes});
 }
 
 /// @nodoc
@@ -397,49 +338,29 @@ class __$LoadedCopyWithImpl<$Res> implements _$LoadedCopyWith<$Res> {
   final _Loaded _self;
   final $Res Function(_Loaded) _then;
 
-  /// Create a copy of CollectionState
+  /// Create a copy of BoxesState
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   $Res call({
-    Object? collectionEntries = null,
-    Object? searchBarVisible = null,
-    Object? searchQuery = null,
-    Object? selectedBoxId = freezed,
-    Object? selectedBoxName = freezed,
+    Object? boxes = null,
   }) {
     return _then(_Loaded(
-      collectionEntries: null == collectionEntries
-          ? _self._collectionEntries
-          : collectionEntries // ignore: cast_nullable_to_non_nullable
-              as List<CollectionEntry>,
-      searchBarVisible: null == searchBarVisible
-          ? _self.searchBarVisible
-          : searchBarVisible // ignore: cast_nullable_to_non_nullable
-              as bool,
-      searchQuery: null == searchQuery
-          ? _self.searchQuery
-          : searchQuery // ignore: cast_nullable_to_non_nullable
-              as String,
-      selectedBoxId: freezed == selectedBoxId
-          ? _self.selectedBoxId
-          : selectedBoxId // ignore: cast_nullable_to_non_nullable
-              as int?,
-      selectedBoxName: freezed == selectedBoxName
-          ? _self.selectedBoxName
-          : selectedBoxName // ignore: cast_nullable_to_non_nullable
-              as String?,
+      null == boxes
+          ? _self._boxes
+          : boxes // ignore: cast_nullable_to_non_nullable
+              as List<Box>,
     ));
   }
 }
 
 /// @nodoc
 
-class _Error implements CollectionState {
+class _Error implements BoxesState {
   const _Error(this.message);
 
   final String message;
 
-  /// Create a copy of CollectionState
+  /// Create a copy of BoxesState
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   @pragma('vm:prefer-inline')
@@ -459,13 +380,13 @@ class _Error implements CollectionState {
 
   @override
   String toString() {
-    return 'CollectionState.error(message: $message)';
+    return 'BoxesState.error(message: $message)';
   }
 }
 
 /// @nodoc
 abstract mixin class _$ErrorCopyWith<$Res>
-    implements $CollectionStateCopyWith<$Res> {
+    implements $BoxesStateCopyWith<$Res> {
   factory _$ErrorCopyWith(_Error value, $Res Function(_Error) _then) =
       __$ErrorCopyWithImpl;
   @useResult
@@ -479,7 +400,7 @@ class __$ErrorCopyWithImpl<$Res> implements _$ErrorCopyWith<$Res> {
   final _Error _self;
   final $Res Function(_Error) _then;
 
-  /// Create a copy of CollectionState
+  /// Create a copy of BoxesState
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   $Res call({

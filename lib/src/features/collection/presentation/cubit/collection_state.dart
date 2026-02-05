@@ -11,6 +11,10 @@ abstract class CollectionState with _$CollectionState {
     required List<CollectionEntry> collectionEntries,
     @Default(false) bool searchBarVisible,
     @Default('') String searchQuery,
+    /// When set, only items in this box are shown; null = all items.
+    int? selectedBoxId,
+    /// Display name for selected box (e.g. "Unboxed" or box name).
+    String? selectedBoxName,
   }) = _Loaded;
   const factory CollectionState.error(String message) = _Error;
 }

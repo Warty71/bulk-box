@@ -9,8 +9,14 @@ class CollectionRepositoryImpl implements CollectionRepository {
   CollectionRepositoryImpl(this._localDatasource);
 
   @override
-  Future<List<CollectionEntry>> getCollectionWithCards() async {
-    return await _localDatasource.getCollectionWithCards();
+  Future<List<CollectionEntry>> getCollectionWithCards({
+    int? boxId,
+    bool unboxedOnly = false,
+  }) async {
+    return await _localDatasource.getCollectionWithCards(
+      boxId: boxId,
+      unboxedOnly: unboxedOnly,
+    );
   }
 
   @override
@@ -26,12 +32,12 @@ class CollectionRepositoryImpl implements CollectionRepository {
   }
 
   @override
-  Future<CollectionItemEntity?> getCollectionItem(
+  Future<List<CollectionItemEntity>> getSlotsForCard(
     int cardId,
     String setCode,
     String setRarity,
   ) async {
-    return await _localDatasource.getCollectionItem(cardId, setCode, setRarity);
+    return await _localDatasource.getSlotsForCard(cardId, setCode, setRarity);
   }
 
   @override
@@ -40,30 +46,48 @@ class CollectionRepositoryImpl implements CollectionRepository {
   }
 
   @override
-  Future<void> updateQuantity(
+  Future<void> updateSlotQuantity(
     int cardId,
     String setCode,
     String setRarity,
+    int? boxId,
     int quantity,
   ) async {
-    await _localDatasource.updateQuantity(cardId, setCode, setRarity, quantity);
+    await _localDatasource.updateSlotQuantity(
+      cardId,
+      setCode,
+      setRarity,
+      boxId,
+      quantity,
+    );
   }
 
   @override
-  Future<void> removeCollectionItem(
+  Future<void> deleteSlot(
     int cardId,
     String setCode,
     String setRarity,
+    int? boxId,
   ) async {
-    await _localDatasource.decreaseQuantity(cardId, setCode, setRarity);
+    await _localDatasource.deleteSlot(cardId, setCode, setRarity, boxId);
   }
 
   @override
-  Future<void> deleteCollectionItem(
+  Future<void> moveBetweenSlots(
     int cardId,
     String setCode,
     String setRarity,
+    int? fromBoxId,
+    int? toBoxId,
+    int amount,
   ) async {
-    await _localDatasource.deleteCollectionItem(cardId, setCode, setRarity);
+    await _localDatasource.moveBetweenSlots(
+      cardId,
+      setCode,
+      setRarity,
+      fromBoxId,
+      toBoxId,
+      amount,
+    );
   }
 }
