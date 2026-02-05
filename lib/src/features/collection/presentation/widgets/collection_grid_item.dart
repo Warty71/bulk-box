@@ -89,7 +89,7 @@ class CollectionGridItem extends StatelessWidget {
             isScrollControlled: true,
             useSafeArea: true,
             builder: (context) =>
-                CollectionCardDetailsBottomSheet(card: entry.card),
+                CollectionCardDetailsBottomSheet(entry: entry),
           );
         },
         child: Stack(
