@@ -4,9 +4,7 @@ import 'package:bulk_box/src/core/database/app_database.dart' as db;
 import 'package:bulk_box/src/core/database/card_dao.dart';
 import 'package:bulk_box/src/core/database/card_extensions.dart';
 import 'package:bulk_box/src/core/di/injection_container.dart' as di;
-import 'package:bulk_box/src/features/collection/domain/entities/box.dart';
 import 'package:bulk_box/src/features/collection/domain/entities/collection_item.dart';
-import 'package:bulk_box/src/features/collection/domain/repositories/box_repository.dart';
 import 'package:bulk_box/src/features/collection/presentation/cubit/collection_cubit.dart';
 
 /// Bottom sheet for adding/editing card quantities in collection.
@@ -27,8 +25,6 @@ class _AddCardBottomSheetState extends State<AddCardBottomSheet> {
   final Map<String, int> _quantities = {};
   bool _isLoading = true;
   bool _isSaving = false;
-  List<Box> _boxes = [];
-  int? _selectedBoxId;
 
   /// Use API sets when present; otherwise one synthetic set so the user can still add the card.
   List<ParsedCardSet> get _effectiveCardSets {
@@ -52,16 +48,11 @@ class _AddCardBottomSheetState extends State<AddCardBottomSheet> {
   }
 
   Future<void> _loadData() async {
-    final boxRepo = di.getIt<BoxRepository>();
-    final boxes = await boxRepo.getBoxes();
-    if (mounted) setState(() => _boxes = boxes);
-    // Initialize quantities to 0 for all card sets
     for (final set in _effectiveCardSets) {
       final key = '${set.setCode}_${set.setRarity}';
       _quantities[key] = 0;
     }
 
-    // Load existing quantities from collection (sum across all slots per set+rarity)
     final cubit = di.getIt<CollectionCubit>();
     final existingItems =
         await cubit.getCollectionItemsByCardId(widget.card.id);
@@ -116,14 +107,14 @@ class _AddCardBottomSheetState extends State<AddCardBottomSheet> {
                 setRarity: set.setRarity,
                 quantity: 1,
                 dateAdded: now,
-                boxId: _selectedBoxId,
+                boxId: null,
               ),
             );
           }
         } else if (delta < 0) {
           final selectedSlot = slots.isEmpty
               ? null
-              : (slots.where((s) => s.boxId == _selectedBoxId).firstOrNull ??
+              : (slots.where((s) => s.boxId == null).firstOrNull ??
                   slots.first);
           if (selectedSlot != null) {
             var remove = -delta;
@@ -188,32 +179,6 @@ class _AddCardBottomSheetState extends State<AddCardBottomSheet> {
             ),
           ),
           const Divider(),
-
-          // Add to box (optional)
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: Dimensions.md),
-            child: DropdownButtonFormField<int?>(
-              value: _selectedBoxId,
-              decoration: const InputDecoration(
-                labelText: 'Add to box',
-                border: OutlineInputBorder(),
-              ),
-              items: [
-                const DropdownMenuItem<int?>(
-                  value: null,
-                  child: Text('Unboxed'),
-                ),
-                ..._boxes.map(
-                  (box) => DropdownMenuItem<int?>(
-                    value: box.id,
-                    child: Text(box.name),
-                  ),
-                ),
-              ],
-              onChanged: (value) => setState(() => _selectedBoxId = value),
-            ),
-          ),
-          const SizedBox(height: Dimensions.sm),
 
           // Card Sets List
           if (_isLoading)

@@ -6,6 +6,7 @@ import 'package:bulk_box/src/features/collection/domain/entities/box.dart';
 import 'package:bulk_box/src/features/collection/domain/entities/collection_entry.dart';
 import 'package:bulk_box/src/features/collection/domain/entities/collection_item.dart';
 import 'package:bulk_box/src/features/collection/domain/repositories/box_repository.dart';
+import 'package:bulk_box/src/core/widgets/quantity_stepper.dart';
 import 'package:bulk_box/src/features/collection/presentation/cubit/collection_cubit.dart';
 
 String _shortSetCode(String setCode) {
@@ -159,7 +160,16 @@ class _CollectionCardDetailsBottomSheetState
           if (!mounted) return;
           setState(() => _isSaving = true);
           await _loadSlots();
-          if (mounted) setState(() => _isSaving = false);
+          if (!mounted) return;
+          setState(() => _isSaving = false);
+          final currentSlot = _slots.cast<CollectionItemEntity?>().firstWhere(
+                (s) => s?.boxId == widget.currentBoxId,
+                orElse: () => null,
+              );
+          final qtyInCurrentBox = currentSlot?.quantity ?? 0;
+          if (qtyInCurrentBox == 0) {
+            Navigator.of(context).pop();
+          }
         },
       ),
     );
@@ -312,31 +322,17 @@ class _SlotTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
     return ListTile(
       title: Text(boxName),
-      subtitle: Text('$quantity ${quantity == 1 ? 'copy' : 'copies'}'),
-      trailing: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          IconButton(
-            icon: const Icon(Icons.remove),
-            onPressed: isSaving || quantity <= 0 ? null : onDecrease,
-          ),
-          SizedBox(
-            width: 32,
-            child: Text(
-              '$quantity',
-              textAlign: TextAlign.center,
-              style: theme.textTheme.titleMedium,
-            ),
-          ),
-          IconButton(
-            icon: const Icon(Icons.add),
-            onPressed: isSaving || quantity >= 999 ? null : onIncrease,
-          ),
-        ],
+      subtitle: Text('Owned: $quantity'),
+      trailing: QuantityStepper(
+        value: quantity,
+        min: 0,
+        max: 999,
+        enabled: !isSaving,
+        valueWidth: 32,
+        onDecrease: onDecrease,
+        onIncrease: onIncrease,
       ),
     );
   }
@@ -489,35 +485,20 @@ class _MoveToSheetState extends State<_MoveToSheet> {
                 color: theme.colorScheme.onSurfaceVariant,
               ),
               title: Text(_boxName(toId)),
-              trailing: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  IconButton(
-                    icon: const Icon(Icons.remove_circle_outline),
-                    onPressed: amount <= 0
-                        ? null
-                        : () => setState(() {
-                              _amountToMove[toId] = (amount - 1).clamp(0, 999);
-                            }),
-                  ),
-                  SizedBox(
-                    width: 40,
-                    child: Text(
-                      '$amount',
-                      textAlign: TextAlign.center,
-                      style: theme.textTheme.titleMedium,
-                    ),
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.add_circle_outline),
-                    onPressed: _totalMoving >= widget.fromQuantity
-                        ? null
-                        : () => setState(() {
-                              _amountToMove[toId] = (amount + 1).clamp(0,
-                                  widget.fromQuantity - _totalMoving + amount);
-                            }),
-                  ),
-                ],
+              trailing: QuantityStepper(
+                value: amount,
+                min: 0,
+                max: widget.fromQuantity - _totalMoving + amount,
+                enabled: true,
+                onDecrease: () => setState(() {
+                  _amountToMove[toId] = (amount - 1).clamp(0, 999);
+                }),
+                onIncrease: () => setState(() {
+                  _amountToMove[toId] = (amount + 1).clamp(
+                    0,
+                    widget.fromQuantity - _totalMoving + amount,
+                  );
+                }),
               ),
             );
           }),
@@ -535,9 +516,11 @@ class _MoveToSheetState extends State<_MoveToSheet> {
                     }
                   : null,
               icon: const Icon(Icons.drive_file_move),
-              label: Text(_totalMoving > widget.fromQuantity
-                  ? 'Total cannot exceed ${widget.fromQuantity}'
-                  : 'Move'),
+              label: Text(
+                _totalMoving > widget.fromQuantity
+                    ? 'Total cannot exceed ${widget.fromQuantity}'
+                    : 'Move',
+              ),
             ),
           ),
         ],
