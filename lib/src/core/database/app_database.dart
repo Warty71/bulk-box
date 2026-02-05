@@ -4,6 +4,8 @@ import 'package:drift/native.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as p;
 
+import 'migrations/app_migrations.dart';
+
 part 'app_database.g.dart';
 
 class Cards extends Table {
@@ -46,11 +48,11 @@ class CollectionItems extends Table {
 }
 
 @DriftDatabase(tables: [Cards, Boxes, CollectionItems])
-class AppDatabase extends _$AppDatabase {
+class AppDatabase extends _$AppDatabase implements MigrationDatabase {
   AppDatabase() : super(_openConnection());
 
   @override
-  int get schemaVersion => 5;
+  int get schemaVersion => 2;
 
   @override
   MigrationStrategy get migration {
@@ -59,45 +61,13 @@ class AppDatabase extends _$AppDatabase {
         await m.createAll();
       },
       onUpgrade: (Migrator m, int from, int to) async {
-        if (from < 2) {
-          // Reserved for future schema changes.
-        }
-        if (from < 3) {
-          await m.createTable(boxes);
-          await m.addColumn(collectionItems, collectionItems.boxId);
-        }
-        if (from < 4) {
-          // Boxes table may have been created without color (e.g. older build).
-          try {
-            await m.addColumn(boxes, boxes.color);
-          } catch (e) {
-            if (!e.toString().contains('duplicate column')) rethrow;
-          }
-        }
-        if (from < 5) {
-          // Option B: PK now (cardId, setCode, setRarity, boxId) so same card can be split across boxes.
-          await customStatement('''
-            CREATE TABLE collection_items_new (
-              card_id INTEGER NOT NULL REFERENCES cards(id),
-              set_code TEXT NOT NULL,
-              set_rarity TEXT NOT NULL,
-              box_id INTEGER REFERENCES boxes(id),
-              quantity INTEGER NOT NULL DEFAULT 1,
-              condition TEXT,
-              date_added INTEGER NOT NULL,
-              PRIMARY KEY (card_id, set_code, set_rarity, box_id)
-            )
-          ''');
-          await customStatement('''
-            INSERT INTO collection_items_new (card_id, set_code, set_rarity, box_id, quantity, condition, date_added)
-            SELECT card_id, set_code, set_rarity, box_id, quantity, condition, date_added FROM collection_items
-          ''');
-          await customStatement('DROP TABLE collection_items');
-          await customStatement('ALTER TABLE collection_items_new RENAME TO collection_items');
-        }
+        await runMigrations(m, from, to, this);
       },
     );
   }
+
+  @override
+  Future<void> runCustomStatement(String sql) => customStatement(sql);
 }
 
 LazyDatabase _openConnection() {
