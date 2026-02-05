@@ -1,11 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:bulk_box/src/features/collection/presentation/cubit/collection_cubit.dart';
-import 'package:bulk_box/src/features/collection/presentation/widgets/collection_options_bottom_sheet.dart';
+import 'package:bulk_box/src/core/widgets/app_bottom_sheets.dart';
 
-// * This button opens a bottom sheet with the collection options
-// * The bottom sheet contains the following options:
-// * - Dividers: Add a divider between sections, depending on the selected sort option
+/// Button that opens the collection options bottom sheet (dividers, etc.).
 class CollectionOptionsButton extends StatelessWidget {
   const CollectionOptionsButton({super.key});
 
@@ -13,18 +9,7 @@ class CollectionOptionsButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return IconButton(
       icon: const Icon(Icons.settings),
-      onPressed: () {
-        final collectionCubit = context.read<CollectionCubit>();
-        showModalBottomSheet(
-          context: context,
-          isScrollControlled: true,
-          useSafeArea: true,
-          builder: (sheetContext) => BlocProvider.value(
-            value: collectionCubit,
-            child: const CollectionOptionsBottomSheet(),
-          ),
-        );
-      },
+      onPressed: () => AppBottomSheets.showCollectionOptions(context),
     );
   }
 }

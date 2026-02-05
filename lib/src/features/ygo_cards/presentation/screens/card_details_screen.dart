@@ -5,7 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:bulk_box/src/core/constants/dimensions.dart';
 import 'package:bulk_box/src/core/database/app_database.dart' as db;
 import 'package:bulk_box/src/core/database/card_extensions.dart';
-import 'package:bulk_box/src/features/collection/presentation/widgets/add_card_bottom_sheet.dart';
+import 'package:bulk_box/src/core/widgets/app_bottom_sheets.dart';
 import 'package:bulk_box/src/features/search/presentation/cubit/search_cubit.dart';
 
 class CardDetailsScreen extends StatelessWidget {
@@ -26,14 +26,7 @@ class CardDetailsScreen extends StatelessWidget {
         actions: [
           IconButton(
             icon: const Icon(Icons.add),
-            onPressed: () {
-              showModalBottomSheet(
-                context: context,
-                isScrollControlled: true,
-                useSafeArea: true,
-                builder: (sheetContext) => AddCardBottomSheet(card: card),
-              );
-            },
+            onPressed: () => AppBottomSheets.showAddCard(context, card: card),
           ),
         ],
       ),
