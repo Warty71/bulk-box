@@ -3,7 +3,9 @@ import 'package:bulk_box/src/core/constants/dimensions.dart';
 import 'package:bulk_box/src/core/database/app_database.dart' as db;
 import 'package:bulk_box/src/core/database/card_extensions.dart';
 import 'package:bulk_box/src/core/di/injection_container.dart' as di;
+import 'package:bulk_box/src/features/collection/domain/entities/box.dart';
 import 'package:bulk_box/src/features/collection/domain/entities/collection_item.dart';
+import 'package:bulk_box/src/features/collection/domain/repositories/box_repository.dart';
 import 'package:bulk_box/src/features/collection/presentation/cubit/collection_cubit.dart';
 
 /// Bottom sheet for adding/editing card quantities in collection.
@@ -23,6 +25,8 @@ class AddCardBottomSheet extends StatefulWidget {
 class _AddCardBottomSheetState extends State<AddCardBottomSheet> {
   final Map<String, int> _quantities = {};
   bool _isLoading = true;
+  List<Box> _boxes = [];
+  int? _selectedBoxId;
 
   @override
   void initState() {
@@ -31,6 +35,9 @@ class _AddCardBottomSheetState extends State<AddCardBottomSheet> {
   }
 
   Future<void> _loadData() async {
+    final boxRepo = di.getIt<BoxRepository>();
+    final boxes = await boxRepo.getBoxes();
+    if (mounted) setState(() => _boxes = boxes);
     // Initialize quantities to 0 for all card sets
     for (final set in widget.card.parsedCardSets) {
       final key = '${set.setCode}_${set.setRarity}';
@@ -99,6 +106,7 @@ class _AddCardBottomSheetState extends State<AddCardBottomSheet> {
             setRarity: set.setRarity,
             quantity: quantity,
             dateAdded: now,
+            boxId: _selectedBoxId,
           );
           await cubit.addCollectionItem(item);
         }
@@ -150,6 +158,32 @@ class _AddCardBottomSheetState extends State<AddCardBottomSheet> {
             ),
           ),
           const Divider(),
+
+          // Add to box (optional)
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: Dimensions.md),
+            child: DropdownButtonFormField<int?>(
+              value: _selectedBoxId,
+              decoration: const InputDecoration(
+                labelText: 'Add to box',
+                border: OutlineInputBorder(),
+              ),
+              items: [
+                const DropdownMenuItem<int?>(
+                  value: null,
+                  child: Text('Unboxed'),
+                ),
+                ..._boxes.map(
+                  (box) => DropdownMenuItem<int?>(
+                    value: box.id,
+                    child: Text(box.name),
+                  ),
+                ),
+              ],
+              onChanged: (value) => setState(() => _selectedBoxId = value),
+            ),
+          ),
+          const SizedBox(height: Dimensions.sm),
 
           // Card Sets List
           if (_isLoading)

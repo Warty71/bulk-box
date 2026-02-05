@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:bulk_box/src/core/constants/dimensions.dart';
 import 'package:bulk_box/src/core/di/injection_container.dart' as di;
 import 'package:bulk_box/src/features/collection/domain/entities/collection_entry.dart';
+import 'package:bulk_box/src/features/collection/domain/repositories/box_repository.dart';
 import 'package:bulk_box/src/features/collection/presentation/cubit/collection_cubit.dart';
 
 String _shortSetCode(String setCode) {
@@ -58,6 +59,56 @@ class _CollectionCardDetailsBottomSheetState
     setState(() {
       _quantity = (_quantity + delta).clamp(0, 999);
     });
+  }
+
+  Future<void> _openMoveToBoxPicker() async {
+    final boxRepo = di.getIt<BoxRepository>();
+    final boxes = await boxRepo.getBoxes();
+
+    if (!mounted) return;
+    final selected = await showModalBottomSheet<int?>(
+      context: context,
+      builder: (context) => SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(Dimensions.md),
+              child: Text(
+                'Move to box',
+                style: Theme.of(context).textTheme.titleMedium,
+              ),
+            ),
+            ListTile(
+              leading: const Icon(Icons.inbox_outlined),
+              title: const Text('Unboxed'),
+              onTap: () => Navigator.of(context).pop<int?>(null),
+            ),
+            ...boxes.map(
+              (box) => ListTile(
+                leading: const Icon(Icons.inventory_2_outlined),
+                title: Text(box.name),
+                onTap: () => Navigator.of(context).pop<int?>(box.id),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+
+    if (selected == null || !mounted) return;
+
+    final cubit = di.getIt<CollectionCubit>();
+    await cubit.assignItemToBox(
+      widget.entry.card.id,
+      widget.entry.setCode,
+      widget.entry.setRarity,
+      selected,
+    );
+    if (mounted) {
+      setState(() {});
+      Navigator.of(context).pop();
+    }
   }
 
   Future<void> _save() async {
@@ -199,44 +250,26 @@ class _CollectionCardDetailsBottomSheetState
             ),
           ),
 
-          // Placeholder: boxes (future)
+          // Box: show current and "Move to box"
           const Divider(),
           Padding(
-            padding: const EdgeInsets.all(Dimensions.md),
-            child: Container(
-              padding: const EdgeInsets.symmetric(
-                vertical: Dimensions.lg,
-                horizontal: Dimensions.md,
+            padding: const EdgeInsets.symmetric(horizontal: Dimensions.md),
+            child: ListTile(
+              leading: Icon(
+                Icons.inbox_outlined,
+                size: Dimensions.iconLg,
+                color: theme.colorScheme.onSurfaceVariant,
               ),
-              decoration: BoxDecoration(
-                color: theme.colorScheme.surfaceContainerHighest
-                    .withValues(alpha: 0.5),
-                borderRadius: BorderRadius.circular(Dimensions.radiusMd),
+              title: Text(
+                'Box',
+                style: theme.textTheme.titleSmall?.copyWith(
+                  color: theme.colorScheme.onSurfaceVariant,
+                ),
               ),
-              child: Row(
-                children: [
-                  Icon(
-                    Icons.inbox_outlined,
-                    size: Dimensions.iconLg,
-                    color: theme.colorScheme.onSurfaceVariant,
-                  ),
-                  const SizedBox(width: Dimensions.md),
-                  Expanded(
-                    child: Text(
-                      'Move to box',
-                      style: theme.textTheme.titleSmall?.copyWith(
-                        color: theme.colorScheme.onSurfaceVariant,
-                      ),
-                    ),
-                  ),
-                  Text(
-                    'Coming soon',
-                    style: theme.textTheme.labelSmall?.copyWith(
-                      color: theme.colorScheme.outline,
-                      fontStyle: FontStyle.italic,
-                    ),
-                  ),
-                ],
+              subtitle: Text(entry.boxName ?? 'Unboxed'),
+              trailing: TextButton(
+                onPressed: _isSaving ? null : _openMoveToBoxPicker,
+                child: const Text('Move to box'),
               ),
             ),
           ),

@@ -13,17 +13,26 @@ class CollectionCubit extends Cubit<CollectionState> {
   /// All collection entries loaded from the repository.
   List<CollectionEntry> _allEntries = [];
 
-  /// Load all collection items
-  Future<void> loadCollectionItems() async {
+  /// Load collection items, optionally filtered by [boxId] or [unboxedOnly]. [boxName] is for display.
+  Future<void> loadCollectionItems({
+    int? boxId,
+    bool unboxedOnly = false,
+    String? boxName,
+  }) async {
     emit(const CollectionState.loading());
 
     try {
-      final entries = await _repository.getCollectionWithCards();
+      final entries = await _repository.getCollectionWithCards(
+        boxId: boxId,
+        unboxedOnly: unboxedOnly,
+      );
 
-      _allEntries = entries; // Cache master list.
+      _allEntries = entries;
 
       emit(CollectionState.loaded(
         collectionEntries: entries,
+        selectedBoxId: boxId,
+        selectedBoxName: boxName,
       ));
     } catch (e) {
       emit(CollectionState.error(e.toString()));
@@ -34,7 +43,7 @@ class CollectionCubit extends Cubit<CollectionState> {
   Future<void> addCollectionItem(CollectionItemEntity item) async {
     try {
       await _repository.addCollectionItem(item);
-      await loadCollectionItems();
+      await _reloadWithCurrentFilter();
     } catch (e) {
       emit(CollectionState.error(e.toString()));
     }
@@ -49,7 +58,7 @@ class CollectionCubit extends Cubit<CollectionState> {
   ) async {
     try {
       await _repository.updateQuantity(cardId, setCode, setRarity, quantity);
-      await loadCollectionItems();
+      await _reloadWithCurrentFilter();
     } catch (e) {
       emit(CollectionState.error(e.toString()));
     }
@@ -63,7 +72,7 @@ class CollectionCubit extends Cubit<CollectionState> {
   ) async {
     try {
       await _repository.removeCollectionItem(cardId, setCode, setRarity);
-      await loadCollectionItems();
+      await _reloadWithCurrentFilter();
     } catch (e) {
       emit(CollectionState.error(e.toString()));
     }
@@ -77,10 +86,36 @@ class CollectionCubit extends Cubit<CollectionState> {
   ) async {
     try {
       await _repository.deleteCollectionItem(cardId, setCode, setRarity);
-      await loadCollectionItems();
+      await _reloadWithCurrentFilter();
     } catch (e) {
       emit(CollectionState.error(e.toString()));
     }
+  }
+
+  /// Assign a collection item to a box (or unboxed when [boxId] is null).
+  Future<void> assignItemToBox(
+    int cardId,
+    String setCode,
+    String setRarity,
+    int? boxId,
+  ) async {
+    try {
+      await _repository.assignItemToBox(cardId, setCode, setRarity, boxId);
+      await _reloadWithCurrentFilter();
+    } catch (e) {
+      emit(CollectionState.error(e.toString()));
+    }
+  }
+
+  Future<void> _reloadWithCurrentFilter() async {
+    state.maybeWhen(
+      loaded: (_, __, ___, boxId, boxName) => loadCollectionItems(
+        boxId: boxId,
+        unboxedOnly: boxId == null && boxName == 'Unboxed',
+        boxName: boxName,
+      ),
+      orElse: () => loadCollectionItems(),
+    );
   }
 
   /// Get collection items for a specific card
@@ -107,11 +142,13 @@ class CollectionCubit extends Cubit<CollectionState> {
   /// Toggle search bar visibility.
   void toggleSearchBar() {
     state.maybeWhen(
-      loaded: (entries, visible, query) {
+      loaded: (entries, visible, query, boxId, boxName) {
         emit(CollectionState.loaded(
           collectionEntries: entries,
           searchBarVisible: !visible,
           searchQuery: query,
+          selectedBoxId: boxId,
+          selectedBoxName: boxName,
         ));
       },
       orElse: () {},
@@ -121,7 +158,7 @@ class CollectionCubit extends Cubit<CollectionState> {
   /// Search for a collection entry by name or set code.
   void search(String query) {
     state.maybeWhen(
-      loaded: (_, searchBarVisible, __) {
+      loaded: (_, searchBarVisible, __, boxId, boxName) {
         final lower = query.toLowerCase();
 
         final filtered = _allEntries.where((entry) {
@@ -135,6 +172,8 @@ class CollectionCubit extends Cubit<CollectionState> {
           collectionEntries: filtered,
           searchBarVisible: searchBarVisible,
           searchQuery: query,
+          selectedBoxId: boxId,
+          selectedBoxName: boxName,
         ));
       },
       orElse: () {},

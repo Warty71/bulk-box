@@ -22,6 +22,14 @@ class Cards extends Table {
   Set<Column> get primaryKey => {id};
 }
 
+class Boxes extends Table {
+  IntColumn get id => integer().autoIncrement()();
+  TextColumn get name => text()();
+  TextColumn get color => text().nullable()();
+  IntColumn get sortOrder => integer().withDefault(const Constant(0))();
+  DateTimeColumn get createdAt => dateTime().withDefault(currentDateAndTime)();
+}
+
 class CollectionItems extends Table {
   IntColumn get cardId => integer().references(Cards, #id)();
   TextColumn get setCode => text()();
@@ -29,17 +37,18 @@ class CollectionItems extends Table {
   IntColumn get quantity => integer().withDefault(const Constant(1))();
   TextColumn get condition => text().nullable()();
   DateTimeColumn get dateAdded => dateTime().withDefault(currentDateAndTime)();
+  IntColumn get boxId => integer().nullable().references(Boxes, #id)();
 
   @override
   Set<Column> get primaryKey => {cardId, setCode, setRarity};
 }
 
-@DriftDatabase(tables: [Cards, CollectionItems])
+@DriftDatabase(tables: [Cards, Boxes, CollectionItems])
 class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(_openConnection());
 
   @override
-  int get schemaVersion => 2;
+  int get schemaVersion => 4;
 
   @override
   MigrationStrategy get migration {
@@ -49,7 +58,19 @@ class AppDatabase extends _$AppDatabase {
       },
       onUpgrade: (Migrator m, int from, int to) async {
         if (from < 2) {
-          // Reserved for future schema changes (e.g. new tables/columns).
+          // Reserved for future schema changes.
+        }
+        if (from < 3) {
+          await m.createTable(boxes);
+          await m.addColumn(collectionItems, collectionItems.boxId);
+        }
+        if (from < 4) {
+          // Boxes table may have been created without color (e.g. older build).
+          try {
+            await m.addColumn(boxes, boxes.color);
+          } catch (e) {
+            if (!e.toString().contains('duplicate column')) rethrow;
+          }
         }
       },
     );

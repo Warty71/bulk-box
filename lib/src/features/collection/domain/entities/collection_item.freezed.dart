@@ -21,6 +21,9 @@ mixin _$CollectionItemEntity {
   String? get condition;
   DateTime get dateAdded;
 
+  /// Box this item is in; null means unboxed.
+  int? get boxId;
+
   /// Create a copy of CollectionItemEntity
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
@@ -43,16 +46,17 @@ mixin _$CollectionItemEntity {
             (identical(other.condition, condition) ||
                 other.condition == condition) &&
             (identical(other.dateAdded, dateAdded) ||
-                other.dateAdded == dateAdded));
+                other.dateAdded == dateAdded) &&
+            (identical(other.boxId, boxId) || other.boxId == boxId));
   }
 
   @override
-  int get hashCode => Object.hash(
-      runtimeType, cardId, setCode, setRarity, quantity, condition, dateAdded);
+  int get hashCode => Object.hash(runtimeType, cardId, setCode, setRarity,
+      quantity, condition, dateAdded, boxId);
 
   @override
   String toString() {
-    return 'CollectionItemEntity(cardId: $cardId, setCode: $setCode, setRarity: $setRarity, quantity: $quantity, condition: $condition, dateAdded: $dateAdded)';
+    return 'CollectionItemEntity(cardId: $cardId, setCode: $setCode, setRarity: $setRarity, quantity: $quantity, condition: $condition, dateAdded: $dateAdded, boxId: $boxId)';
   }
 }
 
@@ -68,7 +72,8 @@ abstract mixin class $CollectionItemEntityCopyWith<$Res> {
       String setRarity,
       int quantity,
       String? condition,
-      DateTime dateAdded});
+      DateTime dateAdded,
+      int? boxId});
 }
 
 /// @nodoc
@@ -90,6 +95,7 @@ class _$CollectionItemEntityCopyWithImpl<$Res>
     Object? quantity = null,
     Object? condition = freezed,
     Object? dateAdded = null,
+    Object? boxId = freezed,
   }) {
     return _then(_self.copyWith(
       cardId: null == cardId
@@ -116,6 +122,10 @@ class _$CollectionItemEntityCopyWithImpl<$Res>
           ? _self.dateAdded
           : dateAdded // ignore: cast_nullable_to_non_nullable
               as DateTime,
+      boxId: freezed == boxId
+          ? _self.boxId
+          : boxId // ignore: cast_nullable_to_non_nullable
+              as int?,
     ));
   }
 }
@@ -214,7 +224,7 @@ extension CollectionItemEntityPatterns on CollectionItemEntity {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>(
     TResult Function(int cardId, String setCode, String setRarity, int quantity,
-            String? condition, DateTime dateAdded)?
+            String? condition, DateTime dateAdded, int? boxId)?
         $default, {
     required TResult orElse(),
   }) {
@@ -222,7 +232,7 @@ extension CollectionItemEntityPatterns on CollectionItemEntity {
     switch (_that) {
       case _CollectionItemEntity() when $default != null:
         return $default(_that.cardId, _that.setCode, _that.setRarity,
-            _that.quantity, _that.condition, _that.dateAdded);
+            _that.quantity, _that.condition, _that.dateAdded, _that.boxId);
       case _:
         return orElse();
     }
@@ -244,14 +254,14 @@ extension CollectionItemEntityPatterns on CollectionItemEntity {
   @optionalTypeArgs
   TResult when<TResult extends Object?>(
     TResult Function(int cardId, String setCode, String setRarity, int quantity,
-            String? condition, DateTime dateAdded)
+            String? condition, DateTime dateAdded, int? boxId)
         $default,
   ) {
     final _that = this;
     switch (_that) {
       case _CollectionItemEntity():
         return $default(_that.cardId, _that.setCode, _that.setRarity,
-            _that.quantity, _that.condition, _that.dateAdded);
+            _that.quantity, _that.condition, _that.dateAdded, _that.boxId);
       case _:
         throw StateError('Unexpected subclass');
     }
@@ -272,14 +282,14 @@ extension CollectionItemEntityPatterns on CollectionItemEntity {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>(
     TResult? Function(int cardId, String setCode, String setRarity,
-            int quantity, String? condition, DateTime dateAdded)?
+            int quantity, String? condition, DateTime dateAdded, int? boxId)?
         $default,
   ) {
     final _that = this;
     switch (_that) {
       case _CollectionItemEntity() when $default != null:
         return $default(_that.cardId, _that.setCode, _that.setRarity,
-            _that.quantity, _that.condition, _that.dateAdded);
+            _that.quantity, _that.condition, _that.dateAdded, _that.boxId);
       case _:
         return null;
     }
@@ -295,7 +305,8 @@ class _CollectionItemEntity implements CollectionItemEntity {
       required this.setRarity,
       required this.quantity,
       this.condition,
-      required this.dateAdded});
+      required this.dateAdded,
+      this.boxId});
 
   @override
   final int cardId;
@@ -309,6 +320,10 @@ class _CollectionItemEntity implements CollectionItemEntity {
   final String? condition;
   @override
   final DateTime dateAdded;
+
+  /// Box this item is in; null means unboxed.
+  @override
+  final int? boxId;
 
   /// Create a copy of CollectionItemEntity
   /// with the given fields replaced by the non-null parameter values.
@@ -333,16 +348,17 @@ class _CollectionItemEntity implements CollectionItemEntity {
             (identical(other.condition, condition) ||
                 other.condition == condition) &&
             (identical(other.dateAdded, dateAdded) ||
-                other.dateAdded == dateAdded));
+                other.dateAdded == dateAdded) &&
+            (identical(other.boxId, boxId) || other.boxId == boxId));
   }
 
   @override
-  int get hashCode => Object.hash(
-      runtimeType, cardId, setCode, setRarity, quantity, condition, dateAdded);
+  int get hashCode => Object.hash(runtimeType, cardId, setCode, setRarity,
+      quantity, condition, dateAdded, boxId);
 
   @override
   String toString() {
-    return 'CollectionItemEntity(cardId: $cardId, setCode: $setCode, setRarity: $setRarity, quantity: $quantity, condition: $condition, dateAdded: $dateAdded)';
+    return 'CollectionItemEntity(cardId: $cardId, setCode: $setCode, setRarity: $setRarity, quantity: $quantity, condition: $condition, dateAdded: $dateAdded, boxId: $boxId)';
   }
 }
 
@@ -360,7 +376,8 @@ abstract mixin class _$CollectionItemEntityCopyWith<$Res>
       String setRarity,
       int quantity,
       String? condition,
-      DateTime dateAdded});
+      DateTime dateAdded,
+      int? boxId});
 }
 
 /// @nodoc
@@ -382,6 +399,7 @@ class __$CollectionItemEntityCopyWithImpl<$Res>
     Object? quantity = null,
     Object? condition = freezed,
     Object? dateAdded = null,
+    Object? boxId = freezed,
   }) {
     return _then(_CollectionItemEntity(
       cardId: null == cardId
@@ -408,6 +426,10 @@ class __$CollectionItemEntityCopyWithImpl<$Res>
           ? _self.dateAdded
           : dateAdded // ignore: cast_nullable_to_non_nullable
               as DateTime,
+      boxId: freezed == boxId
+          ? _self.boxId
+          : boxId // ignore: cast_nullable_to_non_nullable
+              as int?,
     ));
   }
 }

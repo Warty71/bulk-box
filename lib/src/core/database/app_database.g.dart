@@ -531,6 +531,299 @@ class CardsCompanion extends UpdateCompanion<Card> {
   }
 }
 
+class $BoxesTable extends Boxes with TableInfo<$BoxesTable, Boxe> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $BoxesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+      'id', aliasedName, false,
+      hasAutoIncrement: true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+      'name', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _colorMeta = const VerificationMeta('color');
+  @override
+  late final GeneratedColumn<String> color = GeneratedColumn<String>(
+      'color', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
+  static const VerificationMeta _sortOrderMeta =
+      const VerificationMeta('sortOrder');
+  @override
+  late final GeneratedColumn<int> sortOrder = GeneratedColumn<int>(
+      'sort_order', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(0));
+  static const VerificationMeta _createdAtMeta =
+      const VerificationMeta('createdAt');
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+      'created_at', aliasedName, false,
+      type: DriftSqlType.dateTime,
+      requiredDuringInsert: false,
+      defaultValue: currentDateAndTime);
+  @override
+  List<GeneratedColumn> get $columns => [id, name, color, sortOrder, createdAt];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'boxes';
+  @override
+  VerificationContext validateIntegrity(Insertable<Boxe> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+          _nameMeta, name.isAcceptableOrUnknown(data['name']!, _nameMeta));
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('color')) {
+      context.handle(
+          _colorMeta, color.isAcceptableOrUnknown(data['color']!, _colorMeta));
+    }
+    if (data.containsKey('sort_order')) {
+      context.handle(_sortOrderMeta,
+          sortOrder.isAcceptableOrUnknown(data['sort_order']!, _sortOrderMeta));
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(_createdAtMeta,
+          createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta));
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  Boxe map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return Boxe(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
+      name: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}name'])!,
+      color: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}color']),
+      sortOrder: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}sort_order'])!,
+      createdAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}created_at'])!,
+    );
+  }
+
+  @override
+  $BoxesTable createAlias(String alias) {
+    return $BoxesTable(attachedDatabase, alias);
+  }
+}
+
+class Boxe extends DataClass implements Insertable<Boxe> {
+  final int id;
+  final String name;
+  final String? color;
+  final int sortOrder;
+  final DateTime createdAt;
+  const Boxe(
+      {required this.id,
+      required this.name,
+      this.color,
+      required this.sortOrder,
+      required this.createdAt});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['name'] = Variable<String>(name);
+    if (!nullToAbsent || color != null) {
+      map['color'] = Variable<String>(color);
+    }
+    map['sort_order'] = Variable<int>(sortOrder);
+    map['created_at'] = Variable<DateTime>(createdAt);
+    return map;
+  }
+
+  BoxesCompanion toCompanion(bool nullToAbsent) {
+    return BoxesCompanion(
+      id: Value(id),
+      name: Value(name),
+      color:
+          color == null && nullToAbsent ? const Value.absent() : Value(color),
+      sortOrder: Value(sortOrder),
+      createdAt: Value(createdAt),
+    );
+  }
+
+  factory Boxe.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return Boxe(
+      id: serializer.fromJson<int>(json['id']),
+      name: serializer.fromJson<String>(json['name']),
+      color: serializer.fromJson<String?>(json['color']),
+      sortOrder: serializer.fromJson<int>(json['sortOrder']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'name': serializer.toJson<String>(name),
+      'color': serializer.toJson<String?>(color),
+      'sortOrder': serializer.toJson<int>(sortOrder),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+    };
+  }
+
+  Boxe copyWith(
+          {int? id,
+          String? name,
+          Value<String?> color = const Value.absent(),
+          int? sortOrder,
+          DateTime? createdAt}) =>
+      Boxe(
+        id: id ?? this.id,
+        name: name ?? this.name,
+        color: color.present ? color.value : this.color,
+        sortOrder: sortOrder ?? this.sortOrder,
+        createdAt: createdAt ?? this.createdAt,
+      );
+  Boxe copyWithCompanion(BoxesCompanion data) {
+    return Boxe(
+      id: data.id.present ? data.id.value : this.id,
+      name: data.name.present ? data.name.value : this.name,
+      color: data.color.present ? data.color.value : this.color,
+      sortOrder: data.sortOrder.present ? data.sortOrder.value : this.sortOrder,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('Boxe(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('color: $color, ')
+          ..write('sortOrder: $sortOrder, ')
+          ..write('createdAt: $createdAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, name, color, sortOrder, createdAt);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is Boxe &&
+          other.id == this.id &&
+          other.name == this.name &&
+          other.color == this.color &&
+          other.sortOrder == this.sortOrder &&
+          other.createdAt == this.createdAt);
+}
+
+class BoxesCompanion extends UpdateCompanion<Boxe> {
+  final Value<int> id;
+  final Value<String> name;
+  final Value<String?> color;
+  final Value<int> sortOrder;
+  final Value<DateTime> createdAt;
+  const BoxesCompanion({
+    this.id = const Value.absent(),
+    this.name = const Value.absent(),
+    this.color = const Value.absent(),
+    this.sortOrder = const Value.absent(),
+    this.createdAt = const Value.absent(),
+  });
+  BoxesCompanion.insert({
+    this.id = const Value.absent(),
+    required String name,
+    this.color = const Value.absent(),
+    this.sortOrder = const Value.absent(),
+    this.createdAt = const Value.absent(),
+  }) : name = Value(name);
+  static Insertable<Boxe> custom({
+    Expression<int>? id,
+    Expression<String>? name,
+    Expression<String>? color,
+    Expression<int>? sortOrder,
+    Expression<DateTime>? createdAt,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (name != null) 'name': name,
+      if (color != null) 'color': color,
+      if (sortOrder != null) 'sort_order': sortOrder,
+      if (createdAt != null) 'created_at': createdAt,
+    });
+  }
+
+  BoxesCompanion copyWith(
+      {Value<int>? id,
+      Value<String>? name,
+      Value<String?>? color,
+      Value<int>? sortOrder,
+      Value<DateTime>? createdAt}) {
+    return BoxesCompanion(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      color: color ?? this.color,
+      sortOrder: sortOrder ?? this.sortOrder,
+      createdAt: createdAt ?? this.createdAt,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (color.present) {
+      map['color'] = Variable<String>(color.value);
+    }
+    if (sortOrder.present) {
+      map['sort_order'] = Variable<int>(sortOrder.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('BoxesCompanion(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('color: $color, ')
+          ..write('sortOrder: $sortOrder, ')
+          ..write('createdAt: $createdAt')
+          ..write(')'))
+        .toString();
+  }
+}
+
 class $CollectionItemsTable extends CollectionItems
     with TableInfo<$CollectionItemsTable, CollectionItem> {
   @override
@@ -579,9 +872,17 @@ class $CollectionItemsTable extends CollectionItems
       type: DriftSqlType.dateTime,
       requiredDuringInsert: false,
       defaultValue: currentDateAndTime);
+  static const VerificationMeta _boxIdMeta = const VerificationMeta('boxId');
+  @override
+  late final GeneratedColumn<int> boxId = GeneratedColumn<int>(
+      'box_id', aliasedName, true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('REFERENCES boxes (id)'));
   @override
   List<GeneratedColumn> get $columns =>
-      [cardId, setCode, setRarity, quantity, condition, dateAdded];
+      [cardId, setCode, setRarity, quantity, condition, dateAdded, boxId];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -622,6 +923,10 @@ class $CollectionItemsTable extends CollectionItems
       context.handle(_dateAddedMeta,
           dateAdded.isAcceptableOrUnknown(data['date_added']!, _dateAddedMeta));
     }
+    if (data.containsKey('box_id')) {
+      context.handle(
+          _boxIdMeta, boxId.isAcceptableOrUnknown(data['box_id']!, _boxIdMeta));
+    }
     return context;
   }
 
@@ -643,6 +948,8 @@ class $CollectionItemsTable extends CollectionItems
           .read(DriftSqlType.string, data['${effectivePrefix}condition']),
       dateAdded: attachedDatabase.typeMapping
           .read(DriftSqlType.dateTime, data['${effectivePrefix}date_added'])!,
+      boxId: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}box_id']),
     );
   }
 
@@ -659,13 +966,15 @@ class CollectionItem extends DataClass implements Insertable<CollectionItem> {
   final int quantity;
   final String? condition;
   final DateTime dateAdded;
+  final int? boxId;
   const CollectionItem(
       {required this.cardId,
       required this.setCode,
       required this.setRarity,
       required this.quantity,
       this.condition,
-      required this.dateAdded});
+      required this.dateAdded,
+      this.boxId});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -677,6 +986,9 @@ class CollectionItem extends DataClass implements Insertable<CollectionItem> {
       map['condition'] = Variable<String>(condition);
     }
     map['date_added'] = Variable<DateTime>(dateAdded);
+    if (!nullToAbsent || boxId != null) {
+      map['box_id'] = Variable<int>(boxId);
+    }
     return map;
   }
 
@@ -690,6 +1002,8 @@ class CollectionItem extends DataClass implements Insertable<CollectionItem> {
           ? const Value.absent()
           : Value(condition),
       dateAdded: Value(dateAdded),
+      boxId:
+          boxId == null && nullToAbsent ? const Value.absent() : Value(boxId),
     );
   }
 
@@ -703,6 +1017,7 @@ class CollectionItem extends DataClass implements Insertable<CollectionItem> {
       quantity: serializer.fromJson<int>(json['quantity']),
       condition: serializer.fromJson<String?>(json['condition']),
       dateAdded: serializer.fromJson<DateTime>(json['dateAdded']),
+      boxId: serializer.fromJson<int?>(json['boxId']),
     );
   }
   @override
@@ -715,6 +1030,7 @@ class CollectionItem extends DataClass implements Insertable<CollectionItem> {
       'quantity': serializer.toJson<int>(quantity),
       'condition': serializer.toJson<String?>(condition),
       'dateAdded': serializer.toJson<DateTime>(dateAdded),
+      'boxId': serializer.toJson<int?>(boxId),
     };
   }
 
@@ -724,7 +1040,8 @@ class CollectionItem extends DataClass implements Insertable<CollectionItem> {
           String? setRarity,
           int? quantity,
           Value<String?> condition = const Value.absent(),
-          DateTime? dateAdded}) =>
+          DateTime? dateAdded,
+          Value<int?> boxId = const Value.absent()}) =>
       CollectionItem(
         cardId: cardId ?? this.cardId,
         setCode: setCode ?? this.setCode,
@@ -732,6 +1049,7 @@ class CollectionItem extends DataClass implements Insertable<CollectionItem> {
         quantity: quantity ?? this.quantity,
         condition: condition.present ? condition.value : this.condition,
         dateAdded: dateAdded ?? this.dateAdded,
+        boxId: boxId.present ? boxId.value : this.boxId,
       );
   CollectionItem copyWithCompanion(CollectionItemsCompanion data) {
     return CollectionItem(
@@ -741,6 +1059,7 @@ class CollectionItem extends DataClass implements Insertable<CollectionItem> {
       quantity: data.quantity.present ? data.quantity.value : this.quantity,
       condition: data.condition.present ? data.condition.value : this.condition,
       dateAdded: data.dateAdded.present ? data.dateAdded.value : this.dateAdded,
+      boxId: data.boxId.present ? data.boxId.value : this.boxId,
     );
   }
 
@@ -752,14 +1071,15 @@ class CollectionItem extends DataClass implements Insertable<CollectionItem> {
           ..write('setRarity: $setRarity, ')
           ..write('quantity: $quantity, ')
           ..write('condition: $condition, ')
-          ..write('dateAdded: $dateAdded')
+          ..write('dateAdded: $dateAdded, ')
+          ..write('boxId: $boxId')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode =>
-      Object.hash(cardId, setCode, setRarity, quantity, condition, dateAdded);
+  int get hashCode => Object.hash(
+      cardId, setCode, setRarity, quantity, condition, dateAdded, boxId);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -769,7 +1089,8 @@ class CollectionItem extends DataClass implements Insertable<CollectionItem> {
           other.setRarity == this.setRarity &&
           other.quantity == this.quantity &&
           other.condition == this.condition &&
-          other.dateAdded == this.dateAdded);
+          other.dateAdded == this.dateAdded &&
+          other.boxId == this.boxId);
 }
 
 class CollectionItemsCompanion extends UpdateCompanion<CollectionItem> {
@@ -779,6 +1100,7 @@ class CollectionItemsCompanion extends UpdateCompanion<CollectionItem> {
   final Value<int> quantity;
   final Value<String?> condition;
   final Value<DateTime> dateAdded;
+  final Value<int?> boxId;
   final Value<int> rowid;
   const CollectionItemsCompanion({
     this.cardId = const Value.absent(),
@@ -787,6 +1109,7 @@ class CollectionItemsCompanion extends UpdateCompanion<CollectionItem> {
     this.quantity = const Value.absent(),
     this.condition = const Value.absent(),
     this.dateAdded = const Value.absent(),
+    this.boxId = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   CollectionItemsCompanion.insert({
@@ -796,6 +1119,7 @@ class CollectionItemsCompanion extends UpdateCompanion<CollectionItem> {
     this.quantity = const Value.absent(),
     this.condition = const Value.absent(),
     this.dateAdded = const Value.absent(),
+    this.boxId = const Value.absent(),
     this.rowid = const Value.absent(),
   })  : cardId = Value(cardId),
         setCode = Value(setCode),
@@ -807,6 +1131,7 @@ class CollectionItemsCompanion extends UpdateCompanion<CollectionItem> {
     Expression<int>? quantity,
     Expression<String>? condition,
     Expression<DateTime>? dateAdded,
+    Expression<int>? boxId,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -816,6 +1141,7 @@ class CollectionItemsCompanion extends UpdateCompanion<CollectionItem> {
       if (quantity != null) 'quantity': quantity,
       if (condition != null) 'condition': condition,
       if (dateAdded != null) 'date_added': dateAdded,
+      if (boxId != null) 'box_id': boxId,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -827,6 +1153,7 @@ class CollectionItemsCompanion extends UpdateCompanion<CollectionItem> {
       Value<int>? quantity,
       Value<String?>? condition,
       Value<DateTime>? dateAdded,
+      Value<int?>? boxId,
       Value<int>? rowid}) {
     return CollectionItemsCompanion(
       cardId: cardId ?? this.cardId,
@@ -835,6 +1162,7 @@ class CollectionItemsCompanion extends UpdateCompanion<CollectionItem> {
       quantity: quantity ?? this.quantity,
       condition: condition ?? this.condition,
       dateAdded: dateAdded ?? this.dateAdded,
+      boxId: boxId ?? this.boxId,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -860,6 +1188,9 @@ class CollectionItemsCompanion extends UpdateCompanion<CollectionItem> {
     if (dateAdded.present) {
       map['date_added'] = Variable<DateTime>(dateAdded.value);
     }
+    if (boxId.present) {
+      map['box_id'] = Variable<int>(boxId.value);
+    }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
     }
@@ -875,6 +1206,7 @@ class CollectionItemsCompanion extends UpdateCompanion<CollectionItem> {
           ..write('quantity: $quantity, ')
           ..write('condition: $condition, ')
           ..write('dateAdded: $dateAdded, ')
+          ..write('boxId: $boxId, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -885,13 +1217,15 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
   late final $CardsTable cards = $CardsTable(this);
+  late final $BoxesTable boxes = $BoxesTable(this);
   late final $CollectionItemsTable collectionItems =
       $CollectionItemsTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
   @override
-  List<DatabaseSchemaEntity> get allSchemaEntities => [cards, collectionItems];
+  List<DatabaseSchemaEntity> get allSchemaEntities =>
+      [cards, boxes, collectionItems];
 }
 
 typedef $$CardsTableCreateCompanionBuilder = CardsCompanion Function({
@@ -1233,6 +1567,254 @@ typedef $$CardsTableProcessedTableManager = ProcessedTableManager<
     (Card, $$CardsTableReferences),
     Card,
     PrefetchHooks Function({bool collectionItemsRefs})>;
+typedef $$BoxesTableCreateCompanionBuilder = BoxesCompanion Function({
+  Value<int> id,
+  required String name,
+  Value<String?> color,
+  Value<int> sortOrder,
+  Value<DateTime> createdAt,
+});
+typedef $$BoxesTableUpdateCompanionBuilder = BoxesCompanion Function({
+  Value<int> id,
+  Value<String> name,
+  Value<String?> color,
+  Value<int> sortOrder,
+  Value<DateTime> createdAt,
+});
+
+final class $$BoxesTableReferences
+    extends BaseReferences<_$AppDatabase, $BoxesTable, Boxe> {
+  $$BoxesTableReferences(super.$_db, super.$_table, super.$_typedResult);
+
+  static MultiTypedResultKey<$CollectionItemsTable, List<CollectionItem>>
+      _collectionItemsRefsTable(_$AppDatabase db) =>
+          MultiTypedResultKey.fromTable(db.collectionItems,
+              aliasName:
+                  $_aliasNameGenerator(db.boxes.id, db.collectionItems.boxId));
+
+  $$CollectionItemsTableProcessedTableManager get collectionItemsRefs {
+    final manager =
+        $$CollectionItemsTableTableManager($_db, $_db.collectionItems)
+            .filter((f) => f.boxId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache =
+        $_typedResult.readTableOrNull(_collectionItemsRefsTable($_db));
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: cache));
+  }
+}
+
+class $$BoxesTableFilterComposer extends Composer<_$AppDatabase, $BoxesTable> {
+  $$BoxesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get name => $composableBuilder(
+      column: $table.name, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get color => $composableBuilder(
+      column: $table.color, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get sortOrder => $composableBuilder(
+      column: $table.sortOrder, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+      column: $table.createdAt, builder: (column) => ColumnFilters(column));
+
+  Expression<bool> collectionItemsRefs(
+      Expression<bool> Function($$CollectionItemsTableFilterComposer f) f) {
+    final $$CollectionItemsTableFilterComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.id,
+        referencedTable: $db.collectionItems,
+        getReferencedColumn: (t) => t.boxId,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$CollectionItemsTableFilterComposer(
+              $db: $db,
+              $table: $db.collectionItems,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return f(composer);
+  }
+}
+
+class $$BoxesTableOrderingComposer
+    extends Composer<_$AppDatabase, $BoxesTable> {
+  $$BoxesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get name => $composableBuilder(
+      column: $table.name, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get color => $composableBuilder(
+      column: $table.color, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get sortOrder => $composableBuilder(
+      column: $table.sortOrder, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+      column: $table.createdAt, builder: (column) => ColumnOrderings(column));
+}
+
+class $$BoxesTableAnnotationComposer
+    extends Composer<_$AppDatabase, $BoxesTable> {
+  $$BoxesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<String> get color =>
+      $composableBuilder(column: $table.color, builder: (column) => column);
+
+  GeneratedColumn<int> get sortOrder =>
+      $composableBuilder(column: $table.sortOrder, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  Expression<T> collectionItemsRefs<T extends Object>(
+      Expression<T> Function($$CollectionItemsTableAnnotationComposer a) f) {
+    final $$CollectionItemsTableAnnotationComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.id,
+        referencedTable: $db.collectionItems,
+        getReferencedColumn: (t) => t.boxId,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$CollectionItemsTableAnnotationComposer(
+              $db: $db,
+              $table: $db.collectionItems,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return f(composer);
+  }
+}
+
+class $$BoxesTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $BoxesTable,
+    Boxe,
+    $$BoxesTableFilterComposer,
+    $$BoxesTableOrderingComposer,
+    $$BoxesTableAnnotationComposer,
+    $$BoxesTableCreateCompanionBuilder,
+    $$BoxesTableUpdateCompanionBuilder,
+    (Boxe, $$BoxesTableReferences),
+    Boxe,
+    PrefetchHooks Function({bool collectionItemsRefs})> {
+  $$BoxesTableTableManager(_$AppDatabase db, $BoxesTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$BoxesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$BoxesTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$BoxesTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            Value<String> name = const Value.absent(),
+            Value<String?> color = const Value.absent(),
+            Value<int> sortOrder = const Value.absent(),
+            Value<DateTime> createdAt = const Value.absent(),
+          }) =>
+              BoxesCompanion(
+            id: id,
+            name: name,
+            color: color,
+            sortOrder: sortOrder,
+            createdAt: createdAt,
+          ),
+          createCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            required String name,
+            Value<String?> color = const Value.absent(),
+            Value<int> sortOrder = const Value.absent(),
+            Value<DateTime> createdAt = const Value.absent(),
+          }) =>
+              BoxesCompanion.insert(
+            id: id,
+            name: name,
+            color: color,
+            sortOrder: sortOrder,
+            createdAt: createdAt,
+          ),
+          withReferenceMapper: (p0) => p0
+              .map((e) =>
+                  (e.readTable(table), $$BoxesTableReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: ({collectionItemsRefs = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [
+                if (collectionItemsRefs) db.collectionItems
+              ],
+              addJoins: null,
+              getPrefetchedDataCallback: (items) async {
+                return [
+                  if (collectionItemsRefs)
+                    await $_getPrefetchedData<Boxe, $BoxesTable,
+                            CollectionItem>(
+                        currentTable: table,
+                        referencedTable: $$BoxesTableReferences
+                            ._collectionItemsRefsTable(db),
+                        managerFromTypedResult: (p0) =>
+                            $$BoxesTableReferences(db, table, p0)
+                                .collectionItemsRefs,
+                        referencedItemsForCurrentItem: (item,
+                                referencedItems) =>
+                            referencedItems.where((e) => e.boxId == item.id),
+                        typedResults: items)
+                ];
+              },
+            );
+          },
+        ));
+}
+
+typedef $$BoxesTableProcessedTableManager = ProcessedTableManager<
+    _$AppDatabase,
+    $BoxesTable,
+    Boxe,
+    $$BoxesTableFilterComposer,
+    $$BoxesTableOrderingComposer,
+    $$BoxesTableAnnotationComposer,
+    $$BoxesTableCreateCompanionBuilder,
+    $$BoxesTableUpdateCompanionBuilder,
+    (Boxe, $$BoxesTableReferences),
+    Boxe,
+    PrefetchHooks Function({bool collectionItemsRefs})>;
 typedef $$CollectionItemsTableCreateCompanionBuilder = CollectionItemsCompanion
     Function({
   required int cardId,
@@ -1241,6 +1823,7 @@ typedef $$CollectionItemsTableCreateCompanionBuilder = CollectionItemsCompanion
   Value<int> quantity,
   Value<String?> condition,
   Value<DateTime> dateAdded,
+  Value<int?> boxId,
   Value<int> rowid,
 });
 typedef $$CollectionItemsTableUpdateCompanionBuilder = CollectionItemsCompanion
@@ -1251,6 +1834,7 @@ typedef $$CollectionItemsTableUpdateCompanionBuilder = CollectionItemsCompanion
   Value<int> quantity,
   Value<String?> condition,
   Value<DateTime> dateAdded,
+  Value<int?> boxId,
   Value<int> rowid,
 });
 
@@ -1268,6 +1852,20 @@ final class $$CollectionItemsTableReferences extends BaseReferences<
     final manager = $$CardsTableTableManager($_db, $_db.cards)
         .filter((f) => f.id.sqlEquals($_column));
     final item = $_typedResult.readTableOrNull(_cardIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: [item]));
+  }
+
+  static $BoxesTable _boxIdTable(_$AppDatabase db) => db.boxes
+      .createAlias($_aliasNameGenerator(db.collectionItems.boxId, db.boxes.id));
+
+  $$BoxesTableProcessedTableManager? get boxId {
+    final $_column = $_itemColumn<int>('box_id');
+    if ($_column == null) return null;
+    final manager = $$BoxesTableTableManager($_db, $_db.boxes)
+        .filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_boxIdTable($_db));
     if (item == null) return manager;
     return ProcessedTableManager(
         manager.$state.copyWith(prefetchedData: [item]));
@@ -1310,6 +1908,26 @@ class $$CollectionItemsTableFilterComposer
             $$CardsTableFilterComposer(
               $db: $db,
               $table: $db.cards,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+
+  $$BoxesTableFilterComposer get boxId {
+    final $$BoxesTableFilterComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.boxId,
+        referencedTable: $db.boxes,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$BoxesTableFilterComposer(
+              $db: $db,
+              $table: $db.boxes,
               $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
               joinBuilder: joinBuilder,
               $removeJoinBuilderFromRootComposer:
@@ -1362,6 +1980,26 @@ class $$CollectionItemsTableOrderingComposer
             ));
     return composer;
   }
+
+  $$BoxesTableOrderingComposer get boxId {
+    final $$BoxesTableOrderingComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.boxId,
+        referencedTable: $db.boxes,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$BoxesTableOrderingComposer(
+              $db: $db,
+              $table: $db.boxes,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
 }
 
 class $$CollectionItemsTableAnnotationComposer
@@ -1407,6 +2045,26 @@ class $$CollectionItemsTableAnnotationComposer
             ));
     return composer;
   }
+
+  $$BoxesTableAnnotationComposer get boxId {
+    final $$BoxesTableAnnotationComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.boxId,
+        referencedTable: $db.boxes,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$BoxesTableAnnotationComposer(
+              $db: $db,
+              $table: $db.boxes,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
 }
 
 class $$CollectionItemsTableTableManager extends RootTableManager<
@@ -1420,7 +2078,7 @@ class $$CollectionItemsTableTableManager extends RootTableManager<
     $$CollectionItemsTableUpdateCompanionBuilder,
     (CollectionItem, $$CollectionItemsTableReferences),
     CollectionItem,
-    PrefetchHooks Function({bool cardId})> {
+    PrefetchHooks Function({bool cardId, bool boxId})> {
   $$CollectionItemsTableTableManager(
       _$AppDatabase db, $CollectionItemsTable table)
       : super(TableManagerState(
@@ -1439,6 +2097,7 @@ class $$CollectionItemsTableTableManager extends RootTableManager<
             Value<int> quantity = const Value.absent(),
             Value<String?> condition = const Value.absent(),
             Value<DateTime> dateAdded = const Value.absent(),
+            Value<int?> boxId = const Value.absent(),
             Value<int> rowid = const Value.absent(),
           }) =>
               CollectionItemsCompanion(
@@ -1448,6 +2107,7 @@ class $$CollectionItemsTableTableManager extends RootTableManager<
             quantity: quantity,
             condition: condition,
             dateAdded: dateAdded,
+            boxId: boxId,
             rowid: rowid,
           ),
           createCompanionCallback: ({
@@ -1457,6 +2117,7 @@ class $$CollectionItemsTableTableManager extends RootTableManager<
             Value<int> quantity = const Value.absent(),
             Value<String?> condition = const Value.absent(),
             Value<DateTime> dateAdded = const Value.absent(),
+            Value<int?> boxId = const Value.absent(),
             Value<int> rowid = const Value.absent(),
           }) =>
               CollectionItemsCompanion.insert(
@@ -1466,6 +2127,7 @@ class $$CollectionItemsTableTableManager extends RootTableManager<
             quantity: quantity,
             condition: condition,
             dateAdded: dateAdded,
+            boxId: boxId,
             rowid: rowid,
           ),
           withReferenceMapper: (p0) => p0
@@ -1474,7 +2136,7 @@ class $$CollectionItemsTableTableManager extends RootTableManager<
                     $$CollectionItemsTableReferences(db, table, e)
                   ))
               .toList(),
-          prefetchHooksCallback: ({cardId = false}) {
+          prefetchHooksCallback: ({cardId = false, boxId = false}) {
             return PrefetchHooks(
               db: db,
               explicitlyWatchedTables: [],
@@ -1501,6 +2163,16 @@ class $$CollectionItemsTableTableManager extends RootTableManager<
                         $$CollectionItemsTableReferences._cardIdTable(db).id,
                   ) as T;
                 }
+                if (boxId) {
+                  state = state.withJoin(
+                    currentTable: table,
+                    currentColumn: table.boxId,
+                    referencedTable:
+                        $$CollectionItemsTableReferences._boxIdTable(db),
+                    referencedColumn:
+                        $$CollectionItemsTableReferences._boxIdTable(db).id,
+                  ) as T;
+                }
 
                 return state;
               },
@@ -1523,13 +2195,15 @@ typedef $$CollectionItemsTableProcessedTableManager = ProcessedTableManager<
     $$CollectionItemsTableUpdateCompanionBuilder,
     (CollectionItem, $$CollectionItemsTableReferences),
     CollectionItem,
-    PrefetchHooks Function({bool cardId})>;
+    PrefetchHooks Function({bool cardId, bool boxId})>;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
   $AppDatabaseManager(this._db);
   $$CardsTableTableManager get cards =>
       $$CardsTableTableManager(_db, _db.cards);
+  $$BoxesTableTableManager get boxes =>
+      $$BoxesTableTableManager(_db, _db.boxes);
   $$CollectionItemsTableTableManager get collectionItems =>
       $$CollectionItemsTableTableManager(_db, _db.collectionItems);
 }

@@ -7,6 +7,10 @@ class CollectionEntry {
   final int quantity;
   final String? condition;
   final DateTime dateAdded;
+  /// Box this item is in; null means unboxed.
+  final int? boxId;
+  /// Box name for display; null when unboxed.
+  final String? boxName;
 
   CollectionEntry({
     required this.card,
@@ -15,5 +19,7 @@ class CollectionEntry {
     required this.quantity,
     required this.condition,
     required this.dateAdded,
+    this.boxId,
+    this.boxName,
   });
 }

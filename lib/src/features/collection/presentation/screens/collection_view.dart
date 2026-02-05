@@ -2,6 +2,7 @@ import 'package:bulk_box/src/features/collection/presentation/widgets/collection
 import 'package:bulk_box/src/features/collection/presentation/widgets/collection_search_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:bulk_box/src/core/settings/settings_cubit.dart';
 import 'package:bulk_box/src/core/settings/settings_state.dart';
 import 'package:bulk_box/src/features/collection/domain/entities/collection_entry.dart';
@@ -19,7 +20,18 @@ class CollectionView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('My Collection'),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () => context.pop(),
+        ),
+        title: BlocSelector<CollectionCubit, CollectionState, String>(
+          selector: (state) => state.maybeWhen(
+            loaded: (_, __, ___, ____, boxName) =>
+                boxName ?? 'My Collection',
+            orElse: () => 'My Collection',
+          ),
+          builder: (context, title) => Text(title),
+        ),
         actions: const [
           SortButton(),
           CollectionOptionsButton(),
@@ -43,7 +55,7 @@ class _CollectionBody extends StatelessWidget {
           initial: () => const Center(child: Text('No items in collection')),
           loading: () => const Center(child: CircularProgressIndicator()),
           error: (m) => Center(child: Text('Error: $m')),
-          loaded: (_, __, ___) => const _LoadedCollection(),
+          loaded: (_, __, ___, ____, _____) => const _LoadedCollection(),
         );
       },
     );
@@ -71,7 +83,7 @@ class _SearchBarSection extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocSelector<CollectionCubit, CollectionState, bool>(
       selector: (state) => state.maybeWhen(
-        loaded: (_, visible, __) => visible,
+        loaded: (_, visible, __, ___, ____) => visible,
         orElse: () => false,
       ),
       builder: (context, searchBarVisible) {
@@ -99,7 +111,7 @@ class _GridSection extends StatelessWidget {
     return BlocSelector<CollectionCubit, CollectionState,
         List<CollectionEntry>>(
       selector: (state) => state.maybeWhen(
-        loaded: (entries, __, ___) => entries,
+        loaded: (entries, __, ___, ____, _____) => entries,
         orElse: () => const [],
       ),
       builder: (context, collectionEntries) {

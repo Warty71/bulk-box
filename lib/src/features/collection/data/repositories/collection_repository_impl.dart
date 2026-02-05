@@ -9,8 +9,14 @@ class CollectionRepositoryImpl implements CollectionRepository {
   CollectionRepositoryImpl(this._localDatasource);
 
   @override
-  Future<List<CollectionEntry>> getCollectionWithCards() async {
-    return await _localDatasource.getCollectionWithCards();
+  Future<List<CollectionEntry>> getCollectionWithCards({
+    int? boxId,
+    bool unboxedOnly = false,
+  }) async {
+    return await _localDatasource.getCollectionWithCards(
+      boxId: boxId,
+      unboxedOnly: unboxedOnly,
+    );
   }
 
   @override
@@ -65,5 +71,20 @@ class CollectionRepositoryImpl implements CollectionRepository {
     String setRarity,
   ) async {
     await _localDatasource.deleteCollectionItem(cardId, setCode, setRarity);
+  }
+
+  @override
+  Future<void> assignItemToBox(
+    int cardId,
+    String setCode,
+    String setRarity,
+    int? boxId,
+  ) async {
+    await _localDatasource.assignItemToBox(
+      cardId,
+      setCode,
+      setRarity,
+      boxId,
+    );
   }
 }

@@ -2,7 +2,11 @@ import 'package:bulk_box/src/features/collection/domain/entities/collection_item
 import 'package:bulk_box/src/features/collection/domain/entities/collection_entry.dart';
 
 abstract class CollectionRepository {
-  Future<List<CollectionEntry>> getCollectionWithCards();
+  /// [boxId] null = all items; [unboxedOnly] true = only unboxed items.
+  Future<List<CollectionEntry>> getCollectionWithCards({
+    int? boxId,
+    bool unboxedOnly = false,
+  });
 
   /// Get all collection items
   Future<List<CollectionItemEntity>> getAllCollectionItems();
@@ -40,5 +44,13 @@ abstract class CollectionRepository {
     int cardId,
     String setCode,
     String setRarity,
+  );
+
+  /// Assign a collection item to a box (or unboxed when [boxId] is null).
+  Future<void> assignItemToBox(
+    int cardId,
+    String setCode,
+    String setRarity,
+    int? boxId,
   );
 }

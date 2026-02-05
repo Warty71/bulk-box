@@ -11,5 +11,7 @@ abstract class CollectionItemEntity with _$CollectionItemEntity {
     required int quantity,
     String? condition,
     required DateTime dateAdded,
+    /// Box this item is in; null means unboxed.
+    int? boxId,
   }) = _CollectionItemEntity;
 }

@@ -8,13 +8,25 @@ class CollectionLocalDatasource {
 
   CollectionLocalDatasource(this._db);
 
-  Future<List<CollectionEntry>> getCollectionWithCards() async {
-    final query = _db.select(_db.collectionItems).join([
+  /// [boxId] null = all items; [unboxedOnly] true = only items with no box.
+  /// When loading all, joins Boxes to get box name per entry.
+  Future<List<CollectionEntry>> getCollectionWithCards({
+    int? boxId,
+    bool unboxedOnly = false,
+  }) async {
+    var query = _db.select(_db.collectionItems).join([
       innerJoin(_db.cards, _db.cards.id.equalsExp(_db.collectionItems.cardId)),
+      leftOuterJoin(_db.boxes, _db.boxes.id.equalsExp(_db.collectionItems.boxId)),
     ]);
+    if (unboxedOnly) {
+      query = query..where(_db.collectionItems.boxId.isNull());
+    } else if (boxId != null) {
+      query = query..where(_db.collectionItems.boxId.equals(boxId));
+    }
     return await query.map((row) {
       final item = row.readTable(_db.collectionItems);
       final card = row.readTable(_db.cards);
+      final box = row.readTableOrNull(_db.boxes);
       return CollectionEntry(
         card: card,
         setCode: item.setCode,
@@ -22,6 +34,8 @@ class CollectionLocalDatasource {
         quantity: item.quantity,
         condition: item.condition,
         dateAdded: item.dateAdded,
+        boxId: item.boxId,
+        boxName: box?.name,
       );
     }).get();
   }
@@ -86,9 +100,25 @@ class CollectionLocalDatasource {
               setRarity: Value(item.setRarity),
               quantity: Value(item.quantity),
               condition: Value(item.condition),
+              boxId: Value(item.boxId),
             ),
           );
     }
+  }
+
+  /// Assign a collection item to a box (or unboxed when [boxId] is null).
+  Future<void> assignItemToBox(
+    int cardId,
+    String setCode,
+    String setRarity,
+    int? boxId,
+  ) async {
+    await (_db.update(_db.collectionItems)
+          ..where((tbl) =>
+              tbl.cardId.equals(cardId) &
+              tbl.setCode.equals(setCode) &
+              tbl.setRarity.equals(setRarity)))
+        .write(CollectionItemsCompanion(boxId: Value(boxId)));
   }
 
   /// Update quantity of a collection item
@@ -152,6 +182,7 @@ class CollectionLocalDatasource {
       quantity: item.quantity,
       condition: item.condition,
       dateAdded: item.dateAdded,
+      boxId: item.boxId,
     );
   }
 }
