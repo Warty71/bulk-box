@@ -11,6 +11,9 @@ abstract class CollectionRepository {
   /// First [limit] entries in the box (for preview thumbnails). Default 3.
   Future<List<CollectionEntry>> getFirstEntriesInBox(int boxId, {int limit = 3});
 
+  /// Total number of cards in the collection (sum of all slot quantities).
+  Future<int> getTotalCardCount();
+
   Future<List<CollectionItemEntity>> getAllCollectionItems();
 
   /// All slots for a card (any set/rarity).

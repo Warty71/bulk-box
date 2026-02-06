@@ -27,6 +27,11 @@ class CollectionRepositoryImpl implements CollectionRepository {
   }
 
   @override
+  Future<int> getTotalCardCount() async {
+    return await _localDatasource.getTotalCardCount();
+  }
+
+  @override
   Future<List<CollectionItemEntity>> getAllCollectionItems() async {
     return await _localDatasource.getAllCollectionItems();
   }

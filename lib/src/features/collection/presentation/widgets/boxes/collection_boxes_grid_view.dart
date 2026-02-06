@@ -4,10 +4,12 @@ import 'package:bulk_box/src/core/constants/dimensions.dart';
 import 'package:bulk_box/src/core/di/injection_container.dart' as di;
 import 'package:bulk_box/src/features/collection/domain/entities/box_or_unboxed.dart';
 import 'package:bulk_box/src/features/collection/domain/entities/box.dart';
+import 'package:bulk_box/src/features/collection/domain/repositories/collection_repository.dart';
 import 'package:bulk_box/src/features/collection/presentation/cubit/boxes_cubit.dart';
 import 'package:bulk_box/src/features/collection/presentation/utils/collection_navigation.dart';
 import 'package:bulk_box/src/features/collection/presentation/widgets/boxes/box_grid_card.dart';
 import 'package:bulk_box/src/features/collection/presentation/widgets/boxes/boxes_state_view.dart';
+import 'package:bulk_box/src/features/collection/presentation/widgets/boxes/collection_summary_header.dart';
 import 'package:bulk_box/src/core/widgets/app_dialogs.dart';
 
 /// 2-column grid of boxes (Unboxed + user boxes). No app bar.
@@ -53,24 +55,42 @@ class _CollectionBoxesGridBodyState extends State<_CollectionBoxesGridBody> {
                   BoxOrUnboxed.unboxed(),
                   ...boxes.map((b) => BoxOrUnboxed.box(b)),
                 ];
-                return GridView.builder(
-                  padding: const EdgeInsets.all(Dimensions.md),
-                  gridDelegate:
-                      const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    mainAxisSpacing: Dimensions.md,
-                    crossAxisSpacing: Dimensions.md,
-                    childAspectRatio: 0.85,
-                  ),
-                  itemCount: items.length,
-                  itemBuilder: (context, index) {
-                    final item = items[index];
-                    return BoxGridCard(
-                      item: item,
-                      onTap: () => context.pushCollectionBox(item.box),
-                      trailing: item.isUnboxed
-                          ? null
-                          : _boxMenu(context, item.box!),
+                return FutureBuilder<int>(
+                  future: di.getIt<CollectionRepository>().getTotalCardCount(),
+                  builder: (context, snapshot) {
+                    final totalCards = snapshot.data ?? 0;
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        CollectionSummaryHeader(
+                          totalCards: totalCards,
+                          boxCount: boxes.length,
+                        ),
+                        Expanded(
+                          child: GridView.builder(
+                            padding: const EdgeInsets.all(Dimensions.md),
+                            gridDelegate:
+                                const SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 2,
+                              mainAxisSpacing: Dimensions.md,
+                              crossAxisSpacing: Dimensions.md,
+                              childAspectRatio: 0.85,
+                            ),
+                            itemCount: items.length,
+                            itemBuilder: (context, index) {
+                              final item = items[index];
+                              return BoxGridCard(
+                                item: item,
+                                onTap: () =>
+                                    context.pushCollectionBox(item.box),
+                                trailing: item.isUnboxed
+                                    ? null
+                                    : _boxMenu(context, item.box!),
+                              );
+                            },
+                          ),
+                        ),
+                      ],
                     );
                   },
                 );

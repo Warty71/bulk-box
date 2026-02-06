@@ -40,6 +40,15 @@ class CollectionLocalDatasource {
     }).get();
   }
 
+  /// Total number of cards in the collection (sum of all slot quantities).
+  Future<int> getTotalCardCount() async {
+    final result = await (_db.selectOnly(_db.collectionItems)
+          ..addColumns([_db.collectionItems.quantity.sum()]))
+        .getSingle();
+    final sum = result.read(_db.collectionItems.quantity.sum());
+    return sum ?? 0;
+  }
+
   /// All slots (one per card+set+rarity+box).
   Future<List<CollectionItemEntity>> getAllCollectionItems() async {
     final items = await (_db.select(_db.collectionItems)).get();
