@@ -20,6 +20,13 @@ class CollectionRepositoryImpl implements CollectionRepository {
   }
 
   @override
+  Future<List<CollectionEntry>> getFirstEntriesInBox(int boxId,
+      {int limit = 3}) async {
+    final all = await _localDatasource.getCollectionWithCards(boxId: boxId);
+    return all.take(limit).toList();
+  }
+
+  @override
   Future<List<CollectionItemEntity>> getAllCollectionItems() async {
     return await _localDatasource.getAllCollectionItems();
   }

@@ -8,6 +8,9 @@ abstract class CollectionRepository {
     bool unboxedOnly = false,
   });
 
+  /// First [limit] entries in the box (for preview thumbnails). Default 3.
+  Future<List<CollectionEntry>> getFirstEntriesInBox(int boxId, {int limit = 3});
+
   Future<List<CollectionItemEntity>> getAllCollectionItems();
 
   /// All slots for a card (any set/rarity).
