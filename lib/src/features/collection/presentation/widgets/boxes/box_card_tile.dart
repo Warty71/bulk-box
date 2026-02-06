@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:bulk_box/src/core/constants/dimensions.dart';
 import 'package:bulk_box/src/core/di/injection_container.dart' as di;
 import 'package:bulk_box/src/features/search/domain/repositories/search_repository.dart';
@@ -47,7 +48,10 @@ class BoxCardTileState extends State<BoxCardTile> {
       onTapDown: (_) => setState(() => _pressed = true),
       onTapUp: (_) => setState(() => _pressed = false),
       onTapCancel: () => setState(() => _pressed = false),
-      onTap: widget.onTap,
+      onTap: () {
+        HapticFeedback.lightImpact();
+        widget.onTap();
+      },
       child: AnimatedScale(
         scale: _pressed ? 0.97 : 1.0,
         duration: const Duration(milliseconds: _scaleDurationMs),
@@ -146,14 +150,38 @@ class BoxCardTileState extends State<BoxCardTile> {
                 overflow: TextOverflow.ellipsis,
               ),
               const SizedBox(height: Dimensions.xs),
-              Text(
-                widget.subtitle,
-                style: theme.textTheme.bodySmall?.copyWith(
-                  color: _textColor(theme, widget.backgroundColor, false),
+              AnimatedSwitcher(
+                duration: const Duration(milliseconds: 220),
+                switchInCurve: Curves.easeOut,
+                switchOutCurve: Curves.easeIn,
+                transitionBuilder: (child, animation) {
+                  return FadeTransition(
+                    opacity: animation,
+                    child: SlideTransition(
+                      position: Tween<Offset>(
+                        begin: const Offset(0, 0.15),
+                        end: Offset.zero,
+                      ).animate(
+                        CurvedAnimation(
+                          parent: animation,
+                          curve: Curves.easeOut,
+                        ),
+                      ),
+                      child: child,
+                    ),
+                  );
+                },
+                child: Text(
+                  widget.subtitle,
+                  key: ValueKey(widget.subtitle),
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    color: _textColor(
+                        theme, widget.backgroundColor, false),
+                  ),
+                  textAlign: TextAlign.center,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                 ),
-                textAlign: TextAlign.center,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
               ),
             ],
           ),

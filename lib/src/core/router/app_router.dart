@@ -42,6 +42,9 @@ class AppRouter {
                     path: 'box/:boxId',
                     pageBuilder: (context, state) => CustomTransitionPage<void>(
                       key: state.pageKey,
+                      transitionDuration: const Duration(milliseconds: 280),
+                      reverseTransitionDuration:
+                          const Duration(milliseconds: 180),
                       child: CollectionScreen(
                         boxId: state.pathParameters['boxId'] == 'unboxed'
                             ? null
@@ -54,18 +57,15 @@ class AppRouter {
                       ),
                       transitionsBuilder:
                           (context, animation, secondaryAnimation, child) =>
-                              FadeTransition(
-                        opacity: animation,
-                        child: SlideTransition(
-                          position: Tween<Offset>(
-                            begin: const Offset(0.05, 0),
-                            end: Offset.zero,
-                          ).animate(CurvedAnimation(
-                            parent: animation,
-                            curve: Curves.easeOutCubic,
-                          )),
-                          child: child,
-                        ),
+                              SlideTransition(
+                        position: Tween<Offset>(
+                          begin: const Offset(1.0, 0),
+                          end: Offset.zero,
+                        ).animate(CurvedAnimation(
+                          parent: animation,
+                          curve: Curves.easeOutCubic,
+                        )),
+                        child: child,
                       ),
                     ),
                   ),

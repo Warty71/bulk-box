@@ -37,10 +37,33 @@ class CollectionSummaryHeader extends StatelessWidget {
             ),
           ),
           const SizedBox(height: Dimensions.xs),
-          Text(
-            _formatStats(totalCards, boxCount),
-            style: theme.textTheme.bodySmall?.copyWith(
-              color: theme.colorScheme.onSurfaceVariant,
+          AnimatedSwitcher(
+            duration: const Duration(milliseconds: 220),
+            switchInCurve: Curves.easeOut,
+            switchOutCurve: Curves.easeIn,
+            transitionBuilder: (child, animation) {
+              return FadeTransition(
+                opacity: animation,
+                child: SlideTransition(
+                  position: Tween<Offset>(
+                    begin: const Offset(0, 0.15),
+                    end: Offset.zero,
+                  ).animate(
+                    CurvedAnimation(
+                      parent: animation,
+                      curve: Curves.easeOut,
+                    ),
+                  ),
+                  child: child,
+                ),
+              );
+            },
+            child: Text(
+              _formatStats(totalCards, boxCount),
+              key: ValueKey('$totalCards-$boxCount'),
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: theme.colorScheme.onSurfaceVariant,
+              ),
             ),
           ),
         ],
