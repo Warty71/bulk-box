@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:bulk_box/src/core/di/injection_container.dart' as di;
 import 'package:bulk_box/src/features/collection/presentation/cubit/collection_cubit.dart';
 import 'package:bulk_box/src/features/collection/presentation/screens/collection_view.dart';
-import 'package:bulk_box/src/features/collection/presentation/widgets/collection_boxes_grid_view.dart';
+import 'package:bulk_box/src/features/collection/presentation/widgets/boxes/collection_boxes_grid_view.dart';
 import 'package:bulk_box/src/features/search/presentation/cubit/search_cubit.dart';
 
 class CollectionScreen extends StatelessWidget {

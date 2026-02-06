@@ -7,7 +7,7 @@ import 'package:bulk_box/src/core/widgets/app_dialogs.dart';
 import 'package:bulk_box/src/features/collection/domain/entities/box.dart';
 import 'package:bulk_box/src/features/collection/presentation/cubit/boxes_cubit.dart';
 import 'package:bulk_box/src/features/collection/presentation/utils/collection_navigation.dart';
-import 'package:bulk_box/src/features/collection/presentation/widgets/boxes_state_view.dart';
+import 'package:bulk_box/src/features/collection/presentation/widgets/boxes/boxes_state_view.dart';
 
 class BoxesScreen extends StatefulWidget {
   const BoxesScreen({super.key});

@@ -7,7 +7,7 @@ import 'package:bulk_box/src/core/widgets/app_bottom_sheets.dart';
 import 'package:bulk_box/src/features/collection/domain/entities/collection_entry.dart';
 import 'package:bulk_box/src/features/collection/domain/entities/collection_item.dart';
 import 'package:bulk_box/src/features/collection/domain/repositories/box_repository.dart';
-import 'package:bulk_box/src/features/collection/presentation/widgets/slot_tile.dart';
+import 'package:bulk_box/src/features/collection/presentation/widgets/grid/slot_tile.dart';
 import 'package:bulk_box/src/features/collection/presentation/cubit/boxes_cubit.dart';
 import 'package:bulk_box/src/features/collection/presentation/cubit/collection_cubit.dart';
 

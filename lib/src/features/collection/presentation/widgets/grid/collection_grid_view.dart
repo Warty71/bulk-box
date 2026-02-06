@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:bulk_box/src/features/collection/domain/entities/collection_entry.dart';
-import 'package:bulk_box/src/features/collection/presentation/widgets/collection_plain_grid_view.dart';
-import 'package:bulk_box/src/features/collection/presentation/widgets/collection_sectioned_grid_view.dart';
+import 'package:bulk_box/src/features/collection/presentation/widgets/grid/collection_plain_grid_view.dart';
+import 'package:bulk_box/src/features/collection/presentation/widgets/grid/collection_sectioned_grid_view.dart';
 import 'package:bulk_box/src/features/sorting/domain/entities/sort_options.dart';
 
 /// Grid view: one tile per (card, set, rarity) — each print/version is a separate entry.

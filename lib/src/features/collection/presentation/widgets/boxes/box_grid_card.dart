@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:bulk_box/src/features/collection/domain/entities/box_or_unboxed.dart';
-import 'package:bulk_box/src/features/collection/presentation/widgets/box_card_tile.dart';
-import 'package:bulk_box/src/features/collection/presentation/widgets/box_grid_card_with_count.dart';
+import 'package:bulk_box/src/features/collection/presentation/widgets/boxes/box_card_tile.dart';
+import 'package:bulk_box/src/features/collection/presentation/widgets/boxes/box_grid_card_with_count.dart';
 
 /// Grid card for a box or Unboxed. Tactile tile: rounded card, elevation, gradient, tap scale.
 class BoxGridCard extends StatelessWidget {

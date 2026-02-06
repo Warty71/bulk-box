@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:bulk_box/src/core/constants/dimensions.dart';
 import 'package:bulk_box/src/features/collection/domain/entities/collection_entry.dart';
 import 'package:bulk_box/src/features/sorting/domain/entities/sort_options.dart';
-import 'package:bulk_box/src/features/collection/presentation/widgets/collection_grid_constants.dart';
-import 'package:bulk_box/src/features/collection/presentation/widgets/collection_grid_item.dart';
-import 'package:bulk_box/src/features/collection/presentation/widgets/collection_section_header.dart';
+import 'package:bulk_box/src/features/collection/presentation/widgets/grid/collection_grid_constants.dart';
+import 'package:bulk_box/src/features/collection/presentation/widgets/grid/collection_grid_item.dart';
+import 'package:bulk_box/src/features/collection/presentation/widgets/grid/collection_section_header.dart';
 
 class CollectionSectionedGridView extends StatelessWidget {
   const CollectionSectionedGridView({

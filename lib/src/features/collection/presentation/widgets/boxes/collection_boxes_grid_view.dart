@@ -3,12 +3,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:bulk_box/src/core/constants/dimensions.dart';
 import 'package:bulk_box/src/core/di/injection_container.dart' as di;
 import 'package:bulk_box/src/features/collection/domain/entities/box_or_unboxed.dart';
+import 'package:bulk_box/src/features/collection/domain/entities/box.dart';
 import 'package:bulk_box/src/features/collection/presentation/cubit/boxes_cubit.dart';
 import 'package:bulk_box/src/features/collection/presentation/utils/collection_navigation.dart';
-import 'package:bulk_box/src/features/collection/presentation/widgets/box_grid_card.dart';
-import 'package:bulk_box/src/features/collection/presentation/widgets/boxes_state_view.dart';
+import 'package:bulk_box/src/features/collection/presentation/widgets/boxes/box_grid_card.dart';
+import 'package:bulk_box/src/features/collection/presentation/widgets/boxes/boxes_state_view.dart';
 import 'package:bulk_box/src/core/widgets/app_dialogs.dart';
-import 'package:bulk_box/src/features/collection/domain/entities/box.dart';
 
 /// 2-column grid of boxes (Unboxed + user boxes). No app bar.
 /// Tap a box to open cards in that box; FAB to create a new box.

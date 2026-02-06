@@ -4,10 +4,10 @@ import 'package:bulk_box/src/core/database/app_database.dart' as db;
 import 'package:bulk_box/src/core/settings/settings_cubit.dart';
 import 'package:bulk_box/src/features/collection/domain/entities/collection_entry.dart';
 import 'package:bulk_box/src/features/collection/presentation/cubit/collection_cubit.dart';
-import 'package:bulk_box/src/features/collection/presentation/widgets/add_card_bottom_sheet.dart';
-import 'package:bulk_box/src/features/collection/presentation/widgets/collection_card_details_bottom_sheet.dart';
-import 'package:bulk_box/src/features/collection/presentation/widgets/collection_options_bottom_sheet.dart';
-import 'package:bulk_box/src/features/collection/presentation/widgets/move_to_bottom_sheet.dart';
+import 'package:bulk_box/src/features/collection/presentation/widgets/bottom_sheets/add_card_bottom_sheet.dart';
+import 'package:bulk_box/src/features/collection/presentation/widgets/bottom_sheets/collection_card_details_bottom_sheet.dart';
+import 'package:bulk_box/src/features/collection/presentation/widgets/bottom_sheets/collection_options_bottom_sheet.dart';
+import 'package:bulk_box/src/features/collection/presentation/widgets/bottom_sheets/move_to_bottom_sheet.dart';
 import 'package:bulk_box/src/features/sorting/presentation/widgets/sort_bottom_sheet.dart';
 
 /// Shared options for showing bottom sheets.

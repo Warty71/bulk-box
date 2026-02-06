@@ -1,5 +1,3 @@
-import 'package:bulk_box/src/features/collection/presentation/widgets/collection_search_bar.dart';
-import 'package:bulk_box/src/features/collection/presentation/widgets/collection_search_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -8,8 +6,10 @@ import 'package:bulk_box/src/core/settings/settings_state.dart';
 import 'package:bulk_box/src/features/collection/domain/entities/collection_entry.dart';
 import 'package:bulk_box/src/features/collection/presentation/cubit/collection_cubit.dart';
 import 'package:bulk_box/src/features/collection/presentation/cubit/collection_state.dart';
-import 'package:bulk_box/src/features/collection/presentation/widgets/collection_grid_view.dart';
-import 'package:bulk_box/src/features/collection/presentation/widgets/collection_options_button.dart';
+import 'package:bulk_box/src/features/collection/presentation/widgets/grid/collection_grid_view.dart';
+import 'package:bulk_box/src/features/collection/presentation/widgets/toolbar/collection_options_button.dart';
+import 'package:bulk_box/src/features/collection/presentation/widgets/toolbar/collection_search_bar.dart';
+import 'package:bulk_box/src/features/collection/presentation/widgets/toolbar/collection_search_button.dart';
 import 'package:bulk_box/src/features/sorting/domain/comparators/ygo_card_sorters.dart';
 import 'package:bulk_box/src/features/sorting/presentation/widgets/sort_button.dart';
 

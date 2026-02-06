@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:bulk_box/src/core/utils/color_utils.dart';
 import 'package:bulk_box/src/features/collection/domain/entities/box.dart';
 import 'package:bulk_box/src/features/collection/presentation/cubit/boxes_cubit.dart';
-import 'package:bulk_box/src/features/collection/presentation/widgets/box_card_tile.dart';
+import 'package:bulk_box/src/features/collection/presentation/widgets/boxes/box_card_tile.dart';
 
 /// Grid card for a named box: loads count and shows [BoxCardTile].
 class BoxGridCardWithCount extends StatelessWidget {

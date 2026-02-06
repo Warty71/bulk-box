@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:bulk_box/src/core/constants/dimensions.dart';
 import 'package:bulk_box/src/core/di/injection_container.dart' as di;
+import 'package:bulk_box/src/core/widgets/quantity_stepper.dart';
 import 'package:bulk_box/src/features/collection/domain/entities/box.dart';
 import 'package:bulk_box/src/features/collection/domain/repositories/box_repository.dart';
-import 'package:bulk_box/src/core/widgets/quantity_stepper.dart';
 
 /// Bottom sheet to move quantities from one box to others.
 /// Fetches all boxes so destinations always include every box (e.g. when viewing Unboxed).
