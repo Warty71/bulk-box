@@ -7,6 +7,7 @@ import 'package:bulk_box/src/features/collection/presentation/cubit/collection_c
 import 'package:bulk_box/src/features/collection/presentation/widgets/bottom_sheets/add_card_bottom_sheet.dart';
 import 'package:bulk_box/src/features/collection/presentation/widgets/bottom_sheets/collection_card_details_bottom_sheet.dart';
 import 'package:bulk_box/src/features/collection/presentation/widgets/bottom_sheets/collection_options_bottom_sheet.dart';
+import 'package:bulk_box/src/features/collection/presentation/widgets/bottom_sheets/bulk_move_destination_bottom_sheet.dart';
 import 'package:bulk_box/src/features/collection/presentation/widgets/bottom_sheets/move_to_bottom_sheet.dart';
 import 'package:bulk_box/src/features/sorting/presentation/widgets/sort_bottom_sheet.dart';
 
@@ -45,6 +46,27 @@ class AppBottomSheets {
         entry: entry,
         collectionCubit: collectionCubit,
         currentBoxId: currentBoxId,
+      ),
+    );
+  }
+
+  /// Shows the bulk-move destination picker (move selected cards to one box).
+  static Future<void> showBulkMoveDestination(
+    BuildContext context, {
+    required int? fromBoxId,
+    required String fromBoxName,
+    required int selectedCount,
+    required void Function(int? toBoxId) onMoveTo,
+  }) {
+    return showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: _defaultOptions.isScrollControlled,
+      useSafeArea: _defaultOptions.useSafeArea,
+      builder: (_) => BulkMoveDestinationBottomSheet(
+        fromBoxId: fromBoxId,
+        fromBoxName: fromBoxName,
+        selectedCount: selectedCount,
+        onMoveTo: onMoveTo,
       ),
     );
   }

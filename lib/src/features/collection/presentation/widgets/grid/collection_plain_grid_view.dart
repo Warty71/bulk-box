@@ -7,9 +7,13 @@ class CollectionPlainGridView extends StatelessWidget {
   const CollectionPlainGridView({
     super.key,
     required this.collectionEntries,
+    this.onEntryTap,
+    this.onEntryLongPress,
   });
 
   final List<CollectionEntry> collectionEntries;
+  final void Function(CollectionEntry entry)? onEntryTap;
+  final void Function(CollectionEntry entry)? onEntryLongPress;
 
   @override
   Widget build(BuildContext context) {
@@ -22,6 +26,9 @@ class CollectionPlainGridView extends StatelessWidget {
         return CollectionGridItem(
           entry: entry,
           totalQuantity: entry.quantity,
+          onTap: onEntryTap != null ? () => onEntryTap!(entry) : null,
+          onLongPress:
+              onEntryLongPress != null ? () => onEntryLongPress!(entry) : null,
         );
       },
     );

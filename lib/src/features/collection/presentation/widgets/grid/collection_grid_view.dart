@@ -11,11 +11,15 @@ class CollectionGridView extends StatelessWidget {
     required this.collectionEntries,
     required this.showDividersBetweenSections,
     required this.sortOption,
+    this.onEntryTap,
+    this.onEntryLongPress,
   });
 
   final List<CollectionEntry> collectionEntries;
   final bool showDividersBetweenSections;
   final SortOption sortOption;
+  final void Function(CollectionEntry entry)? onEntryTap;
+  final void Function(CollectionEntry entry)? onEntryLongPress;
 
   Map<String, List<CollectionEntry>> _groupBySection(
     List<CollectionEntry> entries,
@@ -63,10 +67,14 @@ class CollectionGridView extends StatelessWidget {
               collectionEntries: collectionEntries,
               sortOption: sortOption,
               groupBySection: _groupBySection,
+              onEntryTap: onEntryTap,
+              onEntryLongPress: onEntryLongPress,
             )
           : CollectionPlainGridView(
               key: const ValueKey('plain'),
               collectionEntries: collectionEntries,
+              onEntryTap: onEntryTap,
+              onEntryLongPress: onEntryLongPress,
             ),
     );
   }

@@ -14,6 +14,7 @@ import 'package:bulk_box/src/features/collection/data/repositories/box_repositor
 import 'package:bulk_box/src/features/collection/data/repositories/collection_repository_impl.dart';
 import 'package:bulk_box/src/features/collection/domain/repositories/box_repository.dart';
 import 'package:bulk_box/src/features/collection/domain/repositories/collection_repository.dart';
+import 'package:bulk_box/src/features/collection/presentation/cubit/bulk_move_cubit.dart';
 import 'package:bulk_box/src/features/collection/presentation/cubit/boxes_cubit.dart';
 import 'package:bulk_box/src/features/collection/presentation/cubit/collection_cubit.dart';
 import 'package:bulk_box/src/features/home/presentation/cubit/latest_sets_cubit.dart';
@@ -120,6 +121,10 @@ void _initializeCollectionFeature() {
 
   getIt.registerFactory(
     () => CollectionCubit(getIt()),
+  );
+
+  getIt.registerFactory(
+    () => BulkMoveCubit(),
   );
 }
 

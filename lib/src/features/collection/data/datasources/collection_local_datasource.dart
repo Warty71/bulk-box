@@ -213,6 +213,28 @@ class CollectionLocalDatasource {
     }
   }
 
+  /// Move multiple slots to [toBoxId] in a single transaction.
+  Future<void> batchMoveBetweenSlots({
+    required List<({int cardId, String setCode, String setRarity, int quantity})> items,
+    required int? fromBoxId,
+    required int? toBoxId,
+  }) async {
+    if (fromBoxId == toBoxId || items.isEmpty) return;
+
+    await _db.transaction(() async {
+      for (final item in items) {
+        await moveBetweenSlots(
+          item.cardId,
+          item.setCode,
+          item.setRarity,
+          fromBoxId,
+          toBoxId,
+          item.quantity,
+        );
+      }
+    });
+  }
+
   CollectionItemEntity _mapToEntity(CollectionItem item) {
     return CollectionItemEntity(
       cardId: item.cardId,

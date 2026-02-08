@@ -125,6 +125,20 @@ class CollectionCubit extends Cubit<CollectionState> {
     }
   }
 
+  /// Move multiple entries to [toBoxId] in a single transaction.
+  Future<void> batchMoveBetweenSlots({
+    required List<({int cardId, String setCode, String setRarity, int quantity})> items,
+    required int? fromBoxId,
+    required int? toBoxId,
+  }) async {
+    await _repository.batchMoveBetweenSlots(
+      items: items,
+      fromBoxId: fromBoxId,
+      toBoxId: toBoxId,
+    );
+    await _reloadWithCurrentFilter();
+  }
+
   Future<void> _reloadWithCurrentFilter() async {
     state.maybeWhen(
       loaded: (_, __, ___, boxId, boxName) => loadCollectionItems(
