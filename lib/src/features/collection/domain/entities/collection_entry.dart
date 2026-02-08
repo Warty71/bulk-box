@@ -22,4 +22,8 @@ class CollectionEntry {
     this.boxId,
     this.boxName,
   });
+
+  /// Unique key for this slot (card + set + rarity + box). Used for bulk selection.
+  String get selectionKey =>
+      '${card.id}_${setCode}_${setRarity}_${boxId ?? 'u'}';
 }

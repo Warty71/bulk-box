@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:bulk_box/src/core/widgets/app_bottom_sheets.dart';
 import 'package:bulk_box/src/core/settings/settings_cubit.dart';
 import 'package:bulk_box/src/core/settings/settings_state.dart';
 import 'package:bulk_box/src/features/collection/domain/entities/collection_entry.dart';
+import 'package:bulk_box/src/features/collection/presentation/cubit/bulk_move_cubit.dart';
+import 'package:bulk_box/src/features/collection/presentation/cubit/bulk_move_state.dart';
 import 'package:bulk_box/src/features/collection/presentation/cubit/collection_cubit.dart';
 import 'package:bulk_box/src/features/collection/presentation/cubit/collection_state.dart';
 import 'package:bulk_box/src/features/collection/presentation/widgets/grid/collection_grid_view.dart';
+import 'package:bulk_box/src/features/collection/presentation/widgets/toolbar/bulk_move_selection_bar.dart';
 import 'package:bulk_box/src/features/collection/presentation/widgets/toolbar/collection_options_button.dart';
 import 'package:bulk_box/src/features/collection/presentation/widgets/toolbar/collection_search_bar.dart';
 import 'package:bulk_box/src/features/collection/presentation/widgets/toolbar/collection_search_button.dart';
@@ -18,27 +22,71 @@ class CollectionView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () => context.pop(),
-        ),
-        title: BlocSelector<CollectionCubit, CollectionState, String>(
-          selector: (state) => state.maybeWhen(
-            loaded: (_, __, ___, ____, boxName) =>
-                boxName ?? 'My Collection',
-            orElse: () => 'My Collection',
+    return BlocBuilder<BulkMoveCubit, BulkMoveState>(
+      buildWhen: (prev, curr) =>
+          prev.isSelectionMode != curr.isSelectionMode,
+      builder: (context, bulkState) {
+        final inSelectionMode = bulkState.isSelectionMode;
+        return Scaffold(
+          appBar: AppBar(
+            leading: IconButton(
+              icon: const Icon(Icons.arrow_back),
+              onPressed: () => context.pop(),
+            ),
+            title: BlocSelector<CollectionCubit, CollectionState, String>(
+              selector: (state) => state.maybeWhen(
+                loaded: (_, __, ___, ____, boxName) =>
+                    boxName ?? 'My Collection',
+                orElse: () => 'My Collection',
+              ),
+              builder: (context, title) => Text(title),
+            ),
+            actions: const [
+              SortButton(),
+              CollectionOptionsButton(),
+            ],
           ),
-          builder: (context, title) => Text(title),
-        ),
-        actions: const [
-          SortButton(),
-          CollectionOptionsButton(),
-        ],
+          body: Column(
+            children: [
+              AnimatedSize(
+                duration: const Duration(milliseconds: 200),
+                curve: Curves.easeOutCubic,
+                alignment: Alignment.topCenter,
+                child: inSelectionMode
+                    ? const _BulkMoveSelectionStrip()
+                    : const SizedBox.shrink(),
+              ),
+              const Expanded(child: _CollectionBody()),
+            ],
+          ),
+          floatingActionButton: inSelectionMode
+              ? null
+              : const CollectionSearchButton(),
+        );
+      },
+    );
+  }
+}
+
+/// Strip below the app bar when in bulk move selection mode.
+/// [BulkMoveSelectionBar] manages its own reactivity via BlocSelector.
+class _BulkMoveSelectionStrip extends StatelessWidget {
+  const _BulkMoveSelectionStrip();
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocSelector<CollectionCubit, CollectionState,
+        (List<CollectionEntry>, int?, String?)>(
+      selector: (state) => state.maybeWhen(
+        loaded: (entries, _, __, boxId, boxName) =>
+            (entries, boxId, boxName),
+        orElse: () => (const [], null, null),
       ),
-      body: const _CollectionBody(),
-      floatingActionButton: const CollectionSearchButton(),
+      builder: (context, tuple) => BulkMoveSelectionBar(
+        collectionEntries: tuple.$1,
+        currentBoxId: tuple.$2,
+        currentBoxName: tuple.$3 ?? 'Unboxed',
+      ),
     );
   }
 }
@@ -121,17 +169,49 @@ class _GridSection extends StatelessWidget {
 
         return BlocBuilder<SettingsCubit, SettingsState>(
           builder: (context, settings) {
-            final sortedItems = List<CollectionEntry>.from(collectionEntries);
+            final sortedItems =
+                List<CollectionEntry>.from(collectionEntries);
             sortCollectionItems(sortedItems, settings.sortOption);
 
             return CollectionGridView(
               collectionEntries: sortedItems,
               showDividersBetweenSections: settings.showDividers,
               sortOption: settings.sortOption,
+              onEntryTap: (entry) {
+                final bulkMoveCubit = context.read<BulkMoveCubit>();
+                if (bulkMoveCubit.state.isSelectionMode) {
+                  bulkMoveCubit.toggleSelection(entry.selectionKey);
+                } else {
+                  _openCardDetails(context, entry);
+                }
+              },
+              onEntryLongPress: (entry) {
+                final bulkMoveCubit = context.read<BulkMoveCubit>();
+                if (bulkMoveCubit.state.isSelectionMode) {
+                  bulkMoveCubit.toggleSelection(entry.selectionKey);
+                } else {
+                  bulkMoveCubit.enterSelectionMode(entry.selectionKey);
+                }
+              },
             );
           },
         );
       },
+    );
+  }
+
+  void _openCardDetails(BuildContext context, CollectionEntry entry) {
+    final collectionCubit = context.read<CollectionCubit>();
+    final state = collectionCubit.state;
+    final currentBoxId = state.maybeWhen(
+      loaded: (_, __, ___, boxId, ____) => boxId,
+      orElse: () => null,
+    );
+    AppBottomSheets.showCardDetails(
+      context,
+      entry: entry,
+      collectionCubit: collectionCubit,
+      currentBoxId: currentBoxId,
     );
   }
 }

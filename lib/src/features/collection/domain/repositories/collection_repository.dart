@@ -55,4 +55,11 @@ abstract class CollectionRepository {
     int? toBoxId,
     int amount,
   );
+
+  /// Move multiple slots to [toBoxId] in a single transaction.
+  Future<void> batchMoveBetweenSlots({
+    required List<({int cardId, String setCode, String setRarity, int quantity})> items,
+    required int? fromBoxId,
+    required int? toBoxId,
+  });
 }

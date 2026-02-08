@@ -102,4 +102,17 @@ class CollectionRepositoryImpl implements CollectionRepository {
       amount,
     );
   }
+
+  @override
+  Future<void> batchMoveBetweenSlots({
+    required List<({int cardId, String setCode, String setRarity, int quantity})> items,
+    required int? fromBoxId,
+    required int? toBoxId,
+  }) async {
+    await _localDatasource.batchMoveBetweenSlots(
+      items: items,
+      fromBoxId: fromBoxId,
+      toBoxId: toBoxId,
+    );
+  }
 }

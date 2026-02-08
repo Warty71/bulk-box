@@ -12,6 +12,8 @@ class CollectionSectionedGridView extends StatelessWidget {
     required this.collectionEntries,
     required this.sortOption,
     required this.groupBySection,
+    this.onEntryTap,
+    this.onEntryLongPress,
   });
 
   final List<CollectionEntry> collectionEntries;
@@ -19,6 +21,8 @@ class CollectionSectionedGridView extends StatelessWidget {
   final Map<String, List<CollectionEntry>> Function(
     List<CollectionEntry>,
   ) groupBySection;
+  final void Function(CollectionEntry entry)? onEntryTap;
+  final void Function(CollectionEntry entry)? onEntryLongPress;
 
   @override
   Widget build(BuildContext context) {
@@ -42,6 +46,10 @@ class CollectionSectionedGridView extends StatelessWidget {
                   return CollectionGridItem(
                     entry: entry,
                     totalQuantity: entry.quantity,
+                    onTap: onEntryTap != null ? () => onEntryTap!(entry) : null,
+                    onLongPress: onEntryLongPress != null
+                        ? () => onEntryLongPress!(entry)
+                        : null,
                   );
                 },
                 childCount: groups[sectionKey]!.length,

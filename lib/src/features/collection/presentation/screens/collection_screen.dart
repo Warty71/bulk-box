@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:bulk_box/src/core/di/injection_container.dart' as di;
+import 'package:bulk_box/src/features/collection/presentation/cubit/bulk_move_cubit.dart';
 import 'package:bulk_box/src/features/collection/presentation/cubit/collection_cubit.dart';
 import 'package:bulk_box/src/features/collection/presentation/screens/collection_view.dart';
 import 'package:bulk_box/src/features/collection/presentation/widgets/boxes/collection_boxes_grid_view.dart';
@@ -42,6 +43,9 @@ class CollectionScreen extends StatelessWidget {
         ),
         BlocProvider(
           create: (context) => di.getIt<SearchCubit>(),
+        ),
+        BlocProvider(
+          create: (context) => di.getIt<BulkMoveCubit>(),
         ),
       ],
       child: const CollectionView(),
