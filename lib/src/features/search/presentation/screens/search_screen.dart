@@ -49,33 +49,63 @@ class _SearchViewState extends State<SearchView> {
       body: Column(
         children: [
           Padding(
-            padding: const EdgeInsets.all(Dimensions.md),
-            child: TextField(
-              controller: _searchController,
-              decoration: InputDecoration(
-                hintText: 'Search by card name...',
-                prefixIcon: const Icon(Icons.search),
-                suffixIcon: IconButton(
-                  icon: const Icon(Icons.clear),
-                  onPressed: () {
-                    _searchController.clear();
-                    context.read<SearchCubit>().searchCards('');
-                  },
-                ),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(Dimensions.radiusMd),
-                ),
-                filled: true,
-                fillColor: theme.colorScheme.surfaceContainerHighest
-                    .withValues(alpha: 0.3),
-              ),
-              onChanged: (query) {
-                _debounce.run(() {
-                  context.read<SearchCubit>().searchCards(query);
-                });
-              },
-            ),
-          ),
+  padding: const EdgeInsets.all(Dimensions.md),
+  child: TextField(
+    controller: _searchController,
+    decoration: InputDecoration(
+      hintText: 'Search by card name...',
+      prefixIcon: const Icon(Icons.search),
+
+      suffixIcon: ValueListenableBuilder<TextEditingValue>(
+        valueListenable: _searchController,
+        builder: (_, value, __) {
+          if (value.text.isEmpty) return const SizedBox.shrink();
+
+          return IconButton(
+            icon: const Icon(Icons.close),
+            onPressed: () {
+              _searchController.clear();
+              context.read<SearchCubit>().searchCards('');
+              setState(() {});
+            },
+          );
+        },
+      ),
+
+      filled: true,
+      fillColor: theme.colorScheme.surfaceContainerHighest
+          .withValues(alpha: 0.3),
+
+      contentPadding: const EdgeInsets.symmetric(
+        horizontal: 16,
+        vertical: 14,
+      ),
+
+      border: OutlineInputBorder(
+        borderRadius:
+            BorderRadius.circular(Dimensions.radiusMd),
+        borderSide: BorderSide.none,
+      ),
+      enabledBorder: OutlineInputBorder(
+        borderRadius:
+            BorderRadius.circular(Dimensions.radiusMd),
+        borderSide: BorderSide.none,
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius:
+            BorderRadius.circular(Dimensions.radiusMd),
+        borderSide: BorderSide.none,
+      ),
+    ),
+    onChanged: (query) {
+      setState(() {});
+      _debounce.run(() {
+        context.read<SearchCubit>().searchCards(query);
+      });
+    },
+  ),
+),
+
           Expanded(
             child: BlocBuilder<SearchCubit, SearchState>(
               builder: (context, state) {
