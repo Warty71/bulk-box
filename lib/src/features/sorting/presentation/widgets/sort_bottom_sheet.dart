@@ -13,21 +13,33 @@ class SortBottomSheet extends StatelessWidget {
     return BlocBuilder<SettingsCubit, SettingsState>(
       builder: (context, state) {
         final selected = state.sortOption;
-        return Column(
+        return Material(
+              clipBehavior: Clip.antiAlias,
+              borderRadius: const BorderRadius.vertical(
+                top: Radius.circular(16)
+              ),
+        child: Column(
           mainAxisSize: MainAxisSize.min,
           children: SortOption.values
               .map(
-                (option) => RadioListTile<SortOption>(
-                  title: Text(option.label),
-                  value: option,
-                  groupValue: selected,
-                  onChanged: (value) {
-                    context.read<SettingsCubit>().setSortOption(value!);
-                    Navigator.pop(context);
-                  },
-                ),
-              )
-              .toList(),
+            (option) => RadioListTile<SortOption>(
+              title: Text(option.label),
+              value: option,
+              groupValue: selected,
+              onChanged:(value){
+                context
+                .read<SettingsCubit>()
+                .setSortOption(value!);
+                Navigator.pop(context);
+              },
+            ),
+          )
+          .toList(),
+        ),
+
+
+        
+
         );
       },
     );
