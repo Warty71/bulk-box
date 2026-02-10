@@ -14,4 +14,13 @@ extension SortOptionExtension on SortOption {
       SortOption.archetype => 'Archetype',
     };
   }
+
+  String get description {
+    return switch (this) {
+      SortOption.nameAZ => 'e.g. Ash Blossom, Blue-Eyes, Dark Magician',
+      SortOption.cardType => 'e.g. Effect Monster, Spell Card, Trap Card',
+      SortOption.frameType => 'e.g. Fusion, Synchro, XYZ, Link',
+      SortOption.archetype => 'e.g. Blue-Eyes, Dark Magician, Branded',
+    };
+  }
 }

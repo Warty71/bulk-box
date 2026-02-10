@@ -92,7 +92,7 @@ class CollectionGridView extends StatelessWidget {
       },
       child: showDividersBetweenSections
           ? CollectionSectionedGridView(
-              key: const ValueKey('sectioned'),
+              key: ValueKey('sectioned_$sortOption'),
               collectionEntries: collectionEntries,
               sortOption: sortOption,
               groupBySection: _groupBySection,
@@ -100,7 +100,7 @@ class CollectionGridView extends StatelessWidget {
               onEntryLongPress: onEntryLongPress,
             )
           : CollectionPlainGridView(
-              key: const ValueKey('plain'),
+              key: ValueKey('plain_$sortOption'),
               collectionEntries: collectionEntries,
               onEntryTap: onEntryTap,
               onEntryLongPress: onEntryLongPress,
