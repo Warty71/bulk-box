@@ -139,6 +139,14 @@ class CollectionCubit extends Cubit<CollectionState> {
     await _reloadWithCurrentFilter();
   }
 
+  /// Delete multiple slots in a single transaction.
+  Future<void> batchDeleteSlots(
+    List<({int cardId, String setCode, String setRarity, int? boxId})> items,
+  ) async {
+    await _repository.batchDeleteSlots(items);
+    await _reloadWithCurrentFilter();
+  }
+
   Future<void> _reloadWithCurrentFilter() async {
     state.maybeWhen(
       loaded: (_, __, ___, boxId, boxName) => loadCollectionItems(

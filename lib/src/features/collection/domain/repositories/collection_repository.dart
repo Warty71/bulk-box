@@ -62,4 +62,9 @@ abstract class CollectionRepository {
     required int? fromBoxId,
     required int? toBoxId,
   });
+
+  /// Delete multiple slots in a single transaction.
+  Future<void> batchDeleteSlots(
+    List<({int cardId, String setCode, String setRarity, int? boxId})> items,
+  );
 }

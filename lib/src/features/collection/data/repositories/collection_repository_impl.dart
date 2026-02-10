@@ -115,4 +115,11 @@ class CollectionRepositoryImpl implements CollectionRepository {
       toBoxId: toBoxId,
     );
   }
+
+  @override
+  Future<void> batchDeleteSlots(
+    List<({int cardId, String setCode, String setRarity, int? boxId})> items,
+  ) async {
+    await _localDatasource.batchDeleteSlots(items);
+  }
 }
