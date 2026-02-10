@@ -14,7 +14,7 @@ class BoxCardTile extends StatefulWidget {
   final String title;
   final String subtitle;
   final VoidCallback onTap;
-  final Widget? trailing;
+  final VoidCallback? onLongPress;
   /// First N card IDs to show as mini preview thumbnails (e.g. 2–3). Null = no previews.
   final List<int>? previewCardIds;
 
@@ -25,7 +25,7 @@ class BoxCardTile extends StatefulWidget {
     required this.title,
     required this.subtitle,
     required this.onTap,
-    this.trailing,
+    this.onLongPress,
     this.previewCardIds,
   });
 
@@ -52,6 +52,12 @@ class BoxCardTileState extends State<BoxCardTile> {
         HapticFeedback.lightImpact();
         widget.onTap();
       },
+      onLongPress: widget.onLongPress != null
+          ? () {
+              HapticFeedback.mediumImpact();
+              widget.onLongPress!();
+            }
+          : null,
       child: AnimatedScale(
         scale: _pressed ? 0.97 : 1.0,
         duration: const Duration(milliseconds: _scaleDurationMs),
@@ -68,7 +74,6 @@ class BoxCardTileState extends State<BoxCardTile> {
               _buildGradientBackground(),
               _buildFoilOverlay(),
               _buildContent(theme),
-              if (widget.trailing != null) _buildTrailing(),
             ],
           ),
         ),
@@ -112,9 +117,9 @@ class BoxCardTileState extends State<BoxCardTile> {
     );
   }
 
-  static const double _previewCardWidth = 48.0;
-  static const double _previewCardHeight = 70.0; // ~0.68 aspect
-  static const double _previewOverlap = 18.0;
+  static const double _previewCardWidth = 58.0;
+  static const double _previewCardHeight = 85.0; // ~0.68 aspect
+  static const double _previewOverlap = 22.0;
 
   Widget _buildContent(ThemeData theme) {
     final hasPreviews = widget.previewCardIds != null &&
@@ -215,17 +220,6 @@ class BoxCardTileState extends State<BoxCardTile> {
             ),
           );
         }),
-      ),
-    );
-  }
-
-  Widget _buildTrailing() {
-    return Positioned(
-      top: 0,
-      right: 0,
-      child: Material(
-        color: Colors.transparent,
-        child: widget.trailing!,
       ),
     );
   }

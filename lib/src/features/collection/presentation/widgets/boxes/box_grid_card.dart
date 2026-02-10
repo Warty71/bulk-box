@@ -7,14 +7,13 @@ import 'package:bulk_box/src/features/collection/presentation/widgets/boxes/box_
 class BoxGridCard extends StatelessWidget {
   final BoxOrUnboxed item;
   final VoidCallback onTap;
-  /// Optional trailing widget (e.g. [PopupMenuButton]) for user boxes; null for Unboxed.
-  final Widget? trailing;
+  final VoidCallback? onLongPress;
 
   const BoxGridCard({
     super.key,
     required this.item,
     required this.onTap,
-    this.trailing,
+    this.onLongPress,
   });
 
   @override
@@ -28,14 +27,13 @@ class BoxGridCard extends StatelessWidget {
         title: 'Unboxed',
         subtitle: 'Items not in any box',
         onTap: onTap,
-        trailing: null,
       );
     }
 
     return BoxGridCardWithCount(
       box: item.box!,
       onTap: onTap,
-      trailing: trailing,
+      onLongPress: onLongPress,
     );
   }
 }
