@@ -29,10 +29,36 @@ class CollectionGridView extends StatelessWidget {
       final sectionKey = switch (sortOption) {
         SortOption.nameAZ => _getLetterSection(entry.card.name),
         SortOption.cardType => entry.card.type,
+        SortOption.frameType => _frameTypeLabel(entry.card.frameType),
       };
       groups.putIfAbsent(sectionKey, () => []).add(entry);
     }
     return groups;
+  }
+
+  static const _frameTypeLabels = {
+    'normal': 'Normal Monster',
+    'effect': 'Effect Monster',
+    'ritual': 'Ritual Monster',
+    'fusion': 'Fusion Monster',
+    'synchro': 'Synchro Monster',
+    'xyz': 'XYZ Monster',
+    'link': 'Link Monster',
+    'normal_pendulum': 'Normal Pendulum',
+    'effect_pendulum': 'Effect Pendulum',
+    'ritual_pendulum': 'Ritual Pendulum',
+    'fusion_pendulum': 'Fusion Pendulum',
+    'synchro_pendulum': 'Synchro Pendulum',
+    'xyz_pendulum': 'XYZ Pendulum',
+    'spell': 'Spell',
+    'trap': 'Trap',
+    'token': 'Token',
+    'skill': 'Skill',
+  };
+
+  static String _frameTypeLabel(String? frameType) {
+    if (frameType == null) return 'Unknown';
+    return _frameTypeLabels[frameType] ?? frameType;
   }
 
   String _getLetterSection(String name) {

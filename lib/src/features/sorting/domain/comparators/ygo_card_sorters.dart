@@ -16,6 +16,14 @@ void sortCollectionItems(
         if (typeComparison != 0) return typeComparison;
 
         return a.card.name.toLowerCase().compareTo(b.card.name.toLowerCase());
+
+      case SortOption.frameType:
+        final aFrame = (a.card.frameType ?? '').toLowerCase();
+        final bFrame = (b.card.frameType ?? '').toLowerCase();
+        final frameComparison = aFrame.compareTo(bFrame);
+        if (frameComparison != 0) return frameComparison;
+
+        return a.card.name.toLowerCase().compareTo(b.card.name.toLowerCase());
     }
   });
 }

@@ -191,6 +191,7 @@ class SearchRepositoryImpl implements SearchRepository {
       type: model.type,
       description: model.desc,
       race: model.race,
+      frameType: model.frameType,
       attribute: model.attribute,
       level: model.level,
       atk: model.atk,

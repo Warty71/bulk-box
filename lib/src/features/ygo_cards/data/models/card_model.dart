@@ -13,6 +13,7 @@ abstract class CardModel with _$CardModel {
     required String type,
     required String desc,
     required String race,
+    String? frameType,
     String? attribute,
     int? level,
     int? atk,

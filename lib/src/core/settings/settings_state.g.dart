@@ -23,4 +23,5 @@ Map<String, dynamic> _$SettingsStateToJson(_SettingsState instance) =>
 const _$SortOptionEnumMap = {
   SortOption.nameAZ: 'nameAZ',
   SortOption.cardType: 'cardType',
+  SortOption.frameType: 'frameType',
 };

@@ -14,6 +14,7 @@ class Cards extends Table {
   TextColumn get type => text()();
   TextColumn get description => text()();
   TextColumn get race => text()();
+  TextColumn get frameType => text().nullable()();
   TextColumn get attribute => text().nullable()();
   IntColumn get level => integer().nullable()();
   IntColumn get atk => integer().nullable()();
@@ -52,7 +53,7 @@ class AppDatabase extends _$AppDatabase implements MigrationDatabase {
   AppDatabase() : super(_openConnection());
 
   @override
-  int get schemaVersion => 2;
+  int get schemaVersion => 3;
 
   @override
   MigrationStrategy get migration {
