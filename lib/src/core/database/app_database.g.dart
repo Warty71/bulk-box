@@ -61,6 +61,12 @@ class $CardsTable extends Cards with TableInfo<$CardsTable, Card> {
   late final GeneratedColumn<int> def = GeneratedColumn<int>(
       'def', aliasedName, true,
       type: DriftSqlType.int, requiredDuringInsert: false);
+  static const VerificationMeta _archetypeMeta =
+      const VerificationMeta('archetype');
+  @override
+  late final GeneratedColumn<String> archetype = GeneratedColumn<String>(
+      'archetype', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
   static const VerificationMeta _imageUrlMeta =
       const VerificationMeta('imageUrl');
   @override
@@ -85,6 +91,7 @@ class $CardsTable extends Cards with TableInfo<$CardsTable, Card> {
         level,
         atk,
         def,
+        archetype,
         imageUrl,
         cardSetsJson
       ];
@@ -147,6 +154,10 @@ class $CardsTable extends Cards with TableInfo<$CardsTable, Card> {
       context.handle(
           _defMeta, def.isAcceptableOrUnknown(data['def']!, _defMeta));
     }
+    if (data.containsKey('archetype')) {
+      context.handle(_archetypeMeta,
+          archetype.isAcceptableOrUnknown(data['archetype']!, _archetypeMeta));
+    }
     if (data.containsKey('image_url')) {
       context.handle(_imageUrlMeta,
           imageUrl.isAcceptableOrUnknown(data['image_url']!, _imageUrlMeta));
@@ -190,6 +201,8 @@ class $CardsTable extends Cards with TableInfo<$CardsTable, Card> {
           .read(DriftSqlType.int, data['${effectivePrefix}atk']),
       def: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}def']),
+      archetype: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}archetype']),
       imageUrl: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}image_url'])!,
       cardSetsJson: attachedDatabase.typeMapping
@@ -214,6 +227,7 @@ class Card extends DataClass implements Insertable<Card> {
   final int? level;
   final int? atk;
   final int? def;
+  final String? archetype;
   final String imageUrl;
   final String cardSetsJson;
   const Card(
@@ -227,6 +241,7 @@ class Card extends DataClass implements Insertable<Card> {
       this.level,
       this.atk,
       this.def,
+      this.archetype,
       required this.imageUrl,
       required this.cardSetsJson});
   @override
@@ -252,6 +267,9 @@ class Card extends DataClass implements Insertable<Card> {
     if (!nullToAbsent || def != null) {
       map['def'] = Variable<int>(def);
     }
+    if (!nullToAbsent || archetype != null) {
+      map['archetype'] = Variable<String>(archetype);
+    }
     map['image_url'] = Variable<String>(imageUrl);
     map['card_sets_json'] = Variable<String>(cardSetsJson);
     return map;
@@ -274,6 +292,9 @@ class Card extends DataClass implements Insertable<Card> {
           level == null && nullToAbsent ? const Value.absent() : Value(level),
       atk: atk == null && nullToAbsent ? const Value.absent() : Value(atk),
       def: def == null && nullToAbsent ? const Value.absent() : Value(def),
+      archetype: archetype == null && nullToAbsent
+          ? const Value.absent()
+          : Value(archetype),
       imageUrl: Value(imageUrl),
       cardSetsJson: Value(cardSetsJson),
     );
@@ -293,6 +314,7 @@ class Card extends DataClass implements Insertable<Card> {
       level: serializer.fromJson<int?>(json['level']),
       atk: serializer.fromJson<int?>(json['atk']),
       def: serializer.fromJson<int?>(json['def']),
+      archetype: serializer.fromJson<String?>(json['archetype']),
       imageUrl: serializer.fromJson<String>(json['imageUrl']),
       cardSetsJson: serializer.fromJson<String>(json['cardSetsJson']),
     );
@@ -311,6 +333,7 @@ class Card extends DataClass implements Insertable<Card> {
       'level': serializer.toJson<int?>(level),
       'atk': serializer.toJson<int?>(atk),
       'def': serializer.toJson<int?>(def),
+      'archetype': serializer.toJson<String?>(archetype),
       'imageUrl': serializer.toJson<String>(imageUrl),
       'cardSetsJson': serializer.toJson<String>(cardSetsJson),
     };
@@ -327,6 +350,7 @@ class Card extends DataClass implements Insertable<Card> {
           Value<int?> level = const Value.absent(),
           Value<int?> atk = const Value.absent(),
           Value<int?> def = const Value.absent(),
+          Value<String?> archetype = const Value.absent(),
           String? imageUrl,
           String? cardSetsJson}) =>
       Card(
@@ -340,6 +364,7 @@ class Card extends DataClass implements Insertable<Card> {
         level: level.present ? level.value : this.level,
         atk: atk.present ? atk.value : this.atk,
         def: def.present ? def.value : this.def,
+        archetype: archetype.present ? archetype.value : this.archetype,
         imageUrl: imageUrl ?? this.imageUrl,
         cardSetsJson: cardSetsJson ?? this.cardSetsJson,
       );
@@ -356,6 +381,7 @@ class Card extends DataClass implements Insertable<Card> {
       level: data.level.present ? data.level.value : this.level,
       atk: data.atk.present ? data.atk.value : this.atk,
       def: data.def.present ? data.def.value : this.def,
+      archetype: data.archetype.present ? data.archetype.value : this.archetype,
       imageUrl: data.imageUrl.present ? data.imageUrl.value : this.imageUrl,
       cardSetsJson: data.cardSetsJson.present
           ? data.cardSetsJson.value
@@ -376,6 +402,7 @@ class Card extends DataClass implements Insertable<Card> {
           ..write('level: $level, ')
           ..write('atk: $atk, ')
           ..write('def: $def, ')
+          ..write('archetype: $archetype, ')
           ..write('imageUrl: $imageUrl, ')
           ..write('cardSetsJson: $cardSetsJson')
           ..write(')'))
@@ -384,7 +411,7 @@ class Card extends DataClass implements Insertable<Card> {
 
   @override
   int get hashCode => Object.hash(id, name, type, description, race, frameType,
-      attribute, level, atk, def, imageUrl, cardSetsJson);
+      attribute, level, atk, def, archetype, imageUrl, cardSetsJson);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -399,6 +426,7 @@ class Card extends DataClass implements Insertable<Card> {
           other.level == this.level &&
           other.atk == this.atk &&
           other.def == this.def &&
+          other.archetype == this.archetype &&
           other.imageUrl == this.imageUrl &&
           other.cardSetsJson == this.cardSetsJson);
 }
@@ -414,6 +442,7 @@ class CardsCompanion extends UpdateCompanion<Card> {
   final Value<int?> level;
   final Value<int?> atk;
   final Value<int?> def;
+  final Value<String?> archetype;
   final Value<String> imageUrl;
   final Value<String> cardSetsJson;
   const CardsCompanion({
@@ -427,6 +456,7 @@ class CardsCompanion extends UpdateCompanion<Card> {
     this.level = const Value.absent(),
     this.atk = const Value.absent(),
     this.def = const Value.absent(),
+    this.archetype = const Value.absent(),
     this.imageUrl = const Value.absent(),
     this.cardSetsJson = const Value.absent(),
   });
@@ -441,6 +471,7 @@ class CardsCompanion extends UpdateCompanion<Card> {
     this.level = const Value.absent(),
     this.atk = const Value.absent(),
     this.def = const Value.absent(),
+    this.archetype = const Value.absent(),
     required String imageUrl,
     required String cardSetsJson,
   })  : name = Value(name),
@@ -460,6 +491,7 @@ class CardsCompanion extends UpdateCompanion<Card> {
     Expression<int>? level,
     Expression<int>? atk,
     Expression<int>? def,
+    Expression<String>? archetype,
     Expression<String>? imageUrl,
     Expression<String>? cardSetsJson,
   }) {
@@ -474,6 +506,7 @@ class CardsCompanion extends UpdateCompanion<Card> {
       if (level != null) 'level': level,
       if (atk != null) 'atk': atk,
       if (def != null) 'def': def,
+      if (archetype != null) 'archetype': archetype,
       if (imageUrl != null) 'image_url': imageUrl,
       if (cardSetsJson != null) 'card_sets_json': cardSetsJson,
     });
@@ -490,6 +523,7 @@ class CardsCompanion extends UpdateCompanion<Card> {
       Value<int?>? level,
       Value<int?>? atk,
       Value<int?>? def,
+      Value<String?>? archetype,
       Value<String>? imageUrl,
       Value<String>? cardSetsJson}) {
     return CardsCompanion(
@@ -503,6 +537,7 @@ class CardsCompanion extends UpdateCompanion<Card> {
       level: level ?? this.level,
       atk: atk ?? this.atk,
       def: def ?? this.def,
+      archetype: archetype ?? this.archetype,
       imageUrl: imageUrl ?? this.imageUrl,
       cardSetsJson: cardSetsJson ?? this.cardSetsJson,
     );
@@ -541,6 +576,9 @@ class CardsCompanion extends UpdateCompanion<Card> {
     if (def.present) {
       map['def'] = Variable<int>(def.value);
     }
+    if (archetype.present) {
+      map['archetype'] = Variable<String>(archetype.value);
+    }
     if (imageUrl.present) {
       map['image_url'] = Variable<String>(imageUrl.value);
     }
@@ -563,6 +601,7 @@ class CardsCompanion extends UpdateCompanion<Card> {
           ..write('level: $level, ')
           ..write('atk: $atk, ')
           ..write('def: $def, ')
+          ..write('archetype: $archetype, ')
           ..write('imageUrl: $imageUrl, ')
           ..write('cardSetsJson: $cardSetsJson')
           ..write(')'))
@@ -1278,6 +1317,7 @@ typedef $$CardsTableCreateCompanionBuilder = CardsCompanion Function({
   Value<int?> level,
   Value<int?> atk,
   Value<int?> def,
+  Value<String?> archetype,
   required String imageUrl,
   required String cardSetsJson,
 });
@@ -1292,6 +1332,7 @@ typedef $$CardsTableUpdateCompanionBuilder = CardsCompanion Function({
   Value<int?> level,
   Value<int?> atk,
   Value<int?> def,
+  Value<String?> archetype,
   Value<String> imageUrl,
   Value<String> cardSetsJson,
 });
@@ -1355,6 +1396,9 @@ class $$CardsTableFilterComposer extends Composer<_$AppDatabase, $CardsTable> {
 
   ColumnFilters<int> get def => $composableBuilder(
       column: $table.def, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get archetype => $composableBuilder(
+      column: $table.archetype, builder: (column) => ColumnFilters(column));
 
   ColumnFilters<String> get imageUrl => $composableBuilder(
       column: $table.imageUrl, builder: (column) => ColumnFilters(column));
@@ -1423,6 +1467,9 @@ class $$CardsTableOrderingComposer
   ColumnOrderings<int> get def => $composableBuilder(
       column: $table.def, builder: (column) => ColumnOrderings(column));
 
+  ColumnOrderings<String> get archetype => $composableBuilder(
+      column: $table.archetype, builder: (column) => ColumnOrderings(column));
+
   ColumnOrderings<String> get imageUrl => $composableBuilder(
       column: $table.imageUrl, builder: (column) => ColumnOrderings(column));
 
@@ -1469,6 +1516,9 @@ class $$CardsTableAnnotationComposer
 
   GeneratedColumn<int> get def =>
       $composableBuilder(column: $table.def, builder: (column) => column);
+
+  GeneratedColumn<String> get archetype =>
+      $composableBuilder(column: $table.archetype, builder: (column) => column);
 
   GeneratedColumn<String> get imageUrl =>
       $composableBuilder(column: $table.imageUrl, builder: (column) => column);
@@ -1531,6 +1581,7 @@ class $$CardsTableTableManager extends RootTableManager<
             Value<int?> level = const Value.absent(),
             Value<int?> atk = const Value.absent(),
             Value<int?> def = const Value.absent(),
+            Value<String?> archetype = const Value.absent(),
             Value<String> imageUrl = const Value.absent(),
             Value<String> cardSetsJson = const Value.absent(),
           }) =>
@@ -1545,6 +1596,7 @@ class $$CardsTableTableManager extends RootTableManager<
             level: level,
             atk: atk,
             def: def,
+            archetype: archetype,
             imageUrl: imageUrl,
             cardSetsJson: cardSetsJson,
           ),
@@ -1559,6 +1611,7 @@ class $$CardsTableTableManager extends RootTableManager<
             Value<int?> level = const Value.absent(),
             Value<int?> atk = const Value.absent(),
             Value<int?> def = const Value.absent(),
+            Value<String?> archetype = const Value.absent(),
             required String imageUrl,
             required String cardSetsJson,
           }) =>
@@ -1573,6 +1626,7 @@ class $$CardsTableTableManager extends RootTableManager<
             level: level,
             atk: atk,
             def: def,
+            archetype: archetype,
             imageUrl: imageUrl,
             cardSetsJson: cardSetsJson,
           ),

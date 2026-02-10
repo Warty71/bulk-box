@@ -196,6 +196,7 @@ class SearchRepositoryImpl implements SearchRepository {
       level: model.level,
       atk: model.atk,
       def: model.def,
+      archetype: model.archetype,
       imageUrl: imageUrl,
       cardSetsJson: cardSetsJson,
     );

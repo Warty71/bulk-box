@@ -30,6 +30,9 @@ class CollectionGridView extends StatelessWidget {
         SortOption.nameAZ => _getLetterSection(entry.card.name),
         SortOption.cardType => entry.card.type,
         SortOption.frameType => _frameTypeLabel(entry.card.frameType),
+        SortOption.archetype => entry.card.archetype?.isNotEmpty == true
+            ? entry.card.archetype!
+            : 'No Archetype',
       };
       groups.putIfAbsent(sectionKey, () => []).add(entry);
     }

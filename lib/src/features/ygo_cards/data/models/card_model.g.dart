@@ -17,6 +17,7 @@ _CardModel _$CardModelFromJson(Map<String, dynamic> json) => _CardModel(
       level: (json['level'] as num?)?.toInt(),
       atk: (json['atk'] as num?)?.toInt(),
       def: (json['def'] as num?)?.toInt(),
+      archetype: json['archetype'] as String?,
       cardImages: (json['card_images'] as List<dynamic>)
           .map((e) => CardImageModel.fromJson(e as Map<String, dynamic>))
           .toList(),
@@ -38,6 +39,7 @@ Map<String, dynamic> _$CardModelToJson(_CardModel instance) =>
       'level': instance.level,
       'atk': instance.atk,
       'def': instance.def,
+      'archetype': instance.archetype,
       'card_images': instance.cardImages,
       'card_sets': instance.cardSets,
     };

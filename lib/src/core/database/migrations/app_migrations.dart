@@ -18,6 +18,7 @@ Future<void> runMigrations(
 ) async {
   if (from < 2) await _migrateV1ToV2(m, db);
   if (from < 3) await _migrateV2ToV3(m, db);
+  if (from < 4) await _migrateV3ToV4(m, db);
 }
 
 Future<void> _migrateV1ToV2(Migrator m, MigrationDatabase db) async {
@@ -76,4 +77,9 @@ Future<void> _migrateV2ToV3(Migrator m, MigrationDatabase db) async {
     END
     WHERE frame_type IS NULL
   ''');
+}
+
+Future<void> _migrateV3ToV4(Migrator m, MigrationDatabase db) async {
+  // v3 → v4: add archetype column to cards table.
+  await m.addColumn(db.cards, db.cards.archetype);
 }

@@ -18,6 +18,7 @@ abstract class CardModel with _$CardModel {
     int? level,
     int? atk,
     int? def,
+    String? archetype,
     @JsonKey(name: 'card_images') required List<CardImageModel> cardImages,
     @JsonKey(name: 'card_sets', defaultValue: [])
     required List<CardSetModel> cardSets,

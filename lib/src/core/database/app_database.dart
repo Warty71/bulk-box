@@ -19,6 +19,7 @@ class Cards extends Table {
   IntColumn get level => integer().nullable()();
   IntColumn get atk => integer().nullable()();
   IntColumn get def => integer().nullable()();
+  TextColumn get archetype => text().nullable()();
   TextColumn get imageUrl => text()();
   TextColumn get cardSetsJson => text()();
   @override
@@ -53,7 +54,7 @@ class AppDatabase extends _$AppDatabase implements MigrationDatabase {
   AppDatabase() : super(_openConnection());
 
   @override
-  int get schemaVersion => 3;
+  int get schemaVersion => 4;
 
   @override
   MigrationStrategy get migration {

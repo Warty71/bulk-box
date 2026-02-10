@@ -24,6 +24,7 @@ mixin _$CardModel {
   int? get level;
   int? get atk;
   int? get def;
+  String? get archetype;
   @JsonKey(name: 'card_images')
   List<CardImageModel> get cardImages;
   @JsonKey(name: 'card_sets', defaultValue: [])
@@ -56,6 +57,8 @@ mixin _$CardModel {
             (identical(other.level, level) || other.level == level) &&
             (identical(other.atk, atk) || other.atk == atk) &&
             (identical(other.def, def) || other.def == def) &&
+            (identical(other.archetype, archetype) ||
+                other.archetype == archetype) &&
             const DeepCollectionEquality()
                 .equals(other.cardImages, cardImages) &&
             const DeepCollectionEquality().equals(other.cardSets, cardSets));
@@ -75,12 +78,13 @@ mixin _$CardModel {
       level,
       atk,
       def,
+      archetype,
       const DeepCollectionEquality().hash(cardImages),
       const DeepCollectionEquality().hash(cardSets));
 
   @override
   String toString() {
-    return 'CardModel(id: $id, name: $name, type: $type, desc: $desc, race: $race, frameType: $frameType, attribute: $attribute, level: $level, atk: $atk, def: $def, cardImages: $cardImages, cardSets: $cardSets)';
+    return 'CardModel(id: $id, name: $name, type: $type, desc: $desc, race: $race, frameType: $frameType, attribute: $attribute, level: $level, atk: $atk, def: $def, archetype: $archetype, cardImages: $cardImages, cardSets: $cardSets)';
   }
 }
 
@@ -100,6 +104,7 @@ abstract mixin class $CardModelCopyWith<$Res> {
       int? level,
       int? atk,
       int? def,
+      String? archetype,
       @JsonKey(name: 'card_images') List<CardImageModel> cardImages,
       @JsonKey(name: 'card_sets', defaultValue: [])
       List<CardSetModel> cardSets});
@@ -127,6 +132,7 @@ class _$CardModelCopyWithImpl<$Res> implements $CardModelCopyWith<$Res> {
     Object? level = freezed,
     Object? atk = freezed,
     Object? def = freezed,
+    Object? archetype = freezed,
     Object? cardImages = null,
     Object? cardSets = null,
   }) {
@@ -171,6 +177,10 @@ class _$CardModelCopyWithImpl<$Res> implements $CardModelCopyWith<$Res> {
           ? _self.def
           : def // ignore: cast_nullable_to_non_nullable
               as int?,
+      archetype: freezed == archetype
+          ? _self.archetype
+          : archetype // ignore: cast_nullable_to_non_nullable
+              as String?,
       cardImages: null == cardImages
           ? _self.cardImages
           : cardImages // ignore: cast_nullable_to_non_nullable
@@ -287,6 +297,7 @@ extension CardModelPatterns on CardModel {
             int? level,
             int? atk,
             int? def,
+            String? archetype,
             @JsonKey(name: 'card_images') List<CardImageModel> cardImages,
             @JsonKey(name: 'card_sets', defaultValue: [])
             List<CardSetModel> cardSets)?
@@ -307,6 +318,7 @@ extension CardModelPatterns on CardModel {
             _that.level,
             _that.atk,
             _that.def,
+            _that.archetype,
             _that.cardImages,
             _that.cardSets);
       case _:
@@ -340,6 +352,7 @@ extension CardModelPatterns on CardModel {
             int? level,
             int? atk,
             int? def,
+            String? archetype,
             @JsonKey(name: 'card_images') List<CardImageModel> cardImages,
             @JsonKey(name: 'card_sets', defaultValue: [])
             List<CardSetModel> cardSets)
@@ -359,6 +372,7 @@ extension CardModelPatterns on CardModel {
             _that.level,
             _that.atk,
             _that.def,
+            _that.archetype,
             _that.cardImages,
             _that.cardSets);
       case _:
@@ -391,6 +405,7 @@ extension CardModelPatterns on CardModel {
             int? level,
             int? atk,
             int? def,
+            String? archetype,
             @JsonKey(name: 'card_images') List<CardImageModel> cardImages,
             @JsonKey(name: 'card_sets', defaultValue: [])
             List<CardSetModel> cardSets)?
@@ -410,6 +425,7 @@ extension CardModelPatterns on CardModel {
             _that.level,
             _that.atk,
             _that.def,
+            _that.archetype,
             _that.cardImages,
             _that.cardSets);
       case _:
@@ -432,6 +448,7 @@ class _CardModel implements CardModel {
       this.level,
       this.atk,
       this.def,
+      this.archetype,
       @JsonKey(name: 'card_images')
       required final List<CardImageModel> cardImages,
       @JsonKey(name: 'card_sets', defaultValue: [])
@@ -461,6 +478,8 @@ class _CardModel implements CardModel {
   final int? atk;
   @override
   final int? def;
+  @override
+  final String? archetype;
   final List<CardImageModel> _cardImages;
   @override
   @JsonKey(name: 'card_images')
@@ -511,6 +530,8 @@ class _CardModel implements CardModel {
             (identical(other.level, level) || other.level == level) &&
             (identical(other.atk, atk) || other.atk == atk) &&
             (identical(other.def, def) || other.def == def) &&
+            (identical(other.archetype, archetype) ||
+                other.archetype == archetype) &&
             const DeepCollectionEquality()
                 .equals(other._cardImages, _cardImages) &&
             const DeepCollectionEquality().equals(other._cardSets, _cardSets));
@@ -530,12 +551,13 @@ class _CardModel implements CardModel {
       level,
       atk,
       def,
+      archetype,
       const DeepCollectionEquality().hash(_cardImages),
       const DeepCollectionEquality().hash(_cardSets));
 
   @override
   String toString() {
-    return 'CardModel(id: $id, name: $name, type: $type, desc: $desc, race: $race, frameType: $frameType, attribute: $attribute, level: $level, atk: $atk, def: $def, cardImages: $cardImages, cardSets: $cardSets)';
+    return 'CardModel(id: $id, name: $name, type: $type, desc: $desc, race: $race, frameType: $frameType, attribute: $attribute, level: $level, atk: $atk, def: $def, archetype: $archetype, cardImages: $cardImages, cardSets: $cardSets)';
   }
 }
 
@@ -558,6 +580,7 @@ abstract mixin class _$CardModelCopyWith<$Res>
       int? level,
       int? atk,
       int? def,
+      String? archetype,
       @JsonKey(name: 'card_images') List<CardImageModel> cardImages,
       @JsonKey(name: 'card_sets', defaultValue: [])
       List<CardSetModel> cardSets});
@@ -585,6 +608,7 @@ class __$CardModelCopyWithImpl<$Res> implements _$CardModelCopyWith<$Res> {
     Object? level = freezed,
     Object? atk = freezed,
     Object? def = freezed,
+    Object? archetype = freezed,
     Object? cardImages = null,
     Object? cardSets = null,
   }) {
@@ -629,6 +653,10 @@ class __$CardModelCopyWithImpl<$Res> implements _$CardModelCopyWith<$Res> {
           ? _self.def
           : def // ignore: cast_nullable_to_non_nullable
               as int?,
+      archetype: freezed == archetype
+          ? _self.archetype
+          : archetype // ignore: cast_nullable_to_non_nullable
+              as String?,
       cardImages: null == cardImages
           ? _self._cardImages
           : cardImages // ignore: cast_nullable_to_non_nullable
