@@ -44,6 +44,7 @@ class CollectionSectionedGridView extends StatelessWidget {
                 (context, index) {
                   final entry = groups[sectionKey]![index];
                   return CollectionGridItem(
+                    key: ValueKey(entry.selectionKey),
                     entry: entry,
                     totalQuantity: entry.quantity,
                     onTap: onEntryTap != null ? () => onEntryTap!(entry) : null,
