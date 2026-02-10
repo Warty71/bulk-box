@@ -35,6 +35,7 @@ class CollectionGridItem extends StatefulWidget {
 
 class _CollectionGridItemState extends State<CollectionGridItem> {
   bool _pressed = false;
+  bool _cancelled = false;
   Timer? _selectionTimer;
   Offset? _downPosition;
   DateTime? _downTime;
@@ -66,6 +67,7 @@ class _CollectionGridItemState extends State<CollectionGridItem> {
     if (widget.onLongPress == null) return;
     _downPosition = event.position;
     _downTime = DateTime.now();
+    _cancelled = false;
     setState(() => _pressed = true);
     _selectionTimer?.cancel();
     _selectionTimer = Timer(const Duration(milliseconds: _selectionDelayMs), () {
@@ -79,12 +81,14 @@ class _CollectionGridItemState extends State<CollectionGridItem> {
   void _onPointerMove(PointerMoveEvent event) {
     if (_downPosition == null) return;
     if ((event.position - _downPosition!).distance > _moveSlop) {
+      _cancelled = true;
       _clearHold();
     }
   }
 
   void _onPointerUp(PointerUpEvent _) {
-    final wasQuickTap = _downTime != null &&
+    final wasQuickTap = !_cancelled &&
+        _downTime != null &&
         DateTime.now().difference(_downTime!).inMilliseconds < _tapThresholdMs;
     _clearHold();
     if (wasQuickTap && widget.onTap != null) {
