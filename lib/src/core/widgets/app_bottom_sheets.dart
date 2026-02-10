@@ -4,7 +4,9 @@ import 'package:bulk_box/src/core/database/app_database.dart' as db;
 import 'package:bulk_box/src/core/settings/settings_cubit.dart';
 import 'package:bulk_box/src/features/collection/domain/entities/collection_entry.dart';
 import 'package:bulk_box/src/features/collection/presentation/cubit/collection_cubit.dart';
+import 'package:bulk_box/src/features/collection/domain/entities/box.dart';
 import 'package:bulk_box/src/features/collection/presentation/widgets/bottom_sheets/add_card_bottom_sheet.dart';
+import 'package:bulk_box/src/features/collection/presentation/widgets/bottom_sheets/box_options_bottom_sheet.dart';
 import 'package:bulk_box/src/features/collection/presentation/widgets/bottom_sheets/collection_card_details_bottom_sheet.dart';
 import 'package:bulk_box/src/features/collection/presentation/widgets/bottom_sheets/collection_options_bottom_sheet.dart';
 import 'package:bulk_box/src/features/collection/presentation/widgets/bottom_sheets/bulk_move_destination_bottom_sheet.dart';
@@ -126,6 +128,19 @@ class AppBottomSheets {
         value: settingsCubit,
         child: const SortBottomSheet(),
       ),
+    );
+  }
+
+  /// Shows the box options sheet (Edit name, Delete).
+  static Future<void> showBoxOptions(
+    BuildContext context, {
+    required Box box,
+  }) {
+    return showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: _defaultOptions.isScrollControlled,
+      useSafeArea: _defaultOptions.useSafeArea,
+      builder: (_) => BoxOptionsBottomSheet(box: box),
     );
   }
 }

@@ -11,13 +11,13 @@ import 'package:bulk_box/src/features/collection/presentation/widgets/boxes/box_
 class BoxGridCardWithCount extends StatelessWidget {
   final Box box;
   final VoidCallback onTap;
-  final Widget? trailing;
+  final VoidCallback? onLongPress;
 
   const BoxGridCardWithCount({
     super.key,
     required this.box,
     required this.onTap,
-    this.trailing,
+    this.onLongPress,
   });
 
   Future<({int count, List<int> previewCardIds})> _loadData(
@@ -46,7 +46,7 @@ class BoxGridCardWithCount extends StatelessWidget {
           title: box.name,
           subtitle: '$count card${count == 1 ? '' : 's'}',
           onTap: onTap,
-          trailing: trailing,
+          onLongPress: onLongPress,
           previewCardIds: previewCardIds,
         );
       },
