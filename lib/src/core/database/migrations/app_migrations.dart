@@ -81,5 +81,9 @@ Future<void> _migrateV2ToV3(Migrator m, MigrationDatabase db) async {
 
 Future<void> _migrateV3ToV4(Migrator m, MigrationDatabase db) async {
   // v3 → v4: add archetype column to cards table.
-  await m.addColumn(db.cards, db.cards.archetype);
+  try {
+    await m.addColumn(db.cards, db.cards.archetype);
+  } catch (e) {
+    if (!e.toString().contains('duplicate column')) rethrow;
+  }
 }
