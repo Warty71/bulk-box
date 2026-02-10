@@ -1,6 +1,7 @@
 enum SortOption {
   nameAZ,
   cardType,
+  frameType,
 }
 
 extension SortOptionExtension on SortOption {
@@ -8,6 +9,7 @@ extension SortOptionExtension on SortOption {
     return switch (this) {
       SortOption.nameAZ => 'Name (A-Z)',
       SortOption.cardType => 'Card Type',
+      SortOption.frameType => 'Frame Type',
     };
   }
 }

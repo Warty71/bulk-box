@@ -5,6 +5,7 @@ import 'package:drift/drift.dart';
 abstract class MigrationDatabase {
   Future<void> runCustomStatement(String sql);
   dynamic get boxes;
+  dynamic get cards;
   dynamic get collectionItems;
 }
 
@@ -16,6 +17,7 @@ Future<void> runMigrations(
   MigrationDatabase db,
 ) async {
   if (from < 2) await _migrateV1ToV2(m, db);
+  if (from < 3) await _migrateV2ToV3(m, db);
 }
 
 Future<void> _migrateV1ToV2(Migrator m, MigrationDatabase db) async {
@@ -45,4 +47,33 @@ Future<void> _migrateV1ToV2(Migrator m, MigrationDatabase db) async {
   ''');
   await db.runCustomStatement('DROP TABLE collection_items');
   await db.runCustomStatement('ALTER TABLE collection_items_new RENAME TO collection_items');
+}
+
+Future<void> _migrateV2ToV3(Migrator m, MigrationDatabase db) async {
+  // v2 → v3: add frameType column to cards table and backfill from type.
+  await m.addColumn(db.cards, db.cards.frameType);
+  await db.runCustomStatement('''
+    UPDATE cards SET frame_type = CASE
+      WHEN type LIKE '%Pendulum%' THEN CASE
+        WHEN type LIKE '%Synchro%'  THEN 'synchro_pendulum'
+        WHEN type LIKE '%XYZ%'      THEN 'xyz_pendulum'
+        WHEN type LIKE '%Fusion%'   THEN 'fusion_pendulum'
+        WHEN type LIKE '%Ritual%'   THEN 'ritual_pendulum'
+        WHEN type LIKE '%Normal%'   THEN 'normal_pendulum'
+        ELSE 'effect_pendulum'
+      END
+      WHEN type = 'Spell Card'      THEN 'spell'
+      WHEN type = 'Trap Card'       THEN 'trap'
+      WHEN type LIKE '%Token%'      THEN 'token'
+      WHEN type LIKE '%Skill%'      THEN 'skill'
+      WHEN type LIKE '%Link%'       THEN 'link'
+      WHEN type LIKE '%XYZ%'        THEN 'xyz'
+      WHEN type LIKE '%Synchro%'    THEN 'synchro'
+      WHEN type LIKE '%Fusion%'     THEN 'fusion'
+      WHEN type LIKE '%Ritual%'     THEN 'ritual'
+      WHEN type = 'Normal Monster'  THEN 'normal'
+      ELSE 'effect'
+    END
+    WHERE frame_type IS NULL
+  ''');
 }

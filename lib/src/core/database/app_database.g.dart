@@ -34,6 +34,12 @@ class $CardsTable extends Cards with TableInfo<$CardsTable, Card> {
   late final GeneratedColumn<String> race = GeneratedColumn<String>(
       'race', aliasedName, false,
       type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _frameTypeMeta =
+      const VerificationMeta('frameType');
+  @override
+  late final GeneratedColumn<String> frameType = GeneratedColumn<String>(
+      'frame_type', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
   static const VerificationMeta _attributeMeta =
       const VerificationMeta('attribute');
   @override
@@ -74,6 +80,7 @@ class $CardsTable extends Cards with TableInfo<$CardsTable, Card> {
         type,
         description,
         race,
+        frameType,
         attribute,
         level,
         atk,
@@ -119,6 +126,10 @@ class $CardsTable extends Cards with TableInfo<$CardsTable, Card> {
           _raceMeta, race.isAcceptableOrUnknown(data['race']!, _raceMeta));
     } else if (isInserting) {
       context.missing(_raceMeta);
+    }
+    if (data.containsKey('frame_type')) {
+      context.handle(_frameTypeMeta,
+          frameType.isAcceptableOrUnknown(data['frame_type']!, _frameTypeMeta));
     }
     if (data.containsKey('attribute')) {
       context.handle(_attributeMeta,
@@ -169,6 +180,8 @@ class $CardsTable extends Cards with TableInfo<$CardsTable, Card> {
           .read(DriftSqlType.string, data['${effectivePrefix}description'])!,
       race: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}race'])!,
+      frameType: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}frame_type']),
       attribute: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}attribute']),
       level: attachedDatabase.typeMapping
@@ -196,6 +209,7 @@ class Card extends DataClass implements Insertable<Card> {
   final String type;
   final String description;
   final String race;
+  final String? frameType;
   final String? attribute;
   final int? level;
   final int? atk;
@@ -208,6 +222,7 @@ class Card extends DataClass implements Insertable<Card> {
       required this.type,
       required this.description,
       required this.race,
+      this.frameType,
       this.attribute,
       this.level,
       this.atk,
@@ -222,6 +237,9 @@ class Card extends DataClass implements Insertable<Card> {
     map['type'] = Variable<String>(type);
     map['description'] = Variable<String>(description);
     map['race'] = Variable<String>(race);
+    if (!nullToAbsent || frameType != null) {
+      map['frame_type'] = Variable<String>(frameType);
+    }
     if (!nullToAbsent || attribute != null) {
       map['attribute'] = Variable<String>(attribute);
     }
@@ -246,6 +264,9 @@ class Card extends DataClass implements Insertable<Card> {
       type: Value(type),
       description: Value(description),
       race: Value(race),
+      frameType: frameType == null && nullToAbsent
+          ? const Value.absent()
+          : Value(frameType),
       attribute: attribute == null && nullToAbsent
           ? const Value.absent()
           : Value(attribute),
@@ -267,6 +288,7 @@ class Card extends DataClass implements Insertable<Card> {
       type: serializer.fromJson<String>(json['type']),
       description: serializer.fromJson<String>(json['description']),
       race: serializer.fromJson<String>(json['race']),
+      frameType: serializer.fromJson<String?>(json['frameType']),
       attribute: serializer.fromJson<String?>(json['attribute']),
       level: serializer.fromJson<int?>(json['level']),
       atk: serializer.fromJson<int?>(json['atk']),
@@ -284,6 +306,7 @@ class Card extends DataClass implements Insertable<Card> {
       'type': serializer.toJson<String>(type),
       'description': serializer.toJson<String>(description),
       'race': serializer.toJson<String>(race),
+      'frameType': serializer.toJson<String?>(frameType),
       'attribute': serializer.toJson<String?>(attribute),
       'level': serializer.toJson<int?>(level),
       'atk': serializer.toJson<int?>(atk),
@@ -299,6 +322,7 @@ class Card extends DataClass implements Insertable<Card> {
           String? type,
           String? description,
           String? race,
+          Value<String?> frameType = const Value.absent(),
           Value<String?> attribute = const Value.absent(),
           Value<int?> level = const Value.absent(),
           Value<int?> atk = const Value.absent(),
@@ -311,6 +335,7 @@ class Card extends DataClass implements Insertable<Card> {
         type: type ?? this.type,
         description: description ?? this.description,
         race: race ?? this.race,
+        frameType: frameType.present ? frameType.value : this.frameType,
         attribute: attribute.present ? attribute.value : this.attribute,
         level: level.present ? level.value : this.level,
         atk: atk.present ? atk.value : this.atk,
@@ -326,6 +351,7 @@ class Card extends DataClass implements Insertable<Card> {
       description:
           data.description.present ? data.description.value : this.description,
       race: data.race.present ? data.race.value : this.race,
+      frameType: data.frameType.present ? data.frameType.value : this.frameType,
       attribute: data.attribute.present ? data.attribute.value : this.attribute,
       level: data.level.present ? data.level.value : this.level,
       atk: data.atk.present ? data.atk.value : this.atk,
@@ -345,6 +371,7 @@ class Card extends DataClass implements Insertable<Card> {
           ..write('type: $type, ')
           ..write('description: $description, ')
           ..write('race: $race, ')
+          ..write('frameType: $frameType, ')
           ..write('attribute: $attribute, ')
           ..write('level: $level, ')
           ..write('atk: $atk, ')
@@ -356,8 +383,8 @@ class Card extends DataClass implements Insertable<Card> {
   }
 
   @override
-  int get hashCode => Object.hash(id, name, type, description, race, attribute,
-      level, atk, def, imageUrl, cardSetsJson);
+  int get hashCode => Object.hash(id, name, type, description, race, frameType,
+      attribute, level, atk, def, imageUrl, cardSetsJson);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -367,6 +394,7 @@ class Card extends DataClass implements Insertable<Card> {
           other.type == this.type &&
           other.description == this.description &&
           other.race == this.race &&
+          other.frameType == this.frameType &&
           other.attribute == this.attribute &&
           other.level == this.level &&
           other.atk == this.atk &&
@@ -381,6 +409,7 @@ class CardsCompanion extends UpdateCompanion<Card> {
   final Value<String> type;
   final Value<String> description;
   final Value<String> race;
+  final Value<String?> frameType;
   final Value<String?> attribute;
   final Value<int?> level;
   final Value<int?> atk;
@@ -393,6 +422,7 @@ class CardsCompanion extends UpdateCompanion<Card> {
     this.type = const Value.absent(),
     this.description = const Value.absent(),
     this.race = const Value.absent(),
+    this.frameType = const Value.absent(),
     this.attribute = const Value.absent(),
     this.level = const Value.absent(),
     this.atk = const Value.absent(),
@@ -406,6 +436,7 @@ class CardsCompanion extends UpdateCompanion<Card> {
     required String type,
     required String description,
     required String race,
+    this.frameType = const Value.absent(),
     this.attribute = const Value.absent(),
     this.level = const Value.absent(),
     this.atk = const Value.absent(),
@@ -424,6 +455,7 @@ class CardsCompanion extends UpdateCompanion<Card> {
     Expression<String>? type,
     Expression<String>? description,
     Expression<String>? race,
+    Expression<String>? frameType,
     Expression<String>? attribute,
     Expression<int>? level,
     Expression<int>? atk,
@@ -437,6 +469,7 @@ class CardsCompanion extends UpdateCompanion<Card> {
       if (type != null) 'type': type,
       if (description != null) 'description': description,
       if (race != null) 'race': race,
+      if (frameType != null) 'frame_type': frameType,
       if (attribute != null) 'attribute': attribute,
       if (level != null) 'level': level,
       if (atk != null) 'atk': atk,
@@ -452,6 +485,7 @@ class CardsCompanion extends UpdateCompanion<Card> {
       Value<String>? type,
       Value<String>? description,
       Value<String>? race,
+      Value<String?>? frameType,
       Value<String?>? attribute,
       Value<int?>? level,
       Value<int?>? atk,
@@ -464,6 +498,7 @@ class CardsCompanion extends UpdateCompanion<Card> {
       type: type ?? this.type,
       description: description ?? this.description,
       race: race ?? this.race,
+      frameType: frameType ?? this.frameType,
       attribute: attribute ?? this.attribute,
       level: level ?? this.level,
       atk: atk ?? this.atk,
@@ -490,6 +525,9 @@ class CardsCompanion extends UpdateCompanion<Card> {
     }
     if (race.present) {
       map['race'] = Variable<String>(race.value);
+    }
+    if (frameType.present) {
+      map['frame_type'] = Variable<String>(frameType.value);
     }
     if (attribute.present) {
       map['attribute'] = Variable<String>(attribute.value);
@@ -520,6 +558,7 @@ class CardsCompanion extends UpdateCompanion<Card> {
           ..write('type: $type, ')
           ..write('description: $description, ')
           ..write('race: $race, ')
+          ..write('frameType: $frameType, ')
           ..write('attribute: $attribute, ')
           ..write('level: $level, ')
           ..write('atk: $atk, ')
@@ -1234,6 +1273,7 @@ typedef $$CardsTableCreateCompanionBuilder = CardsCompanion Function({
   required String type,
   required String description,
   required String race,
+  Value<String?> frameType,
   Value<String?> attribute,
   Value<int?> level,
   Value<int?> atk,
@@ -1247,6 +1287,7 @@ typedef $$CardsTableUpdateCompanionBuilder = CardsCompanion Function({
   Value<String> type,
   Value<String> description,
   Value<String> race,
+  Value<String?> frameType,
   Value<String?> attribute,
   Value<int?> level,
   Value<int?> atk,
@@ -1299,6 +1340,9 @@ class $$CardsTableFilterComposer extends Composer<_$AppDatabase, $CardsTable> {
 
   ColumnFilters<String> get race => $composableBuilder(
       column: $table.race, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get frameType => $composableBuilder(
+      column: $table.frameType, builder: (column) => ColumnFilters(column));
 
   ColumnFilters<String> get attribute => $composableBuilder(
       column: $table.attribute, builder: (column) => ColumnFilters(column));
@@ -1364,6 +1408,9 @@ class $$CardsTableOrderingComposer
   ColumnOrderings<String> get race => $composableBuilder(
       column: $table.race, builder: (column) => ColumnOrderings(column));
 
+  ColumnOrderings<String> get frameType => $composableBuilder(
+      column: $table.frameType, builder: (column) => ColumnOrderings(column));
+
   ColumnOrderings<String> get attribute => $composableBuilder(
       column: $table.attribute, builder: (column) => ColumnOrderings(column));
 
@@ -1407,6 +1454,9 @@ class $$CardsTableAnnotationComposer
 
   GeneratedColumn<String> get race =>
       $composableBuilder(column: $table.race, builder: (column) => column);
+
+  GeneratedColumn<String> get frameType =>
+      $composableBuilder(column: $table.frameType, builder: (column) => column);
 
   GeneratedColumn<String> get attribute =>
       $composableBuilder(column: $table.attribute, builder: (column) => column);
@@ -1476,6 +1526,7 @@ class $$CardsTableTableManager extends RootTableManager<
             Value<String> type = const Value.absent(),
             Value<String> description = const Value.absent(),
             Value<String> race = const Value.absent(),
+            Value<String?> frameType = const Value.absent(),
             Value<String?> attribute = const Value.absent(),
             Value<int?> level = const Value.absent(),
             Value<int?> atk = const Value.absent(),
@@ -1489,6 +1540,7 @@ class $$CardsTableTableManager extends RootTableManager<
             type: type,
             description: description,
             race: race,
+            frameType: frameType,
             attribute: attribute,
             level: level,
             atk: atk,
@@ -1502,6 +1554,7 @@ class $$CardsTableTableManager extends RootTableManager<
             required String type,
             required String description,
             required String race,
+            Value<String?> frameType = const Value.absent(),
             Value<String?> attribute = const Value.absent(),
             Value<int?> level = const Value.absent(),
             Value<int?> atk = const Value.absent(),
@@ -1515,6 +1568,7 @@ class $$CardsTableTableManager extends RootTableManager<
             type: type,
             description: description,
             race: race,
+            frameType: frameType,
             attribute: attribute,
             level: level,
             atk: atk,

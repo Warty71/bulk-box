@@ -19,6 +19,7 @@ mixin _$CardModel {
   String get type;
   String get desc;
   String get race;
+  String? get frameType;
   String? get attribute;
   int? get level;
   int? get atk;
@@ -48,6 +49,8 @@ mixin _$CardModel {
             (identical(other.type, type) || other.type == type) &&
             (identical(other.desc, desc) || other.desc == desc) &&
             (identical(other.race, race) || other.race == race) &&
+            (identical(other.frameType, frameType) ||
+                other.frameType == frameType) &&
             (identical(other.attribute, attribute) ||
                 other.attribute == attribute) &&
             (identical(other.level, level) || other.level == level) &&
@@ -67,6 +70,7 @@ mixin _$CardModel {
       type,
       desc,
       race,
+      frameType,
       attribute,
       level,
       atk,
@@ -76,7 +80,7 @@ mixin _$CardModel {
 
   @override
   String toString() {
-    return 'CardModel(id: $id, name: $name, type: $type, desc: $desc, race: $race, attribute: $attribute, level: $level, atk: $atk, def: $def, cardImages: $cardImages, cardSets: $cardSets)';
+    return 'CardModel(id: $id, name: $name, type: $type, desc: $desc, race: $race, frameType: $frameType, attribute: $attribute, level: $level, atk: $atk, def: $def, cardImages: $cardImages, cardSets: $cardSets)';
   }
 }
 
@@ -91,6 +95,7 @@ abstract mixin class $CardModelCopyWith<$Res> {
       String type,
       String desc,
       String race,
+      String? frameType,
       String? attribute,
       int? level,
       int? atk,
@@ -117,6 +122,7 @@ class _$CardModelCopyWithImpl<$Res> implements $CardModelCopyWith<$Res> {
     Object? type = null,
     Object? desc = null,
     Object? race = null,
+    Object? frameType = freezed,
     Object? attribute = freezed,
     Object? level = freezed,
     Object? atk = freezed,
@@ -145,6 +151,10 @@ class _$CardModelCopyWithImpl<$Res> implements $CardModelCopyWith<$Res> {
           ? _self.race
           : race // ignore: cast_nullable_to_non_nullable
               as String,
+      frameType: freezed == frameType
+          ? _self.frameType
+          : frameType // ignore: cast_nullable_to_non_nullable
+              as String?,
       attribute: freezed == attribute
           ? _self.attribute
           : attribute // ignore: cast_nullable_to_non_nullable
@@ -272,6 +282,7 @@ extension CardModelPatterns on CardModel {
             String type,
             String desc,
             String race,
+            String? frameType,
             String? attribute,
             int? level,
             int? atk,
@@ -291,6 +302,7 @@ extension CardModelPatterns on CardModel {
             _that.type,
             _that.desc,
             _that.race,
+            _that.frameType,
             _that.attribute,
             _that.level,
             _that.atk,
@@ -323,6 +335,7 @@ extension CardModelPatterns on CardModel {
             String type,
             String desc,
             String race,
+            String? frameType,
             String? attribute,
             int? level,
             int? atk,
@@ -341,6 +354,7 @@ extension CardModelPatterns on CardModel {
             _that.type,
             _that.desc,
             _that.race,
+            _that.frameType,
             _that.attribute,
             _that.level,
             _that.atk,
@@ -372,6 +386,7 @@ extension CardModelPatterns on CardModel {
             String type,
             String desc,
             String race,
+            String? frameType,
             String? attribute,
             int? level,
             int? atk,
@@ -390,6 +405,7 @@ extension CardModelPatterns on CardModel {
             _that.type,
             _that.desc,
             _that.race,
+            _that.frameType,
             _that.attribute,
             _that.level,
             _that.atk,
@@ -411,6 +427,7 @@ class _CardModel implements CardModel {
       required this.type,
       required this.desc,
       required this.race,
+      this.frameType,
       this.attribute,
       this.level,
       this.atk,
@@ -434,6 +451,8 @@ class _CardModel implements CardModel {
   final String desc;
   @override
   final String race;
+  @override
+  final String? frameType;
   @override
   final String? attribute;
   @override
@@ -485,6 +504,8 @@ class _CardModel implements CardModel {
             (identical(other.type, type) || other.type == type) &&
             (identical(other.desc, desc) || other.desc == desc) &&
             (identical(other.race, race) || other.race == race) &&
+            (identical(other.frameType, frameType) ||
+                other.frameType == frameType) &&
             (identical(other.attribute, attribute) ||
                 other.attribute == attribute) &&
             (identical(other.level, level) || other.level == level) &&
@@ -504,6 +525,7 @@ class _CardModel implements CardModel {
       type,
       desc,
       race,
+      frameType,
       attribute,
       level,
       atk,
@@ -513,7 +535,7 @@ class _CardModel implements CardModel {
 
   @override
   String toString() {
-    return 'CardModel(id: $id, name: $name, type: $type, desc: $desc, race: $race, attribute: $attribute, level: $level, atk: $atk, def: $def, cardImages: $cardImages, cardSets: $cardSets)';
+    return 'CardModel(id: $id, name: $name, type: $type, desc: $desc, race: $race, frameType: $frameType, attribute: $attribute, level: $level, atk: $atk, def: $def, cardImages: $cardImages, cardSets: $cardSets)';
   }
 }
 
@@ -531,6 +553,7 @@ abstract mixin class _$CardModelCopyWith<$Res>
       String type,
       String desc,
       String race,
+      String? frameType,
       String? attribute,
       int? level,
       int? atk,
@@ -557,6 +580,7 @@ class __$CardModelCopyWithImpl<$Res> implements _$CardModelCopyWith<$Res> {
     Object? type = null,
     Object? desc = null,
     Object? race = null,
+    Object? frameType = freezed,
     Object? attribute = freezed,
     Object? level = freezed,
     Object? atk = freezed,
@@ -585,6 +609,10 @@ class __$CardModelCopyWithImpl<$Res> implements _$CardModelCopyWith<$Res> {
           ? _self.race
           : race // ignore: cast_nullable_to_non_nullable
               as String,
+      frameType: freezed == frameType
+          ? _self.frameType
+          : frameType // ignore: cast_nullable_to_non_nullable
+              as String?,
       attribute: freezed == attribute
           ? _self.attribute
           : attribute // ignore: cast_nullable_to_non_nullable
