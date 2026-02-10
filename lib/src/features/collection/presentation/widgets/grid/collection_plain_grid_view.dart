@@ -24,6 +24,7 @@ class CollectionPlainGridView extends StatelessWidget {
       itemBuilder: (context, index) {
         final entry = collectionEntries[index];
         return CollectionGridItem(
+          key: ValueKey(entry.selectionKey),
           entry: entry,
           totalQuantity: entry.quantity,
           onTap: onEntryTap != null ? () => onEntryTap!(entry) : null,
