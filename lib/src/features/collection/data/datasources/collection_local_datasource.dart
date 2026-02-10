@@ -235,6 +235,19 @@ class CollectionLocalDatasource {
     });
   }
 
+  /// Delete multiple slots in a single transaction.
+  Future<void> batchDeleteSlots(
+    List<({int cardId, String setCode, String setRarity, int? boxId})> items,
+  ) async {
+    if (items.isEmpty) return;
+
+    await _db.transaction(() async {
+      for (final item in items) {
+        await deleteSlot(item.cardId, item.setCode, item.setRarity, item.boxId);
+      }
+    });
+  }
+
   CollectionItemEntity _mapToEntity(CollectionItem item) {
     return CollectionItemEntity(
       cardId: item.cardId,

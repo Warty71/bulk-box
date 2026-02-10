@@ -68,8 +68,8 @@ class CollectionView extends StatelessWidget {
   }
 }
 
-/// Strip below the app bar when in bulk move selection mode.
-/// [BulkMoveSelectionBar] manages its own reactivity via BlocSelector.
+/// Strip below the app bar when in bulk selection mode.
+/// [BulkActionSelectionBar] manages its own reactivity via BlocSelector.
 class _BulkMoveSelectionStrip extends StatelessWidget {
   const _BulkMoveSelectionStrip();
 
@@ -82,7 +82,7 @@ class _BulkMoveSelectionStrip extends StatelessWidget {
             (entries, boxId, boxName),
         orElse: () => (const [], null, null),
       ),
-      builder: (context, tuple) => BulkMoveSelectionBar(
+      builder: (context, tuple) => BulkActionSelectionBar(
         collectionEntries: tuple.$1,
         currentBoxId: tuple.$2,
         currentBoxName: tuple.$3 ?? 'Unboxed',
