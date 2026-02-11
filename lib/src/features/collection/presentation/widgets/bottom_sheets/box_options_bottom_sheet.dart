@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:bulk_box/src/core/constants/dimensions.dart';
-import 'package:bulk_box/src/core/widgets/app_dialogs.dart';
 import 'package:bulk_box/src/features/collection/domain/entities/box.dart';
+
+/// Action chosen by the user in the box options bottom sheet.
+enum BoxOptionAction { edit, delete }
 
 class BoxOptionsBottomSheet extends StatelessWidget {
   final Box box;
@@ -32,18 +34,12 @@ class BoxOptionsBottomSheet extends StatelessWidget {
             ListTile(
               leading: const Icon(Icons.edit_outlined),
               title: const Text('Edit name'),
-              onTap: () {
-                Navigator.pop(context);
-                AppDialogs.showEditBox(context, box: box);
-              },
+              onTap: () => Navigator.pop(context, BoxOptionAction.edit),
             ),
             ListTile(
               leading: Icon(Icons.delete_outline, color: theme.colorScheme.error),
               title: Text('Delete', style: TextStyle(color: theme.colorScheme.error)),
-              onTap: () {
-                Navigator.pop(context);
-                AppDialogs.showDeleteBoxConfirmation(context, box: box);
-              },
+              onTap: () => Navigator.pop(context, BoxOptionAction.delete),
             ),
           ],
         ),

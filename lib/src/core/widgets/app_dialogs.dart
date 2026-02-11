@@ -48,8 +48,9 @@ class AppDialogs {
     final name = nameController.text.trim();
     if (name.isEmpty) return;
 
+    final boxesCubit = context.read<BoxesCubit>();
     Navigator.of(dialogContext).pop();
-    context.read<BoxesCubit>().createBox(name: name);
+    boxesCubit.createBox(name: name);
   }
 
   /// Shows "Edit box" dialog; on Save, calls [BoxesCubit.updateBox] with the new name.
@@ -93,8 +94,9 @@ class AppDialogs {
     final name = nameController.text.trim();
     if (name.isEmpty) return;
 
+    final boxesCubit = context.read<BoxesCubit>();
     Navigator.of(dialogContext).pop();
-    context.read<BoxesCubit>().updateBox(boxId, name: name);
+    boxesCubit.updateBox(boxId, name: name);
   }
 
   /// Shows "Delete box?" confirmation; on confirm, calls [BoxesCubit.deleteBox].
@@ -103,6 +105,7 @@ class AppDialogs {
     BuildContext context, {
     required Box box,
   }) async {
+    final boxesCubit = context.read<BoxesCubit>();
     await showDialog<void>(
       context: context,
       builder: (dialogContext) => AlertDialog(
@@ -118,10 +121,10 @@ class AppDialogs {
           FilledButton(
             onPressed: () {
               Navigator.of(dialogContext).pop();
-              context.read<BoxesCubit>().deleteBox(box.id);
+              boxesCubit.deleteBox(box.id);
             },
             style: FilledButton.styleFrom(
-              backgroundColor: Theme.of(context).colorScheme.error,
+              backgroundColor: Theme.of(dialogContext).colorScheme.error,
             ),
             child: const Text('Delete'),
           ),

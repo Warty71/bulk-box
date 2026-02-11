@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:bulk_box/src/core/database/app_database.dart' as db;
 import 'package:bulk_box/src/core/settings/settings_cubit.dart';
+import 'package:bulk_box/src/core/widgets/app_dialogs.dart';
 import 'package:bulk_box/src/features/collection/domain/entities/collection_entry.dart';
 import 'package:bulk_box/src/features/collection/presentation/cubit/collection_cubit.dart';
 import 'package:bulk_box/src/features/collection/domain/entities/box.dart';
@@ -132,15 +133,26 @@ class AppBottomSheets {
   }
 
   /// Shows the box options sheet (Edit name, Delete).
+  /// After the sheet closes, the chosen action is executed using the
+  /// caller's [context] which still has [BoxesCubit] in the tree.
   static Future<void> showBoxOptions(
     BuildContext context, {
     required Box box,
-  }) {
-    return showModalBottomSheet<void>(
+  }) async {
+    final action = await showModalBottomSheet<BoxOptionAction>(
       context: context,
       isScrollControlled: _defaultOptions.isScrollControlled,
       useSafeArea: _defaultOptions.useSafeArea,
       builder: (_) => BoxOptionsBottomSheet(box: box),
     );
+
+    if (action == null || !context.mounted) return;
+
+    switch (action) {
+      case BoxOptionAction.edit:
+        AppDialogs.showEditBox(context, box: box);
+      case BoxOptionAction.delete:
+        AppDialogs.showDeleteBoxConfirmation(context, box: box);
+    }
   }
 }
