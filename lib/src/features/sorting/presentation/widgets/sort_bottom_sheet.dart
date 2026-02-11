@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:bulk_box/src/core/constants/dimensions.dart';
 import 'package:bulk_box/src/core/settings/settings_cubit.dart';
 import 'package:bulk_box/src/core/settings/settings_state.dart';
 import 'package:bulk_box/src/features/sorting/domain/entities/sort_options.dart';
@@ -8,40 +9,63 @@ import 'package:bulk_box/src/features/sorting/domain/entities/sort_options.dart'
 class SortBottomSheet extends StatelessWidget {
   const SortBottomSheet({super.key});
 
+  static final _sortedOptions = List<SortOption>.from(SortOption.values)
+    ..sort((a, b) => a.label.compareTo(b.label));
+
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<SettingsCubit, SettingsState>(
-      builder: (context, state) {
-        final selected = state.sortOption;
-        return Material(
-              clipBehavior: Clip.antiAlias,
-              borderRadius: const BorderRadius.vertical(
-                top: Radius.circular(16)
-              ),
+    return SafeArea(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(
+          vertical: Dimensions.lg,
+          horizontal: Dimensions.md,
+        ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
-          children: SortOption.values
-              .map(
-            (option) => RadioListTile<SortOption>(
-              title: Text(option.label),
-              value: option,
-              groupValue: selected,
-              onChanged:(value){
-                context
-                .read<SettingsCubit>()
-                .setSortOption(value!);
-                Navigator.pop(context);
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Text(
+              'Sort Options',
+              style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                    fontWeight: FontWeight.w600,
+                  ),
+            ),
+            const SizedBox(height: Dimensions.md),
+            BlocBuilder<SettingsCubit, SettingsState>(
+              builder: (context, state) {
+                final selected = state.sortOption;
+                return Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: _sortedOptions.map((option) {
+                    final isSelected = option == selected;
+                    return ListTile(
+                      title: Text(option.label),
+                      subtitle: Text(
+                        option.description,
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .onSurface
+                                  .withValues(alpha: 0.7),
+                            ),
+                      ),
+                      trailing: isSelected
+                          ? Icon(
+                              Icons.check,
+                              color: Theme.of(context).colorScheme.primary,
+                            )
+                          : null,
+                      onTap: () {
+                        context.read<SettingsCubit>().setSortOption(option);
+                      },
+                    );
+                  }).toList(),
+                );
               },
             ),
-          )
-          .toList(),
+          ],
         ),
-
-
-        
-
-        );
-      },
+      ),
     );
   }
 }

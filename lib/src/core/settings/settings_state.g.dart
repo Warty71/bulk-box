@@ -24,4 +24,5 @@ const _$SortOptionEnumMap = {
   SortOption.nameAZ: 'nameAZ',
   SortOption.cardType: 'cardType',
   SortOption.frameType: 'frameType',
+  SortOption.archetype: 'archetype',
 };

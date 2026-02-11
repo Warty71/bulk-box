@@ -24,6 +24,26 @@ void sortCollectionItems(
         if (frameComparison != 0) return frameComparison;
 
         return a.card.name.toLowerCase().compareTo(b.card.name.toLowerCase());
+
+      case SortOption.archetype:
+        final aArch = a.card.archetype ?? '';
+        final bArch = b.card.archetype ?? '';
+        // Nulls/empty last
+        if (aArch.isEmpty != bArch.isEmpty) {
+          return aArch.isEmpty ? 1 : -1;
+        }
+        if (aArch.isNotEmpty && bArch.isNotEmpty) {
+          final archComparison =
+              aArch.toLowerCase().compareTo(bArch.toLowerCase());
+          if (archComparison != 0) return archComparison;
+        }
+        // Secondary: frame type
+        final aFrame = (a.card.frameType ?? '').toLowerCase();
+        final bFrame = (b.card.frameType ?? '').toLowerCase();
+        final frameComparison = aFrame.compareTo(bFrame);
+        if (frameComparison != 0) return frameComparison;
+        // Tertiary: name
+        return a.card.name.toLowerCase().compareTo(b.card.name.toLowerCase());
     }
   });
 }

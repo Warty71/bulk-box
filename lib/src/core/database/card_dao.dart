@@ -34,4 +34,11 @@ class CardDao {
     return await (_db.select(_db.cards)..where((tbl) => tbl.name.like(pattern)))
         .get();
   }
+
+  Future<List<int>> getCardIdsWithoutArchetype() async {
+    final rows = await (_db.select(_db.cards)
+          ..where((tbl) => tbl.archetype.isNull()))
+        .get();
+    return rows.map((r) => r.id).toList();
+  }
 }
