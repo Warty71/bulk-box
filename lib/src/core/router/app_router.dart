@@ -7,6 +7,7 @@ import 'package:bulk_box/src/features/home/presentation/cubit/latest_sets_cubit.
 import 'package:bulk_box/src/features/home/presentation/screens/home_screen.dart';
 import 'package:bulk_box/src/features/collection/presentation/screens/collection_screen.dart';
 import 'package:bulk_box/src/features/search/presentation/screens/search_screen.dart';
+import 'package:bulk_box/src/features/settings/presentation/screens/settings_screen.dart';
 
 class AppRouter {
   static final GlobalKey<NavigatorState> rootNavigatorKey =
@@ -78,6 +79,14 @@ class AppRouter {
               GoRoute(
                 path: '/search',
                 builder: (context, state) => const SearchScreen(),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: '/settings',
+                builder: (context, state) => const SettingsScreen(),
               ),
             ],
           ),

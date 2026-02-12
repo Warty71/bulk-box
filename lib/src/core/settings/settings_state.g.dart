@@ -12,12 +12,14 @@ _SettingsState _$SettingsStateFromJson(Map<String, dynamic> json) =>
           $enumDecodeNullable(_$SortOptionEnumMap, json['sortOption']) ??
               SortOption.nameAZ,
       showDividers: json['showDividers'] as bool? ?? false,
+      boxExclusiveSorting: json['boxExclusiveSorting'] as bool? ?? false,
     );
 
 Map<String, dynamic> _$SettingsStateToJson(_SettingsState instance) =>
     <String, dynamic>{
       'sortOption': _$SortOptionEnumMap[instance.sortOption]!,
       'showDividers': instance.showDividers,
+      'boxExclusiveSorting': instance.boxExclusiveSorting,
     };
 
 const _$SortOptionEnumMap = {

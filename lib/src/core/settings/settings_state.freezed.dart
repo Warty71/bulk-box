@@ -16,6 +16,7 @@ T _$identity<T>(T value) => value;
 mixin _$SettingsState {
   SortOption get sortOption;
   bool get showDividers;
+  bool get boxExclusiveSorting;
 
   /// Create a copy of SettingsState
   /// with the given fields replaced by the non-null parameter values.
@@ -36,16 +37,19 @@ mixin _$SettingsState {
             (identical(other.sortOption, sortOption) ||
                 other.sortOption == sortOption) &&
             (identical(other.showDividers, showDividers) ||
-                other.showDividers == showDividers));
+                other.showDividers == showDividers) &&
+            (identical(other.boxExclusiveSorting, boxExclusiveSorting) ||
+                other.boxExclusiveSorting == boxExclusiveSorting));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(runtimeType, sortOption, showDividers);
+  int get hashCode =>
+      Object.hash(runtimeType, sortOption, showDividers, boxExclusiveSorting);
 
   @override
   String toString() {
-    return 'SettingsState(sortOption: $sortOption, showDividers: $showDividers)';
+    return 'SettingsState(sortOption: $sortOption, showDividers: $showDividers, boxExclusiveSorting: $boxExclusiveSorting)';
   }
 }
 
@@ -55,7 +59,8 @@ abstract mixin class $SettingsStateCopyWith<$Res> {
           SettingsState value, $Res Function(SettingsState) _then) =
       _$SettingsStateCopyWithImpl;
   @useResult
-  $Res call({SortOption sortOption, bool showDividers});
+  $Res call(
+      {SortOption sortOption, bool showDividers, bool boxExclusiveSorting});
 }
 
 /// @nodoc
@@ -73,6 +78,7 @@ class _$SettingsStateCopyWithImpl<$Res>
   $Res call({
     Object? sortOption = null,
     Object? showDividers = null,
+    Object? boxExclusiveSorting = null,
   }) {
     return _then(_self.copyWith(
       sortOption: null == sortOption
@@ -82,6 +88,10 @@ class _$SettingsStateCopyWithImpl<$Res>
       showDividers: null == showDividers
           ? _self.showDividers
           : showDividers // ignore: cast_nullable_to_non_nullable
+              as bool,
+      boxExclusiveSorting: null == boxExclusiveSorting
+          ? _self.boxExclusiveSorting
+          : boxExclusiveSorting // ignore: cast_nullable_to_non_nullable
               as bool,
     ));
   }
@@ -180,13 +190,16 @@ extension SettingsStatePatterns on SettingsState {
 
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>(
-    TResult Function(SortOption sortOption, bool showDividers)? $default, {
+    TResult Function(
+            SortOption sortOption, bool showDividers, bool boxExclusiveSorting)?
+        $default, {
     required TResult orElse(),
   }) {
     final _that = this;
     switch (_that) {
       case _SettingsState() when $default != null:
-        return $default(_that.sortOption, _that.showDividers);
+        return $default(
+            _that.sortOption, _that.showDividers, _that.boxExclusiveSorting);
       case _:
         return orElse();
     }
@@ -207,12 +220,15 @@ extension SettingsStatePatterns on SettingsState {
 
   @optionalTypeArgs
   TResult when<TResult extends Object?>(
-    TResult Function(SortOption sortOption, bool showDividers) $default,
+    TResult Function(
+            SortOption sortOption, bool showDividers, bool boxExclusiveSorting)
+        $default,
   ) {
     final _that = this;
     switch (_that) {
       case _SettingsState():
-        return $default(_that.sortOption, _that.showDividers);
+        return $default(
+            _that.sortOption, _that.showDividers, _that.boxExclusiveSorting);
       case _:
         throw StateError('Unexpected subclass');
     }
@@ -232,12 +248,15 @@ extension SettingsStatePatterns on SettingsState {
 
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>(
-    TResult? Function(SortOption sortOption, bool showDividers)? $default,
+    TResult? Function(
+            SortOption sortOption, bool showDividers, bool boxExclusiveSorting)?
+        $default,
   ) {
     final _that = this;
     switch (_that) {
       case _SettingsState() when $default != null:
-        return $default(_that.sortOption, _that.showDividers);
+        return $default(
+            _that.sortOption, _that.showDividers, _that.boxExclusiveSorting);
       case _:
         return null;
     }
@@ -248,7 +267,9 @@ extension SettingsStatePatterns on SettingsState {
 @JsonSerializable()
 class _SettingsState implements SettingsState {
   const _SettingsState(
-      {this.sortOption = SortOption.nameAZ, this.showDividers = false});
+      {this.sortOption = SortOption.nameAZ,
+      this.showDividers = false,
+      this.boxExclusiveSorting = false});
   factory _SettingsState.fromJson(Map<String, dynamic> json) =>
       _$SettingsStateFromJson(json);
 
@@ -258,6 +279,9 @@ class _SettingsState implements SettingsState {
   @override
   @JsonKey()
   final bool showDividers;
+  @override
+  @JsonKey()
+  final bool boxExclusiveSorting;
 
   /// Create a copy of SettingsState
   /// with the given fields replaced by the non-null parameter values.
@@ -282,16 +306,19 @@ class _SettingsState implements SettingsState {
             (identical(other.sortOption, sortOption) ||
                 other.sortOption == sortOption) &&
             (identical(other.showDividers, showDividers) ||
-                other.showDividers == showDividers));
+                other.showDividers == showDividers) &&
+            (identical(other.boxExclusiveSorting, boxExclusiveSorting) ||
+                other.boxExclusiveSorting == boxExclusiveSorting));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(runtimeType, sortOption, showDividers);
+  int get hashCode =>
+      Object.hash(runtimeType, sortOption, showDividers, boxExclusiveSorting);
 
   @override
   String toString() {
-    return 'SettingsState(sortOption: $sortOption, showDividers: $showDividers)';
+    return 'SettingsState(sortOption: $sortOption, showDividers: $showDividers, boxExclusiveSorting: $boxExclusiveSorting)';
   }
 }
 
@@ -303,7 +330,8 @@ abstract mixin class _$SettingsStateCopyWith<$Res>
       __$SettingsStateCopyWithImpl;
   @override
   @useResult
-  $Res call({SortOption sortOption, bool showDividers});
+  $Res call(
+      {SortOption sortOption, bool showDividers, bool boxExclusiveSorting});
 }
 
 /// @nodoc
@@ -321,6 +349,7 @@ class __$SettingsStateCopyWithImpl<$Res>
   $Res call({
     Object? sortOption = null,
     Object? showDividers = null,
+    Object? boxExclusiveSorting = null,
   }) {
     return _then(_SettingsState(
       sortOption: null == sortOption
@@ -330,6 +359,10 @@ class __$SettingsStateCopyWithImpl<$Res>
       showDividers: null == showDividers
           ? _self.showDividers
           : showDividers // ignore: cast_nullable_to_non_nullable
+              as bool,
+      boxExclusiveSorting: null == boxExclusiveSorting
+          ? _self.boxExclusiveSorting
+          : boxExclusiveSorting // ignore: cast_nullable_to_non_nullable
               as bool,
     ));
   }
