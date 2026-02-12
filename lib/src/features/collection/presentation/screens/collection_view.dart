@@ -40,8 +40,16 @@ class CollectionView extends StatelessWidget {
               ),
               builder: (context, title) => Text(title),
             ),
-            actions: const [
-              SortButton(),
+            actions: [
+              BlocSelector<CollectionCubit, CollectionState, String?>(
+                selector: (state) => state.maybeWhen(
+                  loaded: (_, __, ___, boxId, boxName) =>
+                      boxId?.toString() ??
+                      (boxName == 'Unboxed' ? 'unboxed' : null),
+                  orElse: () => null,
+                ),
+                builder: (context, boxKey) => SortButton(boxKey: boxKey),
+              ),
             ],
           ),
           body: Column(
@@ -155,26 +163,32 @@ class _GridSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocSelector<CollectionCubit, CollectionState,
-        List<CollectionEntry>>(
+        (List<CollectionEntry>, String?)>(
       selector: (state) => state.maybeWhen(
-        loaded: (entries, __, ___, ____, _____) => entries,
-        orElse: () => const [],
+        loaded: (entries, __, ___, boxId, boxName) => (
+          entries,
+          boxId?.toString() ?? (boxName == 'Unboxed' ? 'unboxed' : null),
+        ),
+        orElse: () => (const [], null),
       ),
-      builder: (context, collectionEntries) {
+      builder: (context, tuple) {
+        final (collectionEntries, boxKey) = tuple;
         if (collectionEntries.isEmpty) {
           return const Center(child: Text('No items in collection'));
         }
 
         return BlocBuilder<SettingsCubit, SettingsState>(
           builder: (context, settings) {
+            final settingsCubit = context.read<SettingsCubit>();
+            final sortOption = settingsCubit.effectiveSortOption(boxKey);
             final sortedItems =
                 List<CollectionEntry>.from(collectionEntries);
-            sortCollectionItems(sortedItems, settings.sortOption);
+            sortCollectionItems(sortedItems, sortOption);
 
             return CollectionGridView(
               collectionEntries: sortedItems,
               showDividersBetweenSections: settings.showDividers,
-              sortOption: settings.sortOption,
+              sortOption: sortOption,
               onEntryTap: (entry) {
                 final bulkMoveCubit = context.read<BulkMoveCubit>();
                 if (bulkMoveCubit.state.isSelectionMode) {

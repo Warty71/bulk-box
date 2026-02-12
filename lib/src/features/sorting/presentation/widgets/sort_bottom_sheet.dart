@@ -7,7 +7,9 @@ import 'package:bulk_box/src/features/sorting/domain/entities/sort_options.dart'
 
 /// Bottom sheet to pick collection sort option.
 class SortBottomSheet extends StatelessWidget {
-  const SortBottomSheet({super.key});
+  const SortBottomSheet({super.key, this.boxKey});
+
+  final String? boxKey;
 
   static final _sortedOptions = List<SortOption>.from(SortOption.values)
     ..sort((a, b) => a.label.compareTo(b.label));
@@ -33,7 +35,8 @@ class SortBottomSheet extends StatelessWidget {
             const SizedBox(height: Dimensions.xs),
             BlocBuilder<SettingsCubit, SettingsState>(
               builder: (context, state) {
-                final selected = state.sortOption;
+                final settingsCubit = context.read<SettingsCubit>();
+                final selected = settingsCubit.effectiveSortOption(boxKey);
                 final isBoxExclusive = state.boxExclusiveSorting;
                 return Column(
                   mainAxisSize: MainAxisSize.min,
@@ -41,8 +44,8 @@ class SortBottomSheet extends StatelessWidget {
                   children: [
                     Text(
                       isBoxExclusive
-                          ? 'Sorting applies to this box only'
-                          : 'Sorting applies to all boxes',
+                          ? 'Sort Options are Box-Exclusive.'
+                          : 'Sort Options are Universal.',
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
                             color: Theme.of(context)
                                 .colorScheme
@@ -74,7 +77,11 @@ class SortBottomSheet extends StatelessWidget {
                               )
                             : null,
                         onTap: () {
-                          context.read<SettingsCubit>().setSortOption(option);
+                          if (isBoxExclusive && boxKey != null) {
+                            settingsCubit.setBoxSortOption(boxKey!, option);
+                          } else {
+                            settingsCubit.setSortOption(option);
+                          }
                         },
                       );
                     }),

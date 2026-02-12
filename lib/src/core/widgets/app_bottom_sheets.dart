@@ -121,13 +121,13 @@ class AppBottomSheets {
   }
 
   /// Shows the sort options sheet (Name A–Z, Card Type, etc.).
-  static Future<void> showSort(BuildContext context) {
+  static Future<void> showSort(BuildContext context, {String? boxKey}) {
     final settingsCubit = context.read<SettingsCubit>();
     return showModalBottomSheet<void>(
       context: context,
       builder: (_) => BlocProvider.value(
         value: settingsCubit,
-        child: const SortBottomSheet(),
+        child: SortBottomSheet(boxKey: boxKey),
       ),
     );
   }
