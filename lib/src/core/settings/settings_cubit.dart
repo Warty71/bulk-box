@@ -15,6 +15,11 @@ class SettingsCubit extends HydratedCubit<SettingsState> {
     emit(state.copyWith(showDividers: value));
   }
 
+  void setBoxExclusiveSorting(bool value) {
+    if (state.boxExclusiveSorting == value) return;
+    emit(state.copyWith(boxExclusiveSorting: value));
+  }
+
   @override
   SettingsState fromJson(Map<String, dynamic> json) =>
       SettingsState.fromJson(json);

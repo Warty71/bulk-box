@@ -9,6 +9,7 @@ abstract class SettingsState with _$SettingsState {
   const factory SettingsState({
     @Default(SortOption.nameAZ) SortOption sortOption,
     @Default(false) bool showDividers,
+    @Default(false) bool boxExclusiveSorting,
   }) = _SettingsState;
 
   factory SettingsState.fromJson(Map<String, dynamic> json) =>

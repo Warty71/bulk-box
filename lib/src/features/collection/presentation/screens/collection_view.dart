@@ -11,7 +11,6 @@ import 'package:bulk_box/src/features/collection/presentation/cubit/collection_c
 import 'package:bulk_box/src/features/collection/presentation/cubit/collection_state.dart';
 import 'package:bulk_box/src/features/collection/presentation/widgets/grid/collection_grid_view.dart';
 import 'package:bulk_box/src/features/collection/presentation/widgets/toolbar/bulk_move_selection_bar.dart';
-import 'package:bulk_box/src/features/collection/presentation/widgets/toolbar/collection_options_button.dart';
 import 'package:bulk_box/src/features/collection/presentation/widgets/toolbar/collection_search_bar.dart';
 import 'package:bulk_box/src/features/collection/presentation/widgets/toolbar/collection_search_button.dart';
 import 'package:bulk_box/src/features/sorting/domain/comparators/ygo_card_sorters.dart';
@@ -43,7 +42,6 @@ class CollectionView extends StatelessWidget {
             ),
             actions: const [
               SortButton(),
-              CollectionOptionsButton(),
             ],
           ),
           body: Column(
