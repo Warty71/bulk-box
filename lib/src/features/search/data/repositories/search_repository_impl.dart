@@ -30,6 +30,11 @@ class SearchRepositoryImpl implements SearchRepository {
   );
 
   @override
+  Future<List<Card>> searchCardsLocal(String query) async {
+    return await _cardDao.searchCardsByName(query);
+  }
+
+  @override
   Future<List<Card>> searchCards(String query) async {
     try {
       if (query.isEmpty) {

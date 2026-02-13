@@ -9,6 +9,7 @@ import 'package:bulk_box/src/features/ygo_cards/data/datasources/remote/ygopro_a
 import 'package:bulk_box/src/features/search/data/repositories/search_repository_impl.dart';
 import 'package:bulk_box/src/features/search/domain/repositories/search_repository.dart';
 import 'package:bulk_box/src/features/search/presentation/cubit/search_cubit.dart';
+import 'package:bulk_box/src/features/search/presentation/cubit/quick_add_cubit.dart';
 import 'package:bulk_box/src/features/collection/data/datasources/collection_local_datasource.dart';
 import 'package:bulk_box/src/features/collection/data/repositories/box_repository_impl.dart';
 import 'package:bulk_box/src/features/collection/data/repositories/collection_repository_impl.dart';
@@ -102,9 +103,13 @@ void _initializeSearchFeature() {
     ),
   );
 
-  // Cubit
+  // Cubits
   getIt.registerFactory(
     () => SearchCubit(getIt()),
+  );
+
+  getIt.registerFactory(
+    () => QuickAddCubit(getIt()),
   );
 }
 
@@ -128,7 +133,9 @@ void _initializeCollectionFeature() {
     () => BoxesCubit(getIt<BoxRepository>()),
   );
 
-  getIt.registerFactory(
+  // CollectionCubit singleton so collection changes propagate across screens
+  // (e.g., search screen can react to collection updates)
+  getIt.registerLazySingleton(
     () => CollectionCubit(getIt()),
   );
 
