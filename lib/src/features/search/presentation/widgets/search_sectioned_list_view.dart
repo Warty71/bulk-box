@@ -6,15 +6,12 @@ import 'package:bulk_box/src/features/search/presentation/cubit/quick_add_cubit.
 import 'package:bulk_box/src/features/search/presentation/cubit/quick_add_state.dart';
 import 'package:bulk_box/src/features/search/presentation/widgets/search_list_item.dart';
 import 'package:bulk_box/src/features/search/presentation/widgets/search_section_header.dart';
-
-/// Max items shown per section before requiring "See More".
-const _initialLimit = 5;
-/// Number of additional items shown when "See More" is tapped.
-const _expandIncrement = 5;
+import 'package:bulk_box/src/features/search/presentation/widgets/search_see_more_button.dart';
+import 'package:bulk_box/src/features/search/presentation/widgets/search_widgets_constants.dart';
 
 /// Sectioned list view for search results, grouped by card name.
 /// Each section has a header with card image + title, followed by compact list tiles.
-/// Sections with more than [_initialLimit] items are paginated with "See More" buttons.
+/// Sections with more than [searchSectionInitialLimit] items are paginated with "See More" buttons.
 class SearchSectionedListView extends StatefulWidget {
   final Map<String, List<SearchResultEntry>> grouped;
 
@@ -76,7 +73,7 @@ class _SearchSectionedListViewState extends State<SearchSectionedListView> {
     final entries = widget.grouped[cardName]!;
     final totalCount = entries.length;
     // Clamp visibleCount to actual entries length to prevent RangeError
-    final requestedCount = _visibleCounts[cardName] ?? _initialLimit;
+    final requestedCount = _visibleCounts[cardName] ?? searchSectionInitialLimit;
     final visibleCount = requestedCount.clamp(0, totalCount);
     final hasMore = visibleCount < totalCount;
 
@@ -94,70 +91,16 @@ class _SearchSectionedListViewState extends State<SearchSectionedListView> {
       // "See More" button if there are more items
       if (hasMore)
         SliverToBoxAdapter(
-          child: _SeeMoreButton(
+          child: SearchSeeMoreButton(
             remainingCount: totalCount - visibleCount,
             onTap: () {
               setState(() {
                 _visibleCounts[cardName] =
-                    (visibleCount + _expandIncrement).clamp(0, totalCount);
+                    (visibleCount + searchSectionExpandIncrement).clamp(0, totalCount);
               });
             },
           ),
         ),
     ];
-  }
-}
-
-/// "See More" button that expands a section to show more items.
-class _SeeMoreButton extends StatelessWidget {
-  final int remainingCount;
-  final VoidCallback onTap;
-
-  const _SeeMoreButton({
-    required this.remainingCount,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final showCount = remainingCount > _expandIncrement
-        ? _expandIncrement
-        : remainingCount;
-
-    return Padding(
-      padding: const EdgeInsets.symmetric(
-        horizontal: Dimensions.md,
-        vertical: Dimensions.sm,
-      ),
-      child: TextButton(
-        onPressed: onTap,
-        style: TextButton.styleFrom(
-          padding: const EdgeInsets.symmetric(
-            horizontal: Dimensions.md,
-            vertical: Dimensions.sm,
-          ),
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(
-              'See $showCount more',
-              style: theme.textTheme.bodyMedium?.copyWith(
-                color: theme.colorScheme.primary,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-            const SizedBox(width: Dimensions.xs),
-            Icon(
-              Icons.keyboard_arrow_down,
-              size: 20,
-              color: theme.colorScheme.primary,
-            ),
-          ],
-        ),
-      ),
-    );
   }
 }
