@@ -33,8 +33,8 @@ class CollectionScreen extends StatelessWidget {
 
     return MultiBlocProvider(
       providers: [
-        BlocProvider(
-          create: (context) => di.getIt<CollectionCubit>()
+        BlocProvider.value(
+          value: di.getIt<CollectionCubit>()
             ..loadCollectionItems(
               boxId: boxId,
               unboxedOnly: filterUnboxed,

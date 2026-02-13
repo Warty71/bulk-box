@@ -156,7 +156,9 @@ extension SearchStatePatterns on SearchState {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? initial,
     TResult Function()? loading,
-    TResult Function(List<Card> cards, String lastQuery)? loaded,
+    TResult Function(List<SearchResultEntry> entries,
+            Map<String, List<SearchResultEntry>> grouped, String lastQuery)?
+        loaded,
     TResult Function(String message)? error,
     required TResult orElse(),
   }) {
@@ -167,7 +169,7 @@ extension SearchStatePatterns on SearchState {
       case _Loading() when loading != null:
         return loading();
       case _Loaded() when loaded != null:
-        return loaded(_that.cards, _that.lastQuery);
+        return loaded(_that.entries, _that.grouped, _that.lastQuery);
       case _Error() when error != null:
         return error(_that.message);
       case _:
@@ -192,7 +194,9 @@ extension SearchStatePatterns on SearchState {
   TResult when<TResult extends Object?>({
     required TResult Function() initial,
     required TResult Function() loading,
-    required TResult Function(List<Card> cards, String lastQuery) loaded,
+    required TResult Function(List<SearchResultEntry> entries,
+            Map<String, List<SearchResultEntry>> grouped, String lastQuery)
+        loaded,
     required TResult Function(String message) error,
   }) {
     final _that = this;
@@ -202,7 +206,7 @@ extension SearchStatePatterns on SearchState {
       case _Loading():
         return loading();
       case _Loaded():
-        return loaded(_that.cards, _that.lastQuery);
+        return loaded(_that.entries, _that.grouped, _that.lastQuery);
       case _Error():
         return error(_that.message);
       case _:
@@ -226,7 +230,9 @@ extension SearchStatePatterns on SearchState {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? initial,
     TResult? Function()? loading,
-    TResult? Function(List<Card> cards, String lastQuery)? loaded,
+    TResult? Function(List<SearchResultEntry> entries,
+            Map<String, List<SearchResultEntry>> grouped, String lastQuery)?
+        loaded,
     TResult? Function(String message)? error,
   }) {
     final _that = this;
@@ -236,7 +242,7 @@ extension SearchStatePatterns on SearchState {
       case _Loading() when loading != null:
         return loading();
       case _Loaded() when loaded != null:
-        return loaded(_that.cards, _that.lastQuery);
+        return loaded(_that.entries, _that.grouped, _that.lastQuery);
       case _Error() when error != null:
         return error(_that.message);
       case _:
@@ -288,14 +294,25 @@ class _Loading implements SearchState {
 /// @nodoc
 
 class _Loaded implements SearchState {
-  const _Loaded({required final List<Card> cards, required this.lastQuery})
-      : _cards = cards;
+  const _Loaded(
+      {required final List<SearchResultEntry> entries,
+      required final Map<String, List<SearchResultEntry>> grouped,
+      required this.lastQuery})
+      : _entries = entries,
+        _grouped = grouped;
 
-  final List<Card> _cards;
-  List<Card> get cards {
-    if (_cards is EqualUnmodifiableListView) return _cards;
+  final List<SearchResultEntry> _entries;
+  List<SearchResultEntry> get entries {
+    if (_entries is EqualUnmodifiableListView) return _entries;
     // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(_cards);
+    return EqualUnmodifiableListView(_entries);
+  }
+
+  final Map<String, List<SearchResultEntry>> _grouped;
+  Map<String, List<SearchResultEntry>> get grouped {
+    if (_grouped is EqualUnmodifiableMapView) return _grouped;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableMapView(_grouped);
   }
 
   final String lastQuery;
@@ -312,18 +329,22 @@ class _Loaded implements SearchState {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _Loaded &&
-            const DeepCollectionEquality().equals(other._cards, _cards) &&
+            const DeepCollectionEquality().equals(other._entries, _entries) &&
+            const DeepCollectionEquality().equals(other._grouped, _grouped) &&
             (identical(other.lastQuery, lastQuery) ||
                 other.lastQuery == lastQuery));
   }
 
   @override
   int get hashCode => Object.hash(
-      runtimeType, const DeepCollectionEquality().hash(_cards), lastQuery);
+      runtimeType,
+      const DeepCollectionEquality().hash(_entries),
+      const DeepCollectionEquality().hash(_grouped),
+      lastQuery);
 
   @override
   String toString() {
-    return 'SearchState.loaded(cards: $cards, lastQuery: $lastQuery)';
+    return 'SearchState.loaded(entries: $entries, grouped: $grouped, lastQuery: $lastQuery)';
   }
 }
 
@@ -333,7 +354,10 @@ abstract mixin class _$LoadedCopyWith<$Res>
   factory _$LoadedCopyWith(_Loaded value, $Res Function(_Loaded) _then) =
       __$LoadedCopyWithImpl;
   @useResult
-  $Res call({List<Card> cards, String lastQuery});
+  $Res call(
+      {List<SearchResultEntry> entries,
+      Map<String, List<SearchResultEntry>> grouped,
+      String lastQuery});
 }
 
 /// @nodoc
@@ -347,14 +371,19 @@ class __$LoadedCopyWithImpl<$Res> implements _$LoadedCopyWith<$Res> {
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   $Res call({
-    Object? cards = null,
+    Object? entries = null,
+    Object? grouped = null,
     Object? lastQuery = null,
   }) {
     return _then(_Loaded(
-      cards: null == cards
-          ? _self._cards
-          : cards // ignore: cast_nullable_to_non_nullable
-              as List<Card>,
+      entries: null == entries
+          ? _self._entries
+          : entries // ignore: cast_nullable_to_non_nullable
+              as List<SearchResultEntry>,
+      grouped: null == grouped
+          ? _self._grouped
+          : grouped // ignore: cast_nullable_to_non_nullable
+              as Map<String, List<SearchResultEntry>>,
       lastQuery: null == lastQuery
           ? _self.lastQuery
           : lastQuery // ignore: cast_nullable_to_non_nullable
