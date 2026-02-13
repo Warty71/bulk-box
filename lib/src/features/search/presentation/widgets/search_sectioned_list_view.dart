@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:bulk_box/src/core/constants/dimensions.dart';
 import 'package:bulk_box/src/features/search/domain/entities/search_result_entry.dart';
+import 'package:bulk_box/src/features/search/presentation/cubit/quick_add_cubit.dart';
+import 'package:bulk_box/src/features/search/presentation/cubit/quick_add_state.dart';
 import 'package:bulk_box/src/features/search/presentation/widgets/search_list_item.dart';
 import 'package:bulk_box/src/features/search/presentation/widgets/search_section_header.dart';
 
@@ -38,22 +41,34 @@ class _SearchSectionedListViewState extends State<SearchSectionedListView> {
   Widget build(BuildContext context) {
     final cardNames = widget.grouped.keys.toList();
 
-    return CustomScrollView(
-      slivers: [
-        for (final name in cardNames) ...[
-          // Section header with image + title
-          SearchSectionHeader(
-            card: widget.grouped[name]!.first.card,
-            title: name,
-          ),
-          // List of set/rarity entries (possibly paginated)
-          ..._buildSectionItems(name),
-          // Spacing between sections
-          const SliverToBoxAdapter(
-            child: SizedBox(height: Dimensions.lg),
-          ),
-        ],
-      ],
+    return BlocBuilder<QuickAddCubit, QuickAddState>(
+      builder: (context, quickAddState) {
+        // Add bottom padding when quick add bar is visible to prevent content from being hidden
+        final bottomPadding = quickAddState.barVisible ? 80.0 : 0.0;
+
+        return CustomScrollView(
+          slivers: [
+            for (final name in cardNames) ...[
+              // Section header with image + title
+              SearchSectionHeader(
+                card: widget.grouped[name]!.first.card,
+                title: name,
+              ),
+              // List of set/rarity entries (possibly paginated)
+              ..._buildSectionItems(name),
+              // Spacing between sections
+              const SliverToBoxAdapter(
+                child: SizedBox(height: Dimensions.lg),
+              ),
+            ],
+            // Bottom padding to account for QuickAddBar
+            if (bottomPadding > 0)
+              SliverPadding(
+                padding: EdgeInsets.only(bottom: bottomPadding),
+              ),
+          ],
+        );
+      },
     );
   }
 
