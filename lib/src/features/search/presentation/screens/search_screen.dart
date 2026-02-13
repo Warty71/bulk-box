@@ -1,12 +1,16 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
 import 'package:bulk_box/src/core/constants/dimensions.dart';
 import 'package:bulk_box/src/core/widgets/debouncer.dart';
+import 'package:bulk_box/src/core/widgets/app_search_bar.dart';
 import 'package:bulk_box/src/core/database/app_database.dart' as db;
+import 'package:bulk_box/src/core/di/injection_container.dart' as di;
+
 import 'package:bulk_box/src/features/search/presentation/cubit/search_cubit.dart';
 import 'package:bulk_box/src/features/search/presentation/cubit/search_state.dart';
-import 'dart:io';
-import 'package:bulk_box/src/core/di/injection_container.dart' as di;
 import 'package:bulk_box/src/features/ygo_cards/presentation/screens/card_details_screen.dart';
 
 class SearchScreen extends StatelessWidget {
@@ -44,38 +48,31 @@ class _SearchViewState extends State<SearchView> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Search Cards', style: theme.textTheme.titleLarge),
+        title: Text(
+          'Search Cards',
+          style: theme.textTheme.titleLarge,
+        ),
       ),
       body: Column(
         children: [
+          /// 🔍 SEARCH BAR (standardized)
           Padding(
             padding: const EdgeInsets.all(Dimensions.md),
-            child: TextField(
+            child: AppSearchBar(
               controller: _searchController,
-              decoration: InputDecoration(
-                hintText: 'Search by card name...',
-                prefixIcon: const Icon(Icons.search),
-                suffixIcon: IconButton(
-                  icon: const Icon(Icons.clear),
-                  onPressed: () {
-                    _searchController.clear();
-                    context.read<SearchCubit>().searchCards('');
-                  },
-                ),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(Dimensions.radiusMd),
-                ),
-                filled: true,
-                fillColor: theme.colorScheme.surfaceContainerHighest
-                    .withValues(alpha: 0.3),
-              ),
+              hintText: 'Search by card name...',
               onChanged: (query) {
                 _debounce.run(() {
                   context.read<SearchCubit>().searchCards(query);
                 });
               },
+              onClear: () {
+                context.read<SearchCubit>().searchCards('');
+              },
             ),
           ),
+
+          /// 📦 RESULTS
           Expanded(
             child: BlocBuilder<SearchCubit, SearchState>(
               builder: (context, state) {
@@ -103,9 +100,7 @@ class _SearchViewState extends State<SearchView> {
                                 style: Theme.of(context)
                                     .textTheme
                                     .bodyLarge
-                                    ?.copyWith(
-                                      color: Colors.grey,
-                                    ),
+                                    ?.copyWith(color: Colors.grey),
                               ),
                             ],
                           ),
@@ -185,35 +180,28 @@ class _SearchCardItem extends StatelessWidget {
                     );
                   }
 
-                  if (snapshot.hasError) {
+                  if (snapshot.hasError || !snapshot.hasData) {
                     return Image.asset(
                       'assets/images/ygo_placeholder.jpg',
                       fit: BoxFit.cover,
                     );
                   }
 
-                  if (snapshot.hasData) {
-                    return Image.file(
-                      File(snapshot.data!),
-                      fit: BoxFit.cover,
-                      errorBuilder: (context, error, stackTrace) {
-                        return Image.asset(
-                          'assets/images/ygo_placeholder.jpg',
-                          fit: BoxFit.cover,
-                        );
-                      },
-                    );
-                  }
-
-                  return Image.asset(
-                    'assets/images/ygo_placeholder.jpg',
+                  return Image.file(
+                    File(snapshot.data!),
                     fit: BoxFit.cover,
+                    errorBuilder: (_, __, ___) {
+                      return Image.asset(
+                        'assets/images/ygo_placeholder.jpg',
+                        fit: BoxFit.cover,
+                      );
+                    },
                   );
                 },
               ),
             ),
             Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: const EdgeInsets.all(8),
               child: Text(
                 card.name,
                 style: Theme.of(context).textTheme.titleSmall,
