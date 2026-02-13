@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
 import 'package:bulk_box/src/core/constants/dimensions.dart';
+import 'package:bulk_box/src/core/widgets/app_search_bar.dart';
 import 'package:bulk_box/src/core/widgets/debouncer.dart';
 import 'package:bulk_box/src/core/di/injection_container.dart' as di;
 import 'package:bulk_box/src/features/collection/presentation/cubit/boxes_cubit.dart';
@@ -68,41 +70,31 @@ class _SearchViewState extends State<SearchView> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Search Cards', style: theme.textTheme.titleLarge),
+        title: Text(
+          'Search Cards',
+          style: theme.textTheme.titleLarge,
+        ),
       ),
       body: Column(
         children: [
-          // Search field
+          // Search bar (standardized)
           Padding(
             padding: const EdgeInsets.all(Dimensions.md),
-            child: TextField(
+            child: AppSearchBar(
               controller: _searchController,
-              decoration: InputDecoration(
-                hintText: 'Search by card name...',
-                prefixIcon: const Icon(Icons.search),
-                suffixIcon: IconButton(
-                  icon: const Icon(Icons.clear),
-                  onPressed: () {
-                    _searchController.clear();
-                    context.read<SearchCubit>().searchCards('');
-                  },
-                ),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(Dimensions.radiusMd),
-                ),
-                filled: true,
-                fillColor: theme.colorScheme.surfaceContainerHighest
-                    .withValues(alpha: 0.3),
-              ),
+              hintText: 'Search by card name...',
               onChanged: (query) {
                 _debounce.run(() {
                   context.read<SearchCubit>().searchCards(query);
                 });
               },
+              onClear: () {
+                context.read<SearchCubit>().searchCards('');
+              },
             ),
           ),
 
-          // Results body
+          // Results
           Expanded(
             child: BlocBuilder<SearchCubit, SearchState>(
               builder: (context, state) {
