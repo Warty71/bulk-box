@@ -68,102 +68,107 @@ class _SearchViewState extends State<SearchView> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          'Search Cards',
-          style: theme.textTheme.titleLarge,
-        ),
-      ),
-      body: Column(
-        children: [
-          // Search bar (standardized)
-          Padding(
-            padding: const EdgeInsets.all(Dimensions.md),
-            child: AppSearchBar(
-              controller: _searchController,
-              hintText: 'Search by card name...',
-              onChanged: (query) {
-                _debounce.run(() {
-                  context.read<SearchCubit>().searchCards(query);
-                });
-              },
-              onClear: () {
-                context.read<SearchCubit>().searchCards('');
-              },
-            ),
+    return GestureDetector(
+      onTap: () => FocusScope.of(context).unfocus(),
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text(
+            'Search Cards',
+            style: theme.textTheme.titleLarge,
           ),
+        ),
+        body: Column(
+          children: [
+            // Search bar
+            Padding(
+              padding: const EdgeInsets.fromLTRB(
+                Dimensions.md, Dimensions.sm, Dimensions.md, Dimensions.sm,
+              ),
+              child: AppSearchBar(
+                controller: _searchController,
+                hintText: 'Search by card name...',
+                onChanged: (query) {
+                  _debounce.run(() {
+                    context.read<SearchCubit>().searchCards(query);
+                  });
+                },
+                onClear: () {
+                  context.read<SearchCubit>().searchCards('');
+                },
+              ),
+            ),
 
-          // Results
-          Expanded(
-            child: BlocBuilder<SearchCubit, SearchState>(
-              builder: (context, state) {
-                return state.when(
-                  initial: () => const Center(
-                    child: Text('Search for Yu-Gi-Oh! cards'),
-                  ),
-                  loading: () => const Center(
-                    child: CircularProgressIndicator(),
-                  ),
-                  loaded: (entries, grouped, lastQuery) {
-                    if (entries.isEmpty) {
-                      return Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            const Icon(
-                              Icons.search_off,
-                              size: 48,
-                              color: Colors.grey,
-                            ),
-                            const SizedBox(height: Dimensions.md),
-                            Text(
-                              'No cards found matching "${_searchController.text}"',
-                              textAlign: TextAlign.center,
-                              style: theme.textTheme.bodyLarge?.copyWith(
+            // Results
+            Expanded(
+              child: BlocBuilder<SearchCubit, SearchState>(
+                builder: (context, state) {
+                  return state.when(
+                    initial: () => const Center(
+                      child: Text('Search for Yu-Gi-Oh! cards'),
+                    ),
+                    loading: () => const Center(
+                      child: CircularProgressIndicator(),
+                    ),
+                    loaded: (entries, grouped, lastQuery) {
+                      if (entries.isEmpty) {
+                        return Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const Icon(
+                                Icons.search_off,
+                                size: 48,
                                 color: Colors.grey,
                               ),
-                            ),
-                          ],
-                        ),
-                      );
-                    }
+                              const SizedBox(height: Dimensions.md),
+                              Text(
+                                'No cards found matching "${_searchController.text}"',
+                                textAlign: TextAlign.center,
+                                style: theme.textTheme.bodyLarge?.copyWith(
+                                  color: Colors.grey,
+                                ),
+                              ),
+                            ],
+                          ),
+                        );
+                      }
 
-                    return Stack(
-                      children: [
-                        SearchSectionedListView(grouped: grouped),
-                        // QuickAddBar at bottom
-                        Positioned(
-                          left: 0,
-                          right: 0,
-                          bottom: 0,
-                          child: QuickAddBar(onConfirmAdd: _onConfirmAdd),
-                        ),
-                      ],
-                    );
-                  },
-                  error: (message) => Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text('Error: $message'),
-                        const SizedBox(height: Dimensions.md),
-                        ElevatedButton(
-                          onPressed: () {
-                            context
-                                .read<SearchCubit>()
-                                .searchCards(_searchController.text);
-                          },
-                          child: const Text('Retry'),
-                        ),
-                      ],
+                      return Stack(
+                        children: [
+                          SearchSectionedListView(grouped: grouped),
+                          // QuickAddBar at bottom
+                          Positioned(
+                            left: 0,
+                            right: 0,
+                            bottom: 0,
+                            child: QuickAddBar(onConfirmAdd: _onConfirmAdd),
+                          ),
+                        ],
+                      );
+                    },
+                    error: (message) => Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text('Error: $message'),
+                          const SizedBox(height: Dimensions.md),
+                          ElevatedButton(
+                            onPressed: () {
+                              context
+                                  .read<SearchCubit>()
+                                  .searchCards(_searchController.text);
+                            },
+                            child: const Text('Retry'),
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                );
-              },
+                  );
+                },
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

@@ -26,7 +26,9 @@ class CollectionView extends StatelessWidget {
           prev.isSelectionMode != curr.isSelectionMode,
       builder: (context, bulkState) {
         final inSelectionMode = bulkState.isSelectionMode;
-        return Scaffold(
+        return GestureDetector(
+          onTap: () => FocusScope.of(context).unfocus(),
+          child: Scaffold(
           appBar: AppBar(
             leading: IconButton(
               icon: const Icon(Icons.arrow_back),
@@ -68,6 +70,7 @@ class CollectionView extends StatelessWidget {
           floatingActionButton: inSelectionMode
               ? null
               : const CollectionSearchButton(),
+        ),
         );
       },
     );
@@ -147,7 +150,7 @@ class _SearchBarSection extends StatelessWidget {
           alignment: Alignment.topCenter,
           child: searchBarVisible
               ? const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                  padding: EdgeInsets.fromLTRB(16, 4, 16, 8),
                   child: CollectionSearchBar(),
                 )
               : const SizedBox.shrink(),
