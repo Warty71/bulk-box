@@ -10,6 +10,7 @@ abstract class SettingsState with _$SettingsState {
     @Default(SortOption.nameAZ) SortOption sortOption,
     @Default(false) bool showDividers,
     @Default(false) bool boxExclusiveSorting,
+    @Default(<String, SortOption>{}) Map<String, SortOption> boxSortOptions,
   }) = _SettingsState;
 
   factory SettingsState.fromJson(Map<String, dynamic> json) =>

@@ -17,6 +17,7 @@ mixin _$SettingsState {
   SortOption get sortOption;
   bool get showDividers;
   bool get boxExclusiveSorting;
+  Map<String, SortOption> get boxSortOptions;
 
   /// Create a copy of SettingsState
   /// with the given fields replaced by the non-null parameter values.
@@ -39,17 +40,19 @@ mixin _$SettingsState {
             (identical(other.showDividers, showDividers) ||
                 other.showDividers == showDividers) &&
             (identical(other.boxExclusiveSorting, boxExclusiveSorting) ||
-                other.boxExclusiveSorting == boxExclusiveSorting));
+                other.boxExclusiveSorting == boxExclusiveSorting) &&
+            const DeepCollectionEquality()
+                .equals(other.boxSortOptions, boxSortOptions));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, sortOption, showDividers, boxExclusiveSorting);
+  int get hashCode => Object.hash(runtimeType, sortOption, showDividers,
+      boxExclusiveSorting, const DeepCollectionEquality().hash(boxSortOptions));
 
   @override
   String toString() {
-    return 'SettingsState(sortOption: $sortOption, showDividers: $showDividers, boxExclusiveSorting: $boxExclusiveSorting)';
+    return 'SettingsState(sortOption: $sortOption, showDividers: $showDividers, boxExclusiveSorting: $boxExclusiveSorting, boxSortOptions: $boxSortOptions)';
   }
 }
 
@@ -60,7 +63,10 @@ abstract mixin class $SettingsStateCopyWith<$Res> {
       _$SettingsStateCopyWithImpl;
   @useResult
   $Res call(
-      {SortOption sortOption, bool showDividers, bool boxExclusiveSorting});
+      {SortOption sortOption,
+      bool showDividers,
+      bool boxExclusiveSorting,
+      Map<String, SortOption> boxSortOptions});
 }
 
 /// @nodoc
@@ -79,6 +85,7 @@ class _$SettingsStateCopyWithImpl<$Res>
     Object? sortOption = null,
     Object? showDividers = null,
     Object? boxExclusiveSorting = null,
+    Object? boxSortOptions = null,
   }) {
     return _then(_self.copyWith(
       sortOption: null == sortOption
@@ -93,6 +100,10 @@ class _$SettingsStateCopyWithImpl<$Res>
           ? _self.boxExclusiveSorting
           : boxExclusiveSorting // ignore: cast_nullable_to_non_nullable
               as bool,
+      boxSortOptions: null == boxSortOptions
+          ? _self.boxSortOptions
+          : boxSortOptions // ignore: cast_nullable_to_non_nullable
+              as Map<String, SortOption>,
     ));
   }
 }
@@ -190,16 +201,16 @@ extension SettingsStatePatterns on SettingsState {
 
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>(
-    TResult Function(
-            SortOption sortOption, bool showDividers, bool boxExclusiveSorting)?
+    TResult Function(SortOption sortOption, bool showDividers,
+            bool boxExclusiveSorting, Map<String, SortOption> boxSortOptions)?
         $default, {
     required TResult orElse(),
   }) {
     final _that = this;
     switch (_that) {
       case _SettingsState() when $default != null:
-        return $default(
-            _that.sortOption, _that.showDividers, _that.boxExclusiveSorting);
+        return $default(_that.sortOption, _that.showDividers,
+            _that.boxExclusiveSorting, _that.boxSortOptions);
       case _:
         return orElse();
     }
@@ -220,15 +231,15 @@ extension SettingsStatePatterns on SettingsState {
 
   @optionalTypeArgs
   TResult when<TResult extends Object?>(
-    TResult Function(
-            SortOption sortOption, bool showDividers, bool boxExclusiveSorting)
+    TResult Function(SortOption sortOption, bool showDividers,
+            bool boxExclusiveSorting, Map<String, SortOption> boxSortOptions)
         $default,
   ) {
     final _that = this;
     switch (_that) {
       case _SettingsState():
-        return $default(
-            _that.sortOption, _that.showDividers, _that.boxExclusiveSorting);
+        return $default(_that.sortOption, _that.showDividers,
+            _that.boxExclusiveSorting, _that.boxSortOptions);
       case _:
         throw StateError('Unexpected subclass');
     }
@@ -248,15 +259,15 @@ extension SettingsStatePatterns on SettingsState {
 
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>(
-    TResult? Function(
-            SortOption sortOption, bool showDividers, bool boxExclusiveSorting)?
+    TResult? Function(SortOption sortOption, bool showDividers,
+            bool boxExclusiveSorting, Map<String, SortOption> boxSortOptions)?
         $default,
   ) {
     final _that = this;
     switch (_that) {
       case _SettingsState() when $default != null:
-        return $default(
-            _that.sortOption, _that.showDividers, _that.boxExclusiveSorting);
+        return $default(_that.sortOption, _that.showDividers,
+            _that.boxExclusiveSorting, _that.boxSortOptions);
       case _:
         return null;
     }
@@ -269,7 +280,10 @@ class _SettingsState implements SettingsState {
   const _SettingsState(
       {this.sortOption = SortOption.nameAZ,
       this.showDividers = false,
-      this.boxExclusiveSorting = false});
+      this.boxExclusiveSorting = false,
+      final Map<String, SortOption> boxSortOptions =
+          const <String, SortOption>{}})
+      : _boxSortOptions = boxSortOptions;
   factory _SettingsState.fromJson(Map<String, dynamic> json) =>
       _$SettingsStateFromJson(json);
 
@@ -282,6 +296,14 @@ class _SettingsState implements SettingsState {
   @override
   @JsonKey()
   final bool boxExclusiveSorting;
+  final Map<String, SortOption> _boxSortOptions;
+  @override
+  @JsonKey()
+  Map<String, SortOption> get boxSortOptions {
+    if (_boxSortOptions is EqualUnmodifiableMapView) return _boxSortOptions;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableMapView(_boxSortOptions);
+  }
 
   /// Create a copy of SettingsState
   /// with the given fields replaced by the non-null parameter values.
@@ -308,17 +330,23 @@ class _SettingsState implements SettingsState {
             (identical(other.showDividers, showDividers) ||
                 other.showDividers == showDividers) &&
             (identical(other.boxExclusiveSorting, boxExclusiveSorting) ||
-                other.boxExclusiveSorting == boxExclusiveSorting));
+                other.boxExclusiveSorting == boxExclusiveSorting) &&
+            const DeepCollectionEquality()
+                .equals(other._boxSortOptions, _boxSortOptions));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, sortOption, showDividers, boxExclusiveSorting);
+  int get hashCode => Object.hash(
+      runtimeType,
+      sortOption,
+      showDividers,
+      boxExclusiveSorting,
+      const DeepCollectionEquality().hash(_boxSortOptions));
 
   @override
   String toString() {
-    return 'SettingsState(sortOption: $sortOption, showDividers: $showDividers, boxExclusiveSorting: $boxExclusiveSorting)';
+    return 'SettingsState(sortOption: $sortOption, showDividers: $showDividers, boxExclusiveSorting: $boxExclusiveSorting, boxSortOptions: $boxSortOptions)';
   }
 }
 
@@ -331,7 +359,10 @@ abstract mixin class _$SettingsStateCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {SortOption sortOption, bool showDividers, bool boxExclusiveSorting});
+      {SortOption sortOption,
+      bool showDividers,
+      bool boxExclusiveSorting,
+      Map<String, SortOption> boxSortOptions});
 }
 
 /// @nodoc
@@ -350,6 +381,7 @@ class __$SettingsStateCopyWithImpl<$Res>
     Object? sortOption = null,
     Object? showDividers = null,
     Object? boxExclusiveSorting = null,
+    Object? boxSortOptions = null,
   }) {
     return _then(_SettingsState(
       sortOption: null == sortOption
@@ -364,6 +396,10 @@ class __$SettingsStateCopyWithImpl<$Res>
           ? _self.boxExclusiveSorting
           : boxExclusiveSorting // ignore: cast_nullable_to_non_nullable
               as bool,
+      boxSortOptions: null == boxSortOptions
+          ? _self._boxSortOptions
+          : boxSortOptions // ignore: cast_nullable_to_non_nullable
+              as Map<String, SortOption>,
     ));
   }
 }
