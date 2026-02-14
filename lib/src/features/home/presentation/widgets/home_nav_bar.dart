@@ -16,11 +16,11 @@ class HomeNavBar extends StatelessWidget {
       selectedIndex: currentIndex,
       onDestinationSelected: onDestinationSelected,
       destinations: const [
-        NavigationDestination(
-          icon: Icon(Icons.home_outlined),
-          selectedIcon: Icon(Icons.home),
-          label: 'Home',
-        ),
+        // NavigationDestination(
+        //   icon: Icon(Icons.home_outlined),
+        //   selectedIcon: Icon(Icons.home),
+        //   label: 'Home',
+        // ),
         NavigationDestination(
           icon: Icon(Icons.collections_outlined),
           selectedIcon: Icon(Icons.collections),
