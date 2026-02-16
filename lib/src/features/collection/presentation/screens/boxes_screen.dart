@@ -63,10 +63,12 @@ class _BoxesScreenState extends State<BoxesScreen> {
             ],
           ),
         ),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () => AppDialogs.showCreateBox(context),
-          child: const Icon(Icons.add),
-        ),
+        floatingActionButton: context.watch<BoxesCubit>().canCreateBox
+            ? FloatingActionButton(
+                onPressed: () => AppDialogs.showCreateBox(context),
+                child: const Icon(Icons.add),
+              )
+            : null,
       ),
     );
   }

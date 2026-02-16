@@ -48,6 +48,8 @@ dependencies:
   path: ^1.9.0
   flutter_launcher_icons: ^0.14.4
   flutter_native_splash: ^2.4.7
+  firebase_core: ^4.4.0
+  firebase_crashlytics: ^5.0.7
 
 dev_dependencies:
   flutter_test:
