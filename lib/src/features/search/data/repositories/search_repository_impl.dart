@@ -52,15 +52,15 @@ class SearchRepositoryImpl implements SearchRepository {
 
   @override
   Future<String> getCardImagePath(int cardId) async {
-    try {
-      if (!await _imageLocalDatasource.isImageSaved(cardId)) {
-        final imageBytes = await _apiDatasource.getCardImage(cardId);
-        await _imageLocalDatasource.saveImage(cardId, imageBytes);
+    if (!await _imageLocalDatasource.isImageSaved(cardId)) {
+      final card = await _cardDao.getCardById(cardId);
+      if (card == null || card.imageUrl.isEmpty) {
+        throw Exception('No image URL for card $cardId');
       }
-      return await _imageLocalDatasource.getImagePath(cardId);
-    } catch (e) {
-      rethrow;
+      final imageBytes = await _apiDatasource.downloadImage(card.imageUrl);
+      await _imageLocalDatasource.saveImage(cardId, imageBytes);
     }
+    return await _imageLocalDatasource.getImagePath(cardId);
   }
 
   @override
@@ -110,7 +110,7 @@ class SearchRepositoryImpl implements SearchRepository {
             await _rateLimiter.waitIfNeeded();
             if (prefetchId != _currentPrefetchId) return;
 
-            final imageBytes = await _apiDatasource.getCardImage(card.id);
+            final imageBytes = await _apiDatasource.downloadImage(card.imageUrl);
             await _imageLocalDatasource.saveImage(card.id, imageBytes);
           } catch (e) {
             // Silently handle prefetch errors
