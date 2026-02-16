@@ -1,8 +1,8 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:bulk_box/src/features/search/presentation/cubit/search_cubit.dart';
+import 'package:bulk_box/src/core/di/injection_container.dart' as di;
+import 'package:bulk_box/src/features/ygo_cards/domain/repositories/image_repository.dart';
 
 /// Cached image widget that prevents rebuilds
 class CollectionCardImage extends StatefulWidget {
@@ -27,8 +27,8 @@ class _CollectionCardImageState extends State<CollectionCardImage> {
   }
 
   void _loadImage() {
-    final searchCubit = context.read<SearchCubit>();
-    _imagePathFuture = searchCubit.getCardImagePath(widget.cardId);
+    _imagePathFuture =
+        di.getIt<ImageRepository>().getCardImagePath(widget.cardId);
   }
 
   @override

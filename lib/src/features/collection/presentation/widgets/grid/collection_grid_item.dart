@@ -9,7 +9,7 @@ import 'package:bulk_box/src/core/utils/set_code_utils.dart';
 import 'package:bulk_box/src/features/collection/domain/entities/collection_entry.dart';
 import 'package:bulk_box/src/features/collection/presentation/cubit/bulk_move_cubit.dart';
 import 'package:bulk_box/src/features/collection/presentation/cubit/bulk_move_state.dart';
-import 'package:bulk_box/src/features/search/domain/repositories/search_repository.dart';
+import 'package:bulk_box/src/features/ygo_cards/domain/repositories/image_repository.dart';
 
 /// Grid item widget for displaying a card in the collection grid view.
 /// Selection state (isSelectionMode, isSelected) is read from [BulkMoveCubit]
@@ -54,7 +54,7 @@ class _CollectionGridItemState extends State<CollectionGridItem> {
   void initState() {
     super.initState();
     _imagePathFuture =
-        di.getIt<SearchRepository>().getCardImagePath(widget.entry.card.id);
+        di.getIt<ImageRepository>().getCardImagePath(widget.entry.card.id);
   }
 
   @override

@@ -2,13 +2,13 @@ import 'package:bulk_box/src/core/database/app_database.dart';
 import 'package:bulk_box/src/core/database/card_dao.dart';
 import 'package:bulk_box/src/core/utils/rate_limiter.dart';
 import 'package:bulk_box/src/features/search/domain/repositories/search_repository.dart';
-import 'package:bulk_box/src/features/ygo_cards/data/datasources/local/image_local_datasource.dart';
 import 'package:bulk_box/src/features/ygo_cards/data/datasources/remote/ygopro_api_datasource.dart';
 import 'package:bulk_box/src/features/ygo_cards/data/mappers/card_model_mapper.dart';
+import 'package:bulk_box/src/features/ygo_cards/domain/repositories/image_repository.dart';
 
 class SearchRepositoryImpl implements SearchRepository {
   final YGOProApiDatasource _apiDatasource;
-  final ImageLocalDatasource _imageLocalDatasource;
+  final ImageRepository _imageRepository;
   final CardDao _cardDao;
 
   // Rate limiter: 18 requests per second (slightly under 20/sec limit for safety)
@@ -23,7 +23,7 @@ class SearchRepositoryImpl implements SearchRepository {
 
   SearchRepositoryImpl(
     this._apiDatasource,
-    this._imageLocalDatasource,
+    this._imageRepository,
     this._cardDao,
   );
 
@@ -50,24 +50,6 @@ class SearchRepositoryImpl implements SearchRepository {
     }
   }
 
-  @override
-  Future<String> getCardImagePath(int cardId) async {
-    if (!await _imageLocalDatasource.isImageSaved(cardId)) {
-      final card = await _cardDao.getCardById(cardId);
-      if (card == null || card.imageUrl.isEmpty) {
-        throw Exception('No image URL for card $cardId');
-      }
-      final imageBytes = await _apiDatasource.downloadImage(card.imageUrl);
-      await _imageLocalDatasource.saveImage(cardId, imageBytes);
-    }
-    return await _imageLocalDatasource.getImagePath(cardId);
-  }
-
-  @override
-  Future<bool> isCardImageSaved(int cardId) async {
-    return await _imageLocalDatasource.isImageSaved(cardId);
-  }
-
   Future<List<Card>> _fetchAndCacheCards(String query) async {
     final response = await _apiDatasource.searchCards(query);
     final cards = CardModelMapper.fromApiResponse(response);
@@ -92,7 +74,7 @@ class SearchRepositoryImpl implements SearchRepository {
         return;
       }
 
-      if (!await _imageLocalDatasource.isImageSaved(card.id)) {
+      if (!await _imageRepository.isCardImageSaved(card.id)) {
         cardsToFetch.add(card);
       }
     }
@@ -110,8 +92,7 @@ class SearchRepositoryImpl implements SearchRepository {
             await _rateLimiter.waitIfNeeded();
             if (prefetchId != _currentPrefetchId) return;
 
-            final imageBytes = await _apiDatasource.downloadImage(card.imageUrl);
-            await _imageLocalDatasource.saveImage(card.id, imageBytes);
+            await _imageRepository.getCardImagePath(card.id);
           } catch (e) {
             // Silently handle prefetch errors
           }

@@ -19,8 +19,10 @@ import 'package:bulk_box/src/features/collection/presentation/cubit/bulk_move_cu
 import 'package:bulk_box/src/features/collection/presentation/cubit/boxes_cubit.dart';
 import 'package:bulk_box/src/features/collection/presentation/cubit/collection_cubit.dart';
 import 'package:bulk_box/src/features/home/presentation/cubit/latest_sets_cubit.dart';
+import 'package:bulk_box/src/features/ygo_cards/data/repositories/image_repository_impl.dart';
 import 'package:bulk_box/src/features/ygo_cards/data/repositories/set_list_repository_impl.dart';
 import 'package:bulk_box/src/features/ygo_cards/data/services/archetype_backfill_service.dart';
+import 'package:bulk_box/src/features/ygo_cards/domain/repositories/image_repository.dart';
 import 'package:bulk_box/src/features/ygo_cards/domain/repositories/set_list_repository.dart';
 
 final getIt = GetIt.instance;
@@ -67,6 +69,14 @@ Future<void> _initializeCore() async {
       getIt<SharedPreferences>(),
     ),
   );
+
+  getIt.registerLazySingleton<ImageRepository>(
+    () => ImageRepositoryImpl(
+      getIt<ImageLocalDatasource>(),
+      getIt<YGOProApiDatasource>(),
+      getIt<CardDao>(),
+    ),
+  );
 }
 
 Future<void> _initializeFeatures() async {
@@ -97,9 +107,9 @@ void _initializeSearchFeature() {
   // Repository
   getIt.registerLazySingleton<SearchRepository>(
     () => SearchRepositoryImpl(
-      getIt(), // YGOProApiDatasource
-      getIt(), // ImageLocalDatasource
-      getIt(), // CardDao
+      getIt<YGOProApiDatasource>(),
+      getIt<ImageRepository>(),
+      getIt<CardDao>(),
     ),
   );
 

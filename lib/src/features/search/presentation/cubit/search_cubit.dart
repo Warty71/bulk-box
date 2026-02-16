@@ -45,10 +45,6 @@ class SearchCubit extends Cubit<SearchState> {
     }
   }
 
-  Future<String> getCardImagePath(int cardId) async {
-    return await _searchRepository.getCardImagePath(cardId);
-  }
-
   /// Explode each card's parsedCardSets into individual SearchResultEntry objects.
   List<SearchResultEntry> _explodeCards(List<Card> cards) {
     final entries = <SearchResultEntry>[];
