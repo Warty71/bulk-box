@@ -99,10 +99,12 @@ class _CollectionBoxesGridBodyState extends State<_CollectionBoxesGridBody> {
                 );
               },
             ),
-            floatingActionButton: FloatingActionButton(
-              onPressed: () => AppDialogs.showCreateBox(context),
-              child: const Icon(Icons.add),
-            ),
+            floatingActionButton: context.watch<BoxesCubit>().canCreateBox
+                ? FloatingActionButton(
+                    onPressed: () => AppDialogs.showCreateBox(context),
+                    child: const Icon(Icons.add),
+                  )
+                : null,
           );
         },
       );
