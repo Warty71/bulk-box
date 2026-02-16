@@ -1,4 +1,8 @@
-import 'package:flutter/foundation.dart' show kIsWeb;
+import 'dart:async';
+
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
@@ -7,24 +11,42 @@ import 'package:bulk_box/src/core/router/app_router.dart';
 import 'package:bulk_box/src/core/settings/settings_cubit.dart';
 import 'package:bulk_box/src/core/theme/app_theme.dart';
 import 'package:bulk_box/src/features/search/presentation/cubit/search_cubit.dart';
+import 'firebase_options.dart';
 import 'src/core/di/injection_container.dart' as di;
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
+  runZonedGuarded<Future<void>>(() async {
+    WidgetsFlutterBinding.ensureInitialized();
 
-  // Initialize HydratedBloc storage for persisting state
-  HydratedBloc.storage = await HydratedStorage.build(
-    storageDirectory: kIsWeb
-        ? HydratedStorageDirectory.web
-        : HydratedStorageDirectory(
-            (await getApplicationDocumentsDirectory()).path,
-          ),
-  );
+    // Initialize Firebase
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
 
-  // Initialize dependencies
-  await di.initializeDependencies();
+    // Configure Crashlytics
+    // Pass all uncaught Flutter framework errors to Crashlytics
+    FlutterError.onError =
+        FirebaseCrashlytics.instance.recordFlutterFatalError;
 
-  runApp(const MyApp());
+    // Disable Crashlytics collection in debug mode
+    await FirebaseCrashlytics.instance
+        .setCrashlyticsCollectionEnabled(!kDebugMode);
+
+    // Initialize HydratedBloc storage for persisting state
+    HydratedBloc.storage = await HydratedStorage.build(
+      storageDirectory: HydratedStorageDirectory(
+        (await getApplicationDocumentsDirectory()).path,
+      ),
+    );
+
+    // Initialize dependencies
+    await di.initializeDependencies();
+
+    runApp(const MyApp());
+  }, (error, stack) {
+    // Pass all uncaught asynchronous errors to Crashlytics
+    FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
+  });
 }
 
 class MyApp extends StatelessWidget {
