@@ -1,5 +1,6 @@
 import 'package:bulk_box/src/features/ygo_cards/data/datasources/remote/ygopro_api_datasource.dart';
 import 'package:bulk_box/src/features/ygo_cards/data/models/set_info_model.dart';
+import 'package:bulk_box/src/features/ygo_cards/domain/entities/set_info.dart';
 import 'package:bulk_box/src/features/ygo_cards/domain/repositories/set_list_repository.dart';
 
 class SetListRepositoryImpl implements SetListRepository {
@@ -8,7 +9,7 @@ class SetListRepositoryImpl implements SetListRepository {
   SetListRepositoryImpl(this._apiDatasource);
 
   @override
-  Future<List<SetInfoModel>> getLatestSets({int limit = 10}) async {
+  Future<List<SetInfo>> getLatestSets({int limit = 10}) async {
     try {
       final raw = await _apiDatasource.getCardSets();
       final parsed = <SetInfoModel>[];
@@ -29,7 +30,7 @@ class SetListRepositoryImpl implements SetListRepository {
       }
       final deduped = byCode.values.toList();
       deduped.sort((a, b) => b.tcgDate.compareTo(a.tcgDate));
-      return deduped.take(limit).toList();
+      return deduped.take(limit).map((m) => m.toEntity()).toList();
     } catch (e) {
       rethrow;
     }

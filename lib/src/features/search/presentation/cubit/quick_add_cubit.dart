@@ -1,8 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:bulk_box/src/core/database/card_dao.dart';
 import 'package:bulk_box/src/features/collection/domain/entities/collection_item.dart';
-import 'package:bulk_box/src/features/collection/presentation/cubit/boxes_cubit.dart';
-import 'package:bulk_box/src/features/collection/presentation/cubit/collection_cubit.dart';
+import 'package:bulk_box/src/features/collection/domain/repositories/collection_repository.dart';
 import 'package:bulk_box/src/features/search/domain/entities/search_result_entry.dart';
 import 'package:bulk_box/src/features/search/presentation/cubit/quick_add_state.dart';
 
@@ -90,15 +89,14 @@ class QuickAddCubit extends Cubit<QuickAddState> {
   /// Batch add all cart items to collection, then clear cart.
   Future<void> confirmAdd({
     required int? boxId,
-    required CollectionCubit collectionCubit,
-    required BoxesCubit boxesCubit,
+    required CollectionRepository collectionRepository,
   }) async {
     final now = DateTime.now();
 
     for (final item in state.cart.values) {
       await _cardDao.insertOrUpdateCards([item.card]);
 
-      await collectionCubit.addCollectionItem(
+      await collectionRepository.addCollectionItem(
         CollectionItemEntity(
           cardId: item.card.id,
           setCode: item.setCode,
@@ -110,7 +108,6 @@ class QuickAddCubit extends Cubit<QuickAddState> {
       );
     }
 
-    await boxesCubit.loadBoxes();
     clearCart();
   }
 }

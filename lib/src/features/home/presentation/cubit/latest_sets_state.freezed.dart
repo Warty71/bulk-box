@@ -157,7 +157,7 @@ extension LatestSetsStatePatterns on LatestSetsState {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? initial,
     TResult Function()? loading,
-    TResult Function(List<SetInfoModel> sets)? loaded,
+    TResult Function(List<SetInfo> sets)? loaded,
     TResult Function(String? message)? failure,
     required TResult orElse(),
   }) {
@@ -193,7 +193,7 @@ extension LatestSetsStatePatterns on LatestSetsState {
   TResult when<TResult extends Object?>({
     required TResult Function() initial,
     required TResult Function() loading,
-    required TResult Function(List<SetInfoModel> sets) loaded,
+    required TResult Function(List<SetInfo> sets) loaded,
     required TResult Function(String? message) failure,
   }) {
     final _that = this;
@@ -227,7 +227,7 @@ extension LatestSetsStatePatterns on LatestSetsState {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? initial,
     TResult? Function()? loading,
-    TResult? Function(List<SetInfoModel> sets)? loaded,
+    TResult? Function(List<SetInfo> sets)? loaded,
     TResult? Function(String? message)? failure,
   }) {
     final _that = this;
@@ -289,10 +289,10 @@ class _Loading implements LatestSetsState {
 /// @nodoc
 
 class _Loaded implements LatestSetsState {
-  const _Loaded(final List<SetInfoModel> sets) : _sets = sets;
+  const _Loaded(final List<SetInfo> sets) : _sets = sets;
 
-  final List<SetInfoModel> _sets;
-  List<SetInfoModel> get sets {
+  final List<SetInfo> _sets;
+  List<SetInfo> get sets {
     if (_sets is EqualUnmodifiableListView) return _sets;
     // ignore: implicit_dynamic_type
     return EqualUnmodifiableListView(_sets);
@@ -329,7 +329,7 @@ abstract mixin class _$LoadedCopyWith<$Res>
   factory _$LoadedCopyWith(_Loaded value, $Res Function(_Loaded) _then) =
       __$LoadedCopyWithImpl;
   @useResult
-  $Res call({List<SetInfoModel> sets});
+  $Res call({List<SetInfo> sets});
 }
 
 /// @nodoc
@@ -349,7 +349,7 @@ class __$LoadedCopyWithImpl<$Res> implements _$LoadedCopyWith<$Res> {
       null == sets
           ? _self._sets
           : sets // ignore: cast_nullable_to_non_nullable
-              as List<SetInfoModel>,
+              as List<SetInfo>,
     ));
   }
 }
