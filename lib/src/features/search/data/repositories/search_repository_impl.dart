@@ -1,12 +1,10 @@
-import 'dart:convert';
-
 import 'package:bulk_box/src/core/database/app_database.dart';
 import 'package:bulk_box/src/core/database/card_dao.dart';
 import 'package:bulk_box/src/core/utils/rate_limiter.dart';
 import 'package:bulk_box/src/features/search/domain/repositories/search_repository.dart';
 import 'package:bulk_box/src/features/ygo_cards/data/datasources/local/image_local_datasource.dart';
 import 'package:bulk_box/src/features/ygo_cards/data/datasources/remote/ygopro_api_datasource.dart';
-import 'package:bulk_box/src/features/ygo_cards/data/models/card_model.dart';
+import 'package:bulk_box/src/features/ygo_cards/data/mappers/card_model_mapper.dart';
 
 class SearchRepositoryImpl implements SearchRepository {
   final YGOProApiDatasource _apiDatasource;
@@ -72,7 +70,7 @@ class SearchRepositoryImpl implements SearchRepository {
 
   Future<List<Card>> _fetchAndCacheCards(String query) async {
     final response = await _apiDatasource.searchCards(query);
-    final cards = _parseAndConvertToDriftCards(response);
+    final cards = CardModelMapper.fromApiResponse(response);
 
     if (cards.isNotEmpty) {
       await _cardDao.insertOrUpdateCards(cards);
@@ -126,84 +124,4 @@ class SearchRepositoryImpl implements SearchRepository {
     }
   }
 
-  List<Card> _parseAndConvertToDriftCards(Map<String, dynamic> response) {
-    try {
-      if (!response.containsKey('data')) return [];
-
-      final data = response['data'];
-      if (data == null) return [];
-
-      List<dynamic> cardList;
-      if (data is List) {
-        cardList = data;
-      } else if (data is Map<String, dynamic>) {
-        cardList = [data];
-      } else {
-        return [];
-      }
-
-      final cards = cardList
-          .map((cardJson) {
-            try {
-              final model = CardModel.fromJson(cardJson);
-              return _cardModelToDriftCard(model);
-            } catch (e) {
-              return null;
-            }
-          })
-          .whereType<Card>()
-          .toList();
-
-      return cards;
-    } catch (e) {
-      return [];
-    }
-  }
-
-  /// Deduplicates card sets by [CardSetModel.setCode] and [CardSetModel.setRarity].
-  /// Keeps first occurrence when duplicates exist (e.g. API returning same set twice).
-  static List<CardSetModel> _deduplicateCardSets(List<CardSetModel> sets) {
-    final seen = <String>{};
-    return sets.where((s) {
-      final key = '${s.setCode}|${s.setRarity}';
-      if (seen.contains(key)) return false;
-      seen.add(key);
-      return true;
-    }).toList();
-  }
-
-  Card _cardModelToDriftCard(CardModel model) {
-    final imageUrl =
-        model.cardImages.isNotEmpty ? model.cardImages.first.imageUrl : '';
-    final uniqueSets = _deduplicateCardSets(model.cardSets);
-    final cardSetsJson = jsonEncode(
-      uniqueSets
-          .map((s) => {
-                'set_name': s.setName,
-                'set_code': s.setCode,
-                'set_rarity': s.setRarity,
-                if (s.setEdition != null) 'set_edition': s.setEdition,
-                if (s.setPrice != null) 'set_price': s.setPrice,
-                if (s.setPriceLow != null) 'set_price_low': s.setPriceLow,
-                if (s.setUrl != null) 'set_url': s.setUrl,
-              })
-          .toList(),
-    );
-
-    return Card(
-      id: model.id,
-      name: model.name,
-      type: model.type,
-      description: model.desc,
-      race: model.race,
-      frameType: model.frameType,
-      attribute: model.attribute,
-      level: model.level,
-      atk: model.atk,
-      def: model.def,
-      archetype: model.archetype,
-      imageUrl: imageUrl,
-      cardSetsJson: cardSetsJson,
-    );
-  }
 }
