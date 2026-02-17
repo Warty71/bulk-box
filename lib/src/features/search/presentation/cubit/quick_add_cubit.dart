@@ -4,25 +4,23 @@ import 'package:bulk_box/src/features/collection/domain/entities/collection_item
 import 'package:bulk_box/src/features/collection/domain/repositories/collection_repository.dart';
 import 'package:bulk_box/src/features/search/domain/entities/search_result_entry.dart';
 import 'package:bulk_box/src/features/search/presentation/cubit/quick_add_state.dart';
+import 'package:bulk_box/src/features/ygo_cards/data/mappers/card_model_mapper.dart';
 
 /// Manages the staging cart for quick-adding cards from search.
 class QuickAddCubit extends Cubit<QuickAddState> {
   final CardDao _cardDao;
+  final CollectionRepository _collectionRepository;
 
-  QuickAddCubit(this._cardDao) : super(const QuickAddState());
+  QuickAddCubit(this._cardDao, this._collectionRepository)
+      : super(const QuickAddState());
 
   /// Set quantity for an entry. Creates the item if needed, removes if 0.
   void setQuantity(SearchResultEntry entry, int quantity) {
     final key = entry.selectionKey;
     final next = Map<String, QuickAddItem>.from(state.cart);
-    String? newSelectedKey = state.selectedKey;
 
     if (quantity <= 0) {
       next.remove(key);
-      // Clear selection if the removed item was selected
-      if (newSelectedKey == key) {
-        newSelectedKey = null;
-      }
     } else {
       final existing = next[key];
       if (existing != null) {
@@ -37,66 +35,48 @@ class QuickAddCubit extends Cubit<QuickAddState> {
       }
     }
 
-    emit(state.copyWith(cart: next, selectedKey: newSelectedKey));
+    emit(state.copyWith(cart: next));
   }
 
   /// Remove an item entirely from the cart.
   void removeItem(String selectionKey) {
     final next = Map<String, QuickAddItem>.from(state.cart);
     next.remove(selectionKey);
-    String? newSelectedKey = state.selectedKey;
-    // Clear selection if the removed item was selected
-    if (newSelectedKey == selectionKey) {
-      newSelectedKey = null;
-    }
-    emit(state.copyWith(cart: next, selectedKey: newSelectedKey));
+    emit(state.copyWith(cart: next));
   }
 
-  /// Select an entry (for showing in the selection bar).
-  void selectEntry(SearchResultEntry entry) {
-    final key = entry.selectionKey;
-    // If already selected, deselect. Otherwise, select it.
-    final newSelectedKey = state.selectedKey == key ? null : key;
-    emit(state.copyWith(selectedKey: newSelectedKey));
-  }
-
-  /// Update quantity for an entry by selection key (used by selection bar).
+  /// Update quantity for an entry by selection key.
   void updateQuantity(String selectionKey, int quantity) {
     final item = state.cart[selectionKey];
     if (item == null) return;
 
     final next = Map<String, QuickAddItem>.from(state.cart);
-    String? newSelectedKey = state.selectedKey;
 
     if (quantity <= 0) {
       next.remove(selectionKey);
-      // Clear selection if the removed item was selected
-      if (newSelectedKey == selectionKey) {
-        newSelectedKey = null;
-      }
     } else {
       next[selectionKey] = item.copyWith(quantity: quantity);
     }
 
-    emit(state.copyWith(cart: next, selectedKey: newSelectedKey));
+    emit(state.copyWith(cart: next));
   }
 
-  /// Clear the entire cart and selection.
+  /// Clear the entire cart.
   void clearCart() {
     emit(const QuickAddState());
   }
 
   /// Batch add all cart items to collection, then clear cart.
-  Future<void> confirmAdd({
-    required int? boxId,
-    required CollectionRepository collectionRepository,
-  }) async {
+  Future<void> confirmAdd({required int? boxId}) async {
     final now = DateTime.now();
 
     for (final item in state.cart.values) {
-      await _cardDao.insertOrUpdateCards([item.card]);
+      // Ensure card row exists in DB for foreign key integrity
+      await _cardDao.insertOrUpdateCards(
+        [CardModelMapper.toDriftCard(item.card)],
+      );
 
-      await collectionRepository.addCollectionItem(
+      await _collectionRepository.addCollectionItem(
         CollectionItemEntity(
           cardId: item.card.id,
           setCode: item.setCode,

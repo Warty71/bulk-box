@@ -1,8 +1,8 @@
-import 'package:bulk_box/src/core/database/app_database.dart';
 import 'package:flutter/foundation.dart';
+import 'package:bulk_box/src/features/ygo_cards/domain/entities/ygo_card.dart';
 
 class QuickAddItem {
-  final Card card;
+  final YgoCard card;
   final String setCode;
   final String setRarity;
   final int quantity;
@@ -26,38 +26,19 @@ class QuickAddItem {
 
 class QuickAddState {
   final Map<String, QuickAddItem> cart;
-  final String? selectedKey;
 
-  const QuickAddState({
-    this.cart = const {},
-    this.selectedKey,
-  });
+  const QuickAddState({this.cart = const {}});
 
   int get totalCount =>
       cart.values.fold(0, (sum, item) => sum + item.quantity);
 
   bool get hasItems => cart.isNotEmpty;
 
-  bool get hasSelection => selectedKey != null;
-
-  bool get barVisible => hasSelection || hasItems;
-
-  QuickAddItem? get selectedItem =>
-      selectedKey != null ? cart[selectedKey] : null;
-
   int quantityFor(String selectionKey) =>
       cart[selectionKey]?.quantity ?? 0;
 
-  bool isSelected(String selectionKey) => selectedKey == this.selectedKey;
-
-  QuickAddState copyWith({
-    Map<String, QuickAddItem>? cart,
-    String? selectedKey,
-  }) {
-    return QuickAddState(
-      cart: cart ?? this.cart,
-      selectedKey: selectedKey ?? this.selectedKey,
-    );
+  QuickAddState copyWith({Map<String, QuickAddItem>? cart}) {
+    return QuickAddState(cart: cart ?? this.cart);
   }
 
   @override

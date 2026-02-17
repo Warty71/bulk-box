@@ -1,9 +1,9 @@
-import 'package:bulk_box/src/core/database/app_database.dart';
 import 'package:bulk_box/src/core/database/card_dao.dart';
 import 'package:bulk_box/src/core/utils/rate_limiter.dart';
 import 'package:bulk_box/src/features/search/domain/repositories/search_repository.dart';
 import 'package:bulk_box/src/features/ygo_cards/data/datasources/remote/ygopro_api_datasource.dart';
 import 'package:bulk_box/src/features/ygo_cards/data/mappers/card_model_mapper.dart';
+import 'package:bulk_box/src/features/ygo_cards/domain/entities/ygo_card.dart';
 import 'package:bulk_box/src/features/ygo_cards/domain/repositories/image_repository.dart';
 
 class SearchRepositoryImpl implements SearchRepository {
@@ -28,81 +28,78 @@ class SearchRepositoryImpl implements SearchRepository {
   );
 
   @override
-  Future<List<Card>> searchCardsLocal(String query) async {
-    return await _cardDao.searchCardsByName(query);
+  Future<List<YgoCard>> searchCardsLocal(String query) async {
+    final rows = await _cardDao.searchCardsByName(query);
+    return rows.map(CardModelMapper.fromDriftCard).toList();
   }
 
   @override
-  Future<List<Card>> searchCards(String query) async {
-    try {
-      if (query.isEmpty) {
-        final cachedCards = await _cardDao.searchCardsByName('');
-        if (cachedCards.isNotEmpty) {
-          return cachedCards;
-        }
-        return await _fetchAndCacheCards(
-            'type=Normal Monster&sort=name&offset=0&num=20');
+  Future<List<YgoCard>> searchCards(String query) async {
+    if (query.isEmpty) {
+      final cachedCards = await _cardDao.searchCardsByName('');
+      if (cachedCards.isNotEmpty) {
+        return cachedCards.map(CardModelMapper.fromDriftCard).toList();
       }
-
-      return await _fetchAndCacheCards(query);
-    } catch (e) {
-      rethrow;
+      return await _fetchAndCacheCards(
+          'type=Normal Monster&sort=name&offset=0&num=20');
     }
+
+    return await _fetchAndCacheCards(query);
   }
 
-  Future<List<Card>> _fetchAndCacheCards(String query) async {
+  Future<List<YgoCard>> _fetchAndCacheCards(String query) async {
     final response = await _apiDatasource.searchCards(query);
-    final cards = CardModelMapper.fromApiResponse(response);
+    final result = CardModelMapper.fromApiResponse(response);
 
-    if (cards.isNotEmpty) {
-      await _cardDao.insertOrUpdateCards(cards);
+    if (result.rows.isNotEmpty) {
+      await _cardDao.insertOrUpdateCards(result.rows);
 
       _currentPrefetchId++;
-      final cardsToPrefetch = cards.take(_maxPrefetchCards).toList();
-      _prefetchImages(cardsToPrefetch, _currentPrefetchId);
+      final cardIds =
+          result.entities.take(_maxPrefetchCards).map((c) => c.id).toList();
+      _prefetchImages(cardIds, _currentPrefetchId);
     }
 
-    return cards;
+    return result.entities;
   }
 
-  Future<void> _prefetchImages(List<Card> cards, int prefetchId) async {
+  Future<void> _prefetchImages(List<int> cardIds, int prefetchId) async {
     const batchSize = 15;
 
-    final cardsToFetch = <Card>[];
-    for (final card in cards) {
+    final idsToFetch = <int>[];
+    for (final id in cardIds) {
       if (prefetchId != _currentPrefetchId) {
         return;
       }
 
-      if (!await _imageRepository.isCardImageSaved(card.id)) {
-        cardsToFetch.add(card);
+      if (!await _imageRepository.isCardImageSaved(id)) {
+        idsToFetch.add(id);
       }
     }
 
-    for (var i = 0; i < cardsToFetch.length; i += batchSize) {
+    for (var i = 0; i < idsToFetch.length; i += batchSize) {
       if (prefetchId != _currentPrefetchId) {
         return;
       }
 
-      final batch = cardsToFetch.skip(i).take(batchSize).toList();
+      final batch = idsToFetch.skip(i).take(batchSize).toList();
 
       await Future.wait(
-        batch.map((card) async {
+        batch.map((id) async {
           try {
             await _rateLimiter.waitIfNeeded();
             if (prefetchId != _currentPrefetchId) return;
 
-            await _imageRepository.getCardImagePath(card.id);
+            await _imageRepository.getCardImagePath(id);
           } catch (e) {
             // Silently handle prefetch errors
           }
         }),
       );
 
-      if (i + batchSize < cardsToFetch.length) {
+      if (i + batchSize < idsToFetch.length) {
         await Future.delayed(const Duration(milliseconds: 100));
       }
     }
   }
-
 }

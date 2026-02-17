@@ -35,9 +35,9 @@ class ArchetypeBackfillService {
         await _rateLimiter.waitIfNeeded();
         final response =
             await _apiDatasource.searchCards('id=${cardIds[i]}');
-        final cards = CardModelMapper.fromApiResponse(response);
-        if (cards.isNotEmpty) {
-          await _cardDao.insertOrUpdateCards(cards);
+        final result = CardModelMapper.fromApiResponse(response);
+        if (result.rows.isNotEmpty) {
+          await _cardDao.insertOrUpdateCards(result.rows);
         }
       } catch (_) {
         // Skip errors per card, continue with next

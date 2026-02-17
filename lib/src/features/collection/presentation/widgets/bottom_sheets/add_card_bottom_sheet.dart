@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:bulk_box/src/core/constants/dimensions.dart';
-import 'package:bulk_box/src/core/database/app_database.dart' as db;
 import 'package:bulk_box/src/core/database/card_dao.dart';
-import 'package:bulk_box/src/core/database/card_extensions.dart';
 import 'package:bulk_box/src/core/di/injection_container.dart' as di;
 import 'package:bulk_box/src/features/collection/domain/entities/collection_item.dart';
 import 'package:bulk_box/src/features/collection/presentation/cubit/collection_cubit.dart';
+import 'package:bulk_box/src/features/ygo_cards/data/mappers/card_model_mapper.dart';
+import 'package:bulk_box/src/features/ygo_cards/domain/entities/card_set.dart';
+import 'package:bulk_box/src/features/ygo_cards/domain/entities/ygo_card.dart';
 
 /// Bottom sheet for adding/editing card quantities in collection.
 /// Works for both adding new cards and editing existing ones.
 class AddCardBottomSheet extends StatefulWidget {
-  final db.Card card;
+  final YgoCard card;
 
   const AddCardBottomSheet({
     super.key,
@@ -27,11 +28,11 @@ class _AddCardBottomSheetState extends State<AddCardBottomSheet> {
   bool _isSaving = false;
 
   /// Use API sets when present; otherwise one synthetic set so the user can still add the card.
-  List<ParsedCardSet> get _effectiveCardSets {
-    final p = widget.card.parsedCardSets;
+  List<CardSet> get _effectiveCardSets {
+    final p = widget.card.cardSets;
     if (p.isEmpty) {
       return [
-        ParsedCardSet(
+        const CardSet(
           setName: 'Unknown',
           setCode: 'N/A',
           setRarity: 'N/A',
@@ -82,7 +83,9 @@ class _AddCardBottomSheetState extends State<AddCardBottomSheet> {
 
     try {
       // Ensure card is in DB (e.g. when opened from search, insert may not have completed).
-      await di.getIt<CardDao>().insertOrUpdateCards([widget.card]);
+      await di
+          .getIt<CardDao>()
+          .insertOrUpdateCards([CardModelMapper.toDriftCard(widget.card)]);
 
       final cubit = di.getIt<CollectionCubit>();
       final now = DateTime.now();

@@ -2,14 +2,13 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:bulk_box/src/core/constants/dimensions.dart';
-import 'package:bulk_box/src/core/database/app_database.dart' as db;
-import 'package:bulk_box/src/core/database/card_extensions.dart';
 import 'package:bulk_box/src/core/di/injection_container.dart' as di;
 import 'package:bulk_box/src/core/widgets/app_bottom_sheets.dart';
+import 'package:bulk_box/src/features/ygo_cards/domain/entities/ygo_card.dart';
 import 'package:bulk_box/src/features/ygo_cards/domain/repositories/image_repository.dart';
 
 class CardDetailsScreen extends StatelessWidget {
-  final db.Card card;
+  final YgoCard card;
 
   const CardDetailsScreen({
     super.key,
@@ -89,7 +88,7 @@ class CardDetailsScreen extends StatelessWidget {
               context,
               title: 'Set Information',
               children: [
-                for (final set in card.parsedCardSets)
+                for (final set in card.cardSets)
                   Card(
                     margin: const EdgeInsets.only(bottom: Dimensions.sm),
                     child: Padding(

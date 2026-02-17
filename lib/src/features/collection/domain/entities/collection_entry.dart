@@ -1,9 +1,9 @@
-import 'package:bulk_box/src/core/database/app_database.dart';
+import 'package:bulk_box/src/features/ygo_cards/domain/entities/ygo_card.dart';
 
 class CollectionEntry {
-  final Card card; // Full card data
-  final String setCode; // Which set user owns
-  final String setRarity; // Rarity of owned copy
+  final YgoCard card;
+  final String setCode;
+  final String setRarity;
   final int quantity;
   final String? condition;
   final DateTime dateAdded;

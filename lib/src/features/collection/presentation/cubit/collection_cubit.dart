@@ -131,24 +131,32 @@ class CollectionCubit extends Cubit<CollectionState> {
     required int? fromBoxId,
     required int? toBoxId,
   }) async {
-    await _repository.batchMoveBetweenSlots(
-      items: items,
-      fromBoxId: fromBoxId,
-      toBoxId: toBoxId,
-    );
-    await _reloadWithCurrentFilter();
+    try {
+      await _repository.batchMoveBetweenSlots(
+        items: items,
+        fromBoxId: fromBoxId,
+        toBoxId: toBoxId,
+      );
+      await _reloadWithCurrentFilter();
+    } catch (e) {
+      emit(CollectionState.error(e.toString()));
+    }
   }
 
   /// Delete multiple slots in a single transaction.
   Future<void> batchDeleteSlots(
     List<({int cardId, String setCode, String setRarity, int? boxId})> items,
   ) async {
-    await _repository.batchDeleteSlots(items);
-    await _reloadWithCurrentFilter();
+    try {
+      await _repository.batchDeleteSlots(items);
+      await _reloadWithCurrentFilter();
+    } catch (e) {
+      emit(CollectionState.error(e.toString()));
+    }
   }
 
   Future<void> _reloadWithCurrentFilter() async {
-    state.maybeWhen(
+    await state.maybeWhen(
       loaded: (_, __, ___, boxId, boxName) => loadCollectionItems(
         boxId: boxId,
         unboxedOnly: boxId == null && boxName == 'Unboxed',

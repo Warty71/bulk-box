@@ -5,7 +5,6 @@ import 'package:bulk_box/src/core/constants/dimensions.dart';
 import 'package:bulk_box/src/core/widgets/app_search_bar.dart';
 import 'package:bulk_box/src/core/widgets/debouncer.dart';
 import 'package:bulk_box/src/core/di/injection_container.dart' as di;
-import 'package:bulk_box/src/features/collection/domain/repositories/collection_repository.dart';
 import 'package:bulk_box/src/features/collection/presentation/cubit/boxes_cubit.dart';
 import 'package:bulk_box/src/features/collection/presentation/cubit/collection_cubit.dart';
 import 'package:bulk_box/src/features/search/presentation/cubit/search_cubit.dart';
@@ -50,10 +49,7 @@ class _SearchViewState extends State<SearchView> {
   void _onConfirmAdd(int? boxId) async {
     final quickAddCubit = context.read<QuickAddCubit>();
 
-    await quickAddCubit.confirmAdd(
-      boxId: boxId,
-      collectionRepository: di.getIt<CollectionRepository>(),
-    );
+    await quickAddCubit.confirmAdd(boxId: boxId);
 
     // Reload singletons so UI reacts to the new items
     di.getIt<CollectionCubit>().loadCollectionItems();
