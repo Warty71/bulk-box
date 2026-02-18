@@ -9,7 +9,7 @@ class SearchCubit extends Cubit<SearchState> {
 
   SearchCubit(this._searchRepository) : super(const SearchState.initial());
 
-  /// Local-first search: queries local DB first, falls back to API if no results.
+  /// Always fetches fresh results from the API.
   Future<void> searchCards(String query) async {
     if (query.isEmpty) {
       emit(const SearchState.initial());
@@ -19,19 +19,6 @@ class SearchCubit extends Cubit<SearchState> {
     try {
       emit(const SearchState.loading());
 
-      // Try local first
-      final localCards = await _searchRepository.searchCardsLocal(query);
-      if (localCards.isNotEmpty) {
-        final entries = _explodeCards(localCards);
-        emit(SearchState.loaded(
-          entries: entries,
-          grouped: _groupByCardName(entries),
-          lastQuery: query,
-        ));
-        return;
-      }
-
-      // No local results — fetch from API
       final apiCards = await _searchRepository.searchCards(query);
       final entries = _explodeCards(apiCards);
       emit(SearchState.loaded(

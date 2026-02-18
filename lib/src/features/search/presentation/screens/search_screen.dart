@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:bulk_box/src/core/constants/dimensions.dart';
 import 'package:bulk_box/src/core/widgets/app_search_bar.dart';
-import 'package:bulk_box/src/core/widgets/debouncer.dart';
 import 'package:bulk_box/src/core/di/injection_container.dart' as di;
 import 'package:bulk_box/src/features/collection/presentation/cubit/boxes_cubit.dart';
 import 'package:bulk_box/src/features/collection/presentation/cubit/collection_cubit.dart';
@@ -38,7 +37,6 @@ class SearchView extends StatefulWidget {
 
 class _SearchViewState extends State<SearchView> {
   final _searchController = TextEditingController();
-  final _debounce = Debouncer(milliseconds: 500);
 
   @override
   void dispose() {
@@ -85,10 +83,9 @@ class _SearchViewState extends State<SearchView> {
               child: AppSearchBar(
                 controller: _searchController,
                 hintText: 'Search by card name...',
-                onChanged: (query) {
-                  _debounce.run(() {
-                    context.read<SearchCubit>().searchCards(query);
-                  });
+                textInputAction: TextInputAction.search,
+                onSubmitted: (query) {
+                  context.read<SearchCubit>().searchCards(query);
                 },
                 onClear: () {
                   context.read<SearchCubit>().searchCards('');

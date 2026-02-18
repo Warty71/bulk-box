@@ -28,22 +28,7 @@ class SearchRepositoryImpl implements SearchRepository {
   );
 
   @override
-  Future<List<YgoCard>> searchCardsLocal(String query) async {
-    final rows = await _cardDao.searchCardsByName(query);
-    return rows.map(CardModelMapper.fromDriftCard).toList();
-  }
-
-  @override
   Future<List<YgoCard>> searchCards(String query) async {
-    if (query.isEmpty) {
-      final cachedCards = await _cardDao.searchCardsByName('');
-      if (cachedCards.isNotEmpty) {
-        return cachedCards.map(CardModelMapper.fromDriftCard).toList();
-      }
-      return await _fetchAndCacheCards(
-          'type=Normal Monster&sort=name&offset=0&num=20');
-    }
-
     return await _fetchAndCacheCards(query);
   }
 
