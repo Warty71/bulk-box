@@ -5,6 +5,7 @@ import 'package:bulk_box/src/features/collection/domain/repositories/collection_
 import 'package:bulk_box/src/features/collection/presentation/cubit/collection_state.dart';
 import 'package:bulk_box/src/features/sorting/domain/comparators/ygo_card_sorters.dart';
 import 'package:bulk_box/src/features/sorting/domain/entities/sort_options.dart';
+import 'package:bulk_box/src/features/ygo_cards/domain/entities/ygo_card.dart';
 
 class CollectionCubit extends Cubit<CollectionState> {
   final CollectionRepository _repository;
@@ -155,6 +156,9 @@ class CollectionCubit extends Cubit<CollectionState> {
     }
   }
 
+  /// Reload collection preserving the current box/filter context.
+  Future<void> refresh() => _reloadWithCurrentFilter();
+
   Future<void> _reloadWithCurrentFilter() async {
     await state.maybeWhen(
       loaded: (_, __, ___, boxId, boxName) => loadCollectionItems(
@@ -201,6 +205,21 @@ class CollectionCubit extends Cubit<CollectionState> {
       },
       orElse: () {},
     );
+  }
+
+  /// Save card quantities from the add/edit bottom sheet.
+  Future<void> saveCardQuantities(
+    YgoCard card,
+    Map<String, int> quantities,
+    List<({String setCode, String setRarity})> sets,
+  ) async {
+    try {
+      await _repository.saveCardQuantities(card, quantities, sets);
+      await _reloadWithCurrentFilter();
+    } catch (e) {
+      emit(CollectionState.error(e.toString()));
+      rethrow;
+    }
   }
 
   /// Search for a collection entry by name or set code.

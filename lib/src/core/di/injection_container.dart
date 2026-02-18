@@ -3,7 +3,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:bulk_box/src/core/database/app_database.dart';
 import 'package:bulk_box/src/core/database/box_dao.dart';
 import 'package:bulk_box/src/core/database/card_dao.dart';
-import 'package:bulk_box/src/core/settings/settings_cubit.dart';
+import 'package:bulk_box/src/features/settings/presentation/cubit/settings_cubit.dart';
 import 'package:bulk_box/src/features/ygo_cards/data/datasources/local/image_local_datasource.dart';
 import 'package:bulk_box/src/features/ygo_cards/data/datasources/remote/ygopro_api_datasource.dart';
 import 'package:bulk_box/src/features/search/data/repositories/search_repository_impl.dart';
@@ -119,10 +119,7 @@ void _initializeSearchFeature() {
   );
 
   getIt.registerFactory<QuickAddCubit>(
-    () => QuickAddCubit(
-      getIt<CardDao>(),
-      getIt<CollectionRepository>(),
-    ),
+    () => QuickAddCubit(getIt<CollectionRepository>()),
   );
 }
 
@@ -138,7 +135,10 @@ void _initializeCollectionFeature() {
   );
 
   getIt.registerLazySingleton<CollectionRepository>(
-    () => CollectionRepositoryImpl(getIt<CollectionLocalDatasource>()),
+    () => CollectionRepositoryImpl(
+      getIt<CollectionLocalDatasource>(),
+      getIt<CardDao>(),
+    ),
   );
 
   // Cubits (BoxesCubit singleton so box list/counts refresh after moving cards)

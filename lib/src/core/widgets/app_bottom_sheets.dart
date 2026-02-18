@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:bulk_box/src/core/settings/settings_cubit.dart';
+import 'package:bulk_box/src/features/settings/presentation/cubit/settings_cubit.dart';
 import 'package:bulk_box/src/core/widgets/app_dialogs.dart';
 import 'package:bulk_box/src/features/ygo_cards/domain/entities/ygo_card.dart';
 import 'package:bulk_box/src/features/collection/domain/entities/collection_entry.dart';

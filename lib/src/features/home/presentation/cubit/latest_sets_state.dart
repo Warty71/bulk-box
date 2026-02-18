@@ -8,5 +8,5 @@ class LatestSetsState with _$LatestSetsState {
   const factory LatestSetsState.initial() = _Initial;
   const factory LatestSetsState.loading() = _Loading;
   const factory LatestSetsState.loaded(List<SetInfo> sets) = _Loaded;
-  const factory LatestSetsState.failure(String? message) = _Failure;
+  const factory LatestSetsState.error(String? message) = _Error;
 }

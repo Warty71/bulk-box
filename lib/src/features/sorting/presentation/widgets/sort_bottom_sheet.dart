@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:bulk_box/src/core/constants/dimensions.dart';
-import 'package:bulk_box/src/core/settings/settings_cubit.dart';
-import 'package:bulk_box/src/core/settings/settings_state.dart';
+import 'package:bulk_box/src/features/settings/presentation/cubit/settings_cubit.dart';
+import 'package:bulk_box/src/features/settings/presentation/cubit/settings_state.dart';
 import 'package:bulk_box/src/features/sorting/domain/entities/sort_options.dart';
 
 /// Bottom sheet to pick collection sort option.

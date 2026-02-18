@@ -1,33 +1,25 @@
-import 'package:flutter/foundation.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:bulk_box/src/features/ygo_cards/domain/entities/ygo_card.dart';
 
-class QuickAddItem {
-  final YgoCard card;
-  final String setCode;
-  final String setRarity;
-  final int quantity;
+part 'quick_add_state.freezed.dart';
 
-  const QuickAddItem({
-    required this.card,
-    required this.setCode,
-    required this.setRarity,
-    required this.quantity,
-  });
-
-  QuickAddItem copyWith({int? quantity}) {
-    return QuickAddItem(
-      card: card,
-      setCode: setCode,
-      setRarity: setRarity,
-      quantity: quantity ?? this.quantity,
-    );
-  }
+@freezed
+abstract class QuickAddItem with _$QuickAddItem {
+  const factory QuickAddItem({
+    required YgoCard card,
+    required String setCode,
+    required String setRarity,
+    required int quantity,
+  }) = _QuickAddItem;
 }
 
-class QuickAddState {
-  final Map<String, QuickAddItem> cart;
+@freezed
+abstract class QuickAddState with _$QuickAddState {
+  const QuickAddState._();
 
-  const QuickAddState({this.cart = const {}});
+  const factory QuickAddState({
+    @Default(<String, QuickAddItem>{}) Map<String, QuickAddItem> cart,
+  }) = _QuickAddState;
 
   int get totalCount =>
       cart.values.fold(0, (sum, item) => sum + item.quantity);
@@ -36,18 +28,4 @@ class QuickAddState {
 
   int quantityFor(String selectionKey) =>
       cart[selectionKey]?.quantity ?? 0;
-
-  QuickAddState copyWith({Map<String, QuickAddItem>? cart}) {
-    return QuickAddState(cart: cart ?? this.cart);
-  }
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is QuickAddState &&
-          runtimeType == other.runtimeType &&
-          mapEquals(cart, other.cart);
-
-  @override
-  int get hashCode => Object.hashAll(cart.entries);
 }

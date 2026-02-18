@@ -50,7 +50,7 @@ class _SearchViewState extends State<SearchView> {
     await quickAddCubit.confirmAdd(boxId: boxId);
 
     // Reload singletons so UI reacts to the new items
-    di.getIt<CollectionCubit>().loadCollectionItems();
+    di.getIt<CollectionCubit>().refresh();
     di.getIt<BoxesCubit>().loadBoxes();
 
     if (mounted) {

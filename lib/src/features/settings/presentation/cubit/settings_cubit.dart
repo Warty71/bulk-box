@@ -1,5 +1,5 @@
 import 'package:hydrated_bloc/hydrated_bloc.dart';
-import 'package:bulk_box/src/core/settings/settings_state.dart';
+import 'package:bulk_box/src/features/settings/presentation/cubit/settings_state.dart';
 import 'package:bulk_box/src/features/sorting/domain/entities/sort_options.dart';
 
 class SettingsCubit extends HydratedCubit<SettingsState> {

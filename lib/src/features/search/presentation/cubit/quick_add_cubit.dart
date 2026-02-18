@@ -1,18 +1,14 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:bulk_box/src/core/database/card_dao.dart';
 import 'package:bulk_box/src/features/collection/domain/entities/collection_item.dart';
 import 'package:bulk_box/src/features/collection/domain/repositories/collection_repository.dart';
 import 'package:bulk_box/src/features/search/domain/entities/search_result_entry.dart';
 import 'package:bulk_box/src/features/search/presentation/cubit/quick_add_state.dart';
-import 'package:bulk_box/src/features/ygo_cards/data/mappers/card_model_mapper.dart';
 
 /// Manages the staging cart for quick-adding cards from search.
 class QuickAddCubit extends Cubit<QuickAddState> {
-  final CardDao _cardDao;
   final CollectionRepository _collectionRepository;
 
-  QuickAddCubit(this._cardDao, this._collectionRepository)
-      : super(const QuickAddState());
+  QuickAddCubit(this._collectionRepository) : super(const QuickAddState());
 
   /// Set quantity for an entry. Creates the item if needed, removes if 0.
   void setQuantity(SearchResultEntry entry, int quantity) {
@@ -72,9 +68,7 @@ class QuickAddCubit extends Cubit<QuickAddState> {
 
     for (final item in state.cart.values) {
       // Ensure card row exists in DB for foreign key integrity
-      await _cardDao.insertOrUpdateCards(
-        [CardModelMapper.toDriftCard(item.card)],
-      );
+      await _collectionRepository.ensureCardExists(item.card);
 
       await _collectionRepository.addCollectionItem(
         CollectionItemEntity(
