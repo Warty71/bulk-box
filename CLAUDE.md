@@ -30,6 +30,7 @@ lib/src/
     ├── home/       # Latest card sets display
     ├── search/     # Card search via YGOProDeck API
     ├── collection/ # Collection management (cards, boxes, bulk moves)
+    ├── settings/   # User preferences (sort options, display toggles)
     ├── ygo_cards/  # Shared card data layer (API client, models, image caching)
     └── sorting/    # Sorting comparators
 ```
@@ -38,11 +39,12 @@ Each feature follows: **Domain** (repository contracts, entities) → **Data** (
 
 ### Key Architectural Decisions
 
-- **State management:** Cubits (flutter_bloc). States use freezed union types (initial | loading | loaded | error).
-- **Dependency injection:** GetIt service locator, configured in `core/di/injection_container.dart`. BoxesCubit is a singleton (refreshes after bulk moves); other cubits are factories.
+- **Layer boundaries:** Presentation must only depend on domain (repository contracts, entities). Never import data-layer classes (DAOs, mappers, models) from presentation code — route through repository methods instead.
+- **State management:** Cubits (flutter_bloc). Union-type states use freezed variants (initial | loading | loaded | error). Simple states use single-factory freezed for generated `copyWith`/equality. Error variants are always named `error()` (not `failure()`).
+- **Dependency injection:** GetIt service locator, configured in `core/di/injection_container.dart`. BoxesCubit and CollectionCubit are singletons (shared across tabs); other cubits are factories.
 - **Navigation:** GoRouter with `StatefulShellRoute.indexedStack` for three-tab bottom nav (Home `/`, Collection `/collection`, Search `/search`). Box detail view at `/collection/box/:boxId`.
 - **Database:** Drift ORM, schema version 2. Three tables: `Cards` (cached API data), `Boxes` (user containers), `CollectionItems` (card slots with composite PK: cardId + setCode + setRarity + boxId).
-- **Persistence:** HydratedBloc for settings state that survives app restarts.
+- **Persistence:** HydratedBloc for settings state (`features/settings/presentation/cubit/`) that survives app restarts.
 - **API:** YGOProDeck API (`https://db.ygoprodeck.com/api/v7`) via Dio with rate limiting (18 req/s for images).
 
 ### Data Flow
