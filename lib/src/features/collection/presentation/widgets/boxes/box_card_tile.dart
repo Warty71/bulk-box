@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:bulk_box/src/core/constants/dimensions.dart';
 import 'package:bulk_box/src/core/di/injection_container.dart' as di;
-import 'package:bulk_box/src/features/search/domain/repositories/search_repository.dart';
+import 'package:bulk_box/src/features/ygo_cards/domain/repositories/image_repository.dart';
 
 /// A single box card tile: rounded, elevated, gradient, scale-on-tap.
 /// When [previewCardIds] has cards, they replace the icon; when empty or null, the icon is shown.
@@ -258,13 +258,11 @@ class _MiniCardThumbnail extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final searchRepo = di.getIt<SearchRepository>();
-
     return SizedBox(
       width: width,
       height: height,
       child: FutureBuilder<String>(
-        future: searchRepo.getCardImagePath(cardId),
+        future: di.getIt<ImageRepository>().getCardImagePath(cardId),
         builder: (context, snapshot) {
           Widget child;
           if (snapshot.hasData && snapshot.data!.isNotEmpty) {

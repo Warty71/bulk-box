@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:bulk_box/src/core/constants/dimensions.dart';
 import 'package:bulk_box/src/core/theme/theme_extensions.dart';
-import 'package:bulk_box/src/features/ygo_cards/data/models/set_info_model.dart';
+import 'package:bulk_box/src/features/ygo_cards/domain/entities/set_info.dart';
 
 class SetCard extends StatelessWidget {
   const SetCard({
@@ -9,7 +9,7 @@ class SetCard extends StatelessWidget {
     required this.set,
   });
 
-  final SetInfoModel set;
+  final SetInfo set;
 
   @override
   Widget build(BuildContext context) {

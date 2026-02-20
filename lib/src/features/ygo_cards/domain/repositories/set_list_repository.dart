@@ -1,5 +1,5 @@
-import 'package:bulk_box/src/features/ygo_cards/data/models/set_info_model.dart';
+import 'package:bulk_box/src/features/ygo_cards/domain/entities/set_info.dart';
 
 abstract class SetListRepository {
-  Future<List<SetInfoModel>> getLatestSets({int limit = 10});
+  Future<List<SetInfo>> getLatestSets({int limit = 10});
 }

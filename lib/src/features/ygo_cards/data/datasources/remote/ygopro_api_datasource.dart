@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 
 class YGOProApiDatasource {
   final Dio _dio;
+  final Dio _imageDio;
   static const String baseUrl = 'https://db.ygoprodeck.com/api/v7';
 
   YGOProApiDatasource()
@@ -10,6 +11,13 @@ class YGOProApiDatasource {
             baseUrl: baseUrl,
             connectTimeout: const Duration(seconds: 30),
             receiveTimeout: const Duration(seconds: 30),
+          ),
+        ),
+        _imageDio = Dio(
+          BaseOptions(
+            connectTimeout: const Duration(seconds: 10),
+            receiveTimeout: const Duration(seconds: 10),
+            responseType: ResponseType.bytes,
           ),
         );
 
@@ -61,35 +69,13 @@ class YGOProApiDatasource {
     }
   }
 
-  Future<List<int>> getCardImage(int cardId) async {
-    try {
-      // First get the card info to get the actual image URL
-      final response = await _dio.get(
-        '/cardinfo.php',
-        queryParameters: {'id': cardId, 'tcgplayer_data': 'yes'},
-      );
+  Future<List<int>> downloadImage(String imageUrl) async {
+    final response = await _imageDio.get(imageUrl);
 
-      final cardData = response.data['data'][0];
-      final imageUrl = cardData['card_images'][0]['image_url'];
-
-      // Create a new Dio instance specifically for image download
-      final imageDio = Dio(BaseOptions(
-        connectTimeout: const Duration(seconds: 10),
-        receiveTimeout: const Duration(seconds: 10),
-        responseType: ResponseType.bytes,
-      ));
-
-      final imageResponse = await imageDio.get(imageUrl);
-
-      if (imageResponse.statusCode == 200 && imageResponse.data != null) {
-        final bytes = imageResponse.data as List<int>;
-        return bytes;
-      } else {
-        throw Exception(
-            'Failed to download image: ${imageResponse.statusCode}');
-      }
-    } catch (e) {
-      rethrow;
+    if (response.statusCode == 200 && response.data != null) {
+      return response.data as List<int>;
+    } else {
+      throw Exception('Failed to download image: ${response.statusCode}');
     }
   }
 }

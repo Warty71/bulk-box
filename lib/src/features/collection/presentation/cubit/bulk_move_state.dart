@@ -1,37 +1,15 @@
-import 'package:flutter/foundation.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-/// State for bulk move selection mode on the collection grid.
-class BulkMoveState {
-  const BulkMoveState({
-    this.isSelectionMode = false,
-    Set<String>? selectedKeys,
-  }) : selectedKeys = selectedKeys ?? const {};
+part 'bulk_move_state.freezed.dart';
 
-  final bool isSelectionMode;
-  final Set<String> selectedKeys;
+@freezed
+abstract class BulkMoveState with _$BulkMoveState {
+  const BulkMoveState._();
+
+  const factory BulkMoveState({
+    @Default(false) bool isSelectionMode,
+    @Default(<String>{}) Set<String> selectedKeys,
+  }) = _BulkMoveState;
 
   int get selectedCount => selectedKeys.length;
-
-  BulkMoveState copyWith({
-    bool? isSelectionMode,
-    Set<String>? selectedKeys,
-  }) {
-    return BulkMoveState(
-      isSelectionMode: isSelectionMode ?? this.isSelectionMode,
-      selectedKeys: selectedKeys ?? this.selectedKeys,
-    );
-  }
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is BulkMoveState &&
-          isSelectionMode == other.isSelectionMode &&
-          setEquals(selectedKeys, other.selectedKeys);
-
-  @override
-  int get hashCode => Object.hash(
-        isSelectionMode,
-        Object.hashAllUnordered(selectedKeys),
-      );
 }

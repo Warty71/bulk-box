@@ -60,7 +60,7 @@ class LatestSetsSection extends StatelessWidget {
                     },
                   );
                 },
-                failure: (message) => Center(
+                error: (message) => Center(
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [

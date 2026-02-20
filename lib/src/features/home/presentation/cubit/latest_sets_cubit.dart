@@ -16,7 +16,7 @@ class LatestSetsCubit extends Cubit<LatestSetsState> {
       final sets = await _setListRepository.getLatestSets(limit: limit);
       emit(LatestSetsState.loaded(sets));
     } catch (e) {
-      emit(LatestSetsState.failure(e.toString()));
+      emit(LatestSetsState.error(e.toString()));
     }
   }
 }

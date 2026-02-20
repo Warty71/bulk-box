@@ -1,18 +1,16 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:bulk_box/src/core/constants/dimensions.dart';
-import 'package:bulk_box/src/core/database/app_database.dart' as db;
 import 'package:bulk_box/src/core/di/injection_container.dart' as di;
-import 'package:bulk_box/src/features/search/domain/repositories/search_repository.dart';
-import 'package:bulk_box/src/features/search/presentation/cubit/search_cubit.dart';
+import 'package:bulk_box/src/features/ygo_cards/domain/entities/ygo_card.dart';
+import 'package:bulk_box/src/features/ygo_cards/domain/repositories/image_repository.dart';
 import 'package:bulk_box/src/features/ygo_cards/presentation/screens/card_details_screen.dart';
 
 /// Section header showing card image, title, type, and stats.
 /// Tappable to navigate to card details screen.
 class SearchSectionHeader extends StatelessWidget {
-  final db.Card card;
+  final YgoCard card;
   final String title;
 
   const SearchSectionHeader({
@@ -23,13 +21,9 @@ class SearchSectionHeader extends StatelessWidget {
 
   void _navigateToCardDetails(BuildContext context) {
     HapticFeedback.selectionClick();
-    final searchCubit = context.read<SearchCubit>();
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (_) => BlocProvider.value(
-          value: searchCubit,
-          child: CardDetailsScreen(card: card),
-        ),
+        builder: (_) => CardDetailsScreen(card: card),
       ),
     );
   }
@@ -41,7 +35,7 @@ class SearchSectionHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final imagePathFuture =
-        di.getIt<SearchRepository>().getCardImagePath(card.id);
+        di.getIt<ImageRepository>().getCardImagePath(card.id);
 
     return SliverToBoxAdapter(
       child: Padding(
@@ -189,7 +183,7 @@ class _CardImage extends StatelessWidget {
 
 /// Compact stats row: Level / ATK / DEF shown as icon + value pairs.
 class _StatsRow extends StatelessWidget {
-  final db.Card card;
+  final YgoCard card;
   final ThemeData theme;
 
   const _StatsRow({required this.card, required this.theme});

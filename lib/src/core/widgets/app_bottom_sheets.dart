@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:bulk_box/src/core/database/app_database.dart' as db;
-import 'package:bulk_box/src/core/settings/settings_cubit.dart';
+import 'package:bulk_box/src/features/settings/presentation/cubit/settings_cubit.dart';
 import 'package:bulk_box/src/core/widgets/app_dialogs.dart';
+import 'package:bulk_box/src/features/ygo_cards/domain/entities/ygo_card.dart';
 import 'package:bulk_box/src/features/collection/domain/entities/collection_entry.dart';
 import 'package:bulk_box/src/features/collection/presentation/cubit/collection_cubit.dart';
 import 'package:bulk_box/src/features/collection/domain/entities/box.dart';
@@ -97,7 +97,7 @@ class AppBottomSheets {
   }
 
   /// Shows the add-card sheet (set/rarity quantities, save to Unboxed).
-  static Future<void> showAddCard(BuildContext context, {required db.Card card}) {
+  static Future<void> showAddCard(BuildContext context, {required YgoCard card}) {
     return showModalBottomSheet<void>(
       context: context,
       isScrollControlled: _defaultOptions.isScrollControlled,

@@ -1,72 +1,31 @@
-import 'package:bulk_box/src/core/database/app_database.dart';
-import 'package:flutter/foundation.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:bulk_box/src/features/ygo_cards/domain/entities/ygo_card.dart';
 
-class QuickAddItem {
-  final Card card;
-  final String setCode;
-  final String setRarity;
-  final int quantity;
+part 'quick_add_state.freezed.dart';
 
-  const QuickAddItem({
-    required this.card,
-    required this.setCode,
-    required this.setRarity,
-    required this.quantity,
-  });
-
-  QuickAddItem copyWith({int? quantity}) {
-    return QuickAddItem(
-      card: card,
-      setCode: setCode,
-      setRarity: setRarity,
-      quantity: quantity ?? this.quantity,
-    );
-  }
+@freezed
+abstract class QuickAddItem with _$QuickAddItem {
+  const factory QuickAddItem({
+    required YgoCard card,
+    required String setCode,
+    required String setRarity,
+    required int quantity,
+  }) = _QuickAddItem;
 }
 
-class QuickAddState {
-  final Map<String, QuickAddItem> cart;
-  final String? selectedKey;
+@freezed
+abstract class QuickAddState with _$QuickAddState {
+  const QuickAddState._();
 
-  const QuickAddState({
-    this.cart = const {},
-    this.selectedKey,
-  });
+  const factory QuickAddState({
+    @Default(<String, QuickAddItem>{}) Map<String, QuickAddItem> cart,
+  }) = _QuickAddState;
 
   int get totalCount =>
       cart.values.fold(0, (sum, item) => sum + item.quantity);
 
   bool get hasItems => cart.isNotEmpty;
 
-  bool get hasSelection => selectedKey != null;
-
-  bool get barVisible => hasSelection || hasItems;
-
-  QuickAddItem? get selectedItem =>
-      selectedKey != null ? cart[selectedKey] : null;
-
   int quantityFor(String selectionKey) =>
       cart[selectionKey]?.quantity ?? 0;
-
-  bool isSelected(String selectionKey) => selectedKey == this.selectedKey;
-
-  QuickAddState copyWith({
-    Map<String, QuickAddItem>? cart,
-    String? selectedKey,
-  }) {
-    return QuickAddState(
-      cart: cart ?? this.cart,
-      selectedKey: selectedKey ?? this.selectedKey,
-    );
-  }
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is QuickAddState &&
-          runtimeType == other.runtimeType &&
-          mapEquals(cart, other.cart);
-
-  @override
-  int get hashCode => Object.hashAll(cart.entries);
 }

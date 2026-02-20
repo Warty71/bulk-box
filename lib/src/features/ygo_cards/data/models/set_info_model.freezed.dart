@@ -298,13 +298,14 @@ extension SetInfoModelPatterns on SetInfoModel {
 
 /// @nodoc
 @JsonSerializable()
-class _SetInfoModel implements SetInfoModel {
+class _SetInfoModel extends SetInfoModel {
   const _SetInfoModel(
       {@JsonKey(name: 'set_name') required this.setName,
       @JsonKey(name: 'set_code') required this.setCode,
       @JsonKey(name: 'num_of_cards') required this.numOfCards,
       @JsonKey(name: 'tcg_date') required this.tcgDate,
-      @JsonKey(name: 'set_image') this.setImage});
+      @JsonKey(name: 'set_image') this.setImage})
+      : super._();
   factory _SetInfoModel.fromJson(Map<String, dynamic> json) =>
       _$SetInfoModelFromJson(json);
 
