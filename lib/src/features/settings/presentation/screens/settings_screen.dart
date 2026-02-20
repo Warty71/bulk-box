@@ -9,8 +9,6 @@ import 'package:bulk_box/src/features/settings/presentation/widgets/settings_sec
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
 
-  static const _version = '1.0.0+5';
-
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -103,24 +101,6 @@ class SettingsScreen extends StatelessWidget {
                 ],
               ),
 
-              const SizedBox(height: Dimensions.lg),
-
-              // About section
-              SettingsSection(
-                title: 'About',
-                children: [
-                  SettingsTile(
-                    title: 'Version',
-                    subtitle: 'Current app version and build number',
-                    trailing: Text(
-                      _version,
-                      style: theme.textTheme.bodyMedium?.copyWith(
-                        color: colorScheme.onSurface.withValues(alpha: 0.6),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
             ],
           );
         },
