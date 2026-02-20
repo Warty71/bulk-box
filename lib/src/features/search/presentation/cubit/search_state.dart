@@ -1,4 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:bulk_box/src/features/search/domain/entities/card_search_filters.dart';
 import 'package:bulk_box/src/features/search/domain/entities/search_result_entry.dart';
 
 part 'search_state.freezed.dart';
@@ -11,6 +12,7 @@ class SearchState with _$SearchState {
     required List<SearchResultEntry> entries,
     required Map<String, List<SearchResultEntry>> grouped,
     required String lastQuery,
+    CardSearchFilters? lastFilters,
   }) = _Loaded;
   const factory SearchState.error(String message) = _Error;
 }
