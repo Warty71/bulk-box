@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:sentry_dio/sentry_dio.dart';
 
 class YGOProApiDatasource {
   final Dio _dio;
@@ -12,14 +13,14 @@ class YGOProApiDatasource {
             connectTimeout: const Duration(seconds: 30),
             receiveTimeout: const Duration(seconds: 30),
           ),
-        ),
+        )..addSentry(),
         _imageDio = Dio(
           BaseOptions(
             connectTimeout: const Duration(seconds: 10),
             receiveTimeout: const Duration(seconds: 10),
             responseType: ResponseType.bytes,
           ),
-        );
+        )..addSentry();
 
   Future<Map<String, dynamic>> searchCards(String query) async {
     final Map<String, dynamic> params = {'tcgplayer_data': 'yes'};

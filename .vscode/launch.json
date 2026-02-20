@@ -1,0 +1,11 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Bulk Box",
+      "request": "launch",
+      "type": "dart",
+      "toolArgs": ["--dart-define-from-file=local.dart_defines"]
+    }
+  ]
+}
