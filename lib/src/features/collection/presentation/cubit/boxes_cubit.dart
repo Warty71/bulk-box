@@ -3,9 +3,16 @@ import 'package:bulk_box/src/features/collection/domain/repositories/box_reposit
 import 'package:bulk_box/src/features/collection/presentation/cubit/boxes_state.dart';
 
 class BoxesCubit extends Cubit<BoxesState> {
+  static const int maxBoxes = 3;
+
   final BoxRepository _repository;
 
   BoxesCubit(this._repository) : super(const BoxesState.initial());
+
+  bool get canCreateBox => state.maybeWhen(
+        loaded: (boxes) => boxes.length < maxBoxes,
+        orElse: () => false,
+      );
 
   Future<void> loadBoxes() async {
     emit(const BoxesState.loading());
@@ -19,6 +26,8 @@ class BoxesCubit extends Cubit<BoxesState> {
   }
 
   Future<void> createBox({required String name, String? color}) async {
+    if (!canCreateBox) return;
+
     try {
       await _repository.createBox(name: name, color: color);
       await loadBoxes();
