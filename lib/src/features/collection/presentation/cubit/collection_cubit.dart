@@ -5,6 +5,7 @@ import 'package:bulk_box/src/features/collection/domain/repositories/collection_
 import 'package:bulk_box/src/features/collection/presentation/cubit/collection_state.dart';
 import 'package:bulk_box/src/features/sorting/domain/comparators/ygo_card_sorters.dart';
 import 'package:bulk_box/src/features/sorting/domain/entities/sort_options.dart';
+import 'package:bulk_box/src/features/ygo_cards/domain/entities/ygo_card.dart';
 
 class CollectionCubit extends Cubit<CollectionState> {
   final CollectionRepository _repository;
@@ -131,24 +132,35 @@ class CollectionCubit extends Cubit<CollectionState> {
     required int? fromBoxId,
     required int? toBoxId,
   }) async {
-    await _repository.batchMoveBetweenSlots(
-      items: items,
-      fromBoxId: fromBoxId,
-      toBoxId: toBoxId,
-    );
-    await _reloadWithCurrentFilter();
+    try {
+      await _repository.batchMoveBetweenSlots(
+        items: items,
+        fromBoxId: fromBoxId,
+        toBoxId: toBoxId,
+      );
+      await _reloadWithCurrentFilter();
+    } catch (e) {
+      emit(CollectionState.error(e.toString()));
+    }
   }
 
   /// Delete multiple slots in a single transaction.
   Future<void> batchDeleteSlots(
     List<({int cardId, String setCode, String setRarity, int? boxId})> items,
   ) async {
-    await _repository.batchDeleteSlots(items);
-    await _reloadWithCurrentFilter();
+    try {
+      await _repository.batchDeleteSlots(items);
+      await _reloadWithCurrentFilter();
+    } catch (e) {
+      emit(CollectionState.error(e.toString()));
+    }
   }
 
+  /// Reload collection preserving the current box/filter context.
+  Future<void> refresh() => _reloadWithCurrentFilter();
+
   Future<void> _reloadWithCurrentFilter() async {
-    state.maybeWhen(
+    await state.maybeWhen(
       loaded: (_, __, ___, boxId, boxName) => loadCollectionItems(
         boxId: boxId,
         unboxedOnly: boxId == null && boxName == 'Unboxed',
@@ -193,6 +205,21 @@ class CollectionCubit extends Cubit<CollectionState> {
       },
       orElse: () {},
     );
+  }
+
+  /// Save card quantities from the add/edit bottom sheet.
+  Future<void> saveCardQuantities(
+    YgoCard card,
+    Map<String, int> quantities,
+    List<({String setCode, String setRarity})> sets,
+  ) async {
+    try {
+      await _repository.saveCardQuantities(card, quantities, sets);
+      await _reloadWithCurrentFilter();
+    } catch (e) {
+      emit(CollectionState.error(e.toString()));
+      rethrow;
+    }
   }
 
   /// Search for a collection entry by name or set code.

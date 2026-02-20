@@ -49,3 +49,6 @@ lib/firebase_options.dart
 android/app/google-services.json
 ios/Runner/GoogleService-Info.plist
 firebase.json
+
+# Dart defines (contains secrets like Sentry DSN)
+*.dart_defines

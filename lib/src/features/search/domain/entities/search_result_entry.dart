@@ -1,8 +1,8 @@
-import 'package:bulk_box/src/core/database/app_database.dart';
+import 'package:bulk_box/src/features/ygo_cards/domain/entities/ygo_card.dart';
 
 /// One (card + set + rarity) combo in search results.
 class SearchResultEntry {
-  final Card card;
+  final YgoCard card;
   final String setName;
   final String setCode;
   final String setRarity;

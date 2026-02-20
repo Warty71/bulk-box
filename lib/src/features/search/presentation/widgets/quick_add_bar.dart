@@ -2,18 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:bulk_box/src/core/constants/dimensions.dart';
 import 'package:bulk_box/src/core/di/injection_container.dart' as di;
-import 'package:bulk_box/src/core/enums/rarity.dart';
-import 'package:bulk_box/src/core/utils/set_code_utils.dart';
-import 'package:bulk_box/src/core/widgets/quantity_stepper.dart';
 import 'package:bulk_box/src/features/collection/domain/entities/box.dart';
 import 'package:bulk_box/src/features/collection/domain/repositories/box_repository.dart';
 import 'package:bulk_box/src/features/search/presentation/cubit/quick_add_cubit.dart';
 import 'package:bulk_box/src/features/search/presentation/cubit/quick_add_state.dart';
 import 'package:bulk_box/src/features/search/presentation/widgets/quick_add_cart_sheet.dart';
 
-/// Bottom bar with two modes:
-/// - **Selection mode**: shows selected card name, set/rarity, and QuantityStepper.
-/// - **Cart summary mode**: shows total card count + Add button.
+/// Bottom bar showing cart total + Add button when the cart has items.
 class QuickAddBar extends StatelessWidget {
   final void Function(int? boxId) onConfirmAdd;
 
@@ -24,21 +19,16 @@ class QuickAddBar extends StatelessWidget {
     return BlocBuilder<QuickAddCubit, QuickAddState>(
       builder: (context, state) {
         return AnimatedSlide(
-          offset: state.barVisible ? Offset.zero : const Offset(0, 1),
+          offset: state.hasItems ? Offset.zero : const Offset(0, 1),
           duration: const Duration(milliseconds: 250),
           curve: Curves.easeOutCubic,
           child: AnimatedOpacity(
-            opacity: state.barVisible ? 1.0 : 0.0,
+            opacity: state.hasItems ? 1.0 : 0.0,
             duration: const Duration(milliseconds: 200),
-            child: state.hasSelection
-                ? _SelectionBar(
-                    state: state,
-                    onConfirmAdd: onConfirmAdd,
-                  )
-                : _CartSummaryBar(
-                    state: state,
-                    onConfirmAdd: onConfirmAdd,
-                  ),
+            child: _CartSummaryBar(
+              state: state,
+              onConfirmAdd: onConfirmAdd,
+            ),
           ),
         );
       },
@@ -46,110 +36,7 @@ class QuickAddBar extends StatelessWidget {
   }
 }
 
-/// Bar when a card is selected — shows card info + quantity stepper.
-class _SelectionBar extends StatelessWidget {
-  final QuickAddState state;
-  final void Function(int? boxId) onConfirmAdd;
-
-  const _SelectionBar({required this.state, required this.onConfirmAdd});
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final item = state.selectedItem;
-    final key = state.selectedKey!;
-    final qty = item?.quantity ?? 0;
-
-    return Material(
-      elevation: 8,
-      color: theme.colorScheme.surfaceContainerHigh,
-      child: SafeArea(
-        top: false,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(
-            horizontal: Dimensions.md,
-            vertical: Dimensions.sm,
-          ),
-          child: Row(
-            children: [
-              // Card info
-              Expanded(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      item?.card.name ?? '',
-                      style: theme.textTheme.titleSmall,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    Text(
-                      '${shortSetCode(item?.setCode ?? '')} - ${Rarity.getShortRarity(item?.setRarity ?? '')}',
-                      style: theme.textTheme.bodySmall?.copyWith(
-                        color: theme.colorScheme.outline,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              // Quantity stepper
-              QuantityStepper(
-                value: qty,
-                min: 0,
-                onDecrease: () => context
-                    .read<QuickAddCubit>()
-                    .updateQuantity(key, qty - 1),
-                onIncrease: () => context
-                    .read<QuickAddCubit>()
-                    .updateQuantity(key, qty + 1),
-              ),
-              // Cart badge + add button (when cart has items)
-              if (state.hasItems) ...[
-                const SizedBox(width: Dimensions.xs),
-                _CartAddButton(
-                  totalCount: state.totalCount,
-                  onCartTap: () => _showCartSheet(context),
-                  onAddTap: () => _showDestinationPicker(context),
-                ),
-              ],
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  void _showCartSheet(BuildContext context) {
-    final cubit = context.read<QuickAddCubit>();
-    showModalBottomSheet<void>(
-      context: context,
-      isScrollControlled: true,
-      useSafeArea: true,
-      builder: (_) => BlocProvider.value(
-        value: cubit,
-        child: QuickAddCartSheet(
-          onAddPressed: () => _showDestinationPicker(context),
-        ),
-      ),
-    );
-  }
-
-  void _showDestinationPicker(BuildContext context) {
-    final cubit = context.read<QuickAddCubit>();
-    showModalBottomSheet<void>(
-      context: context,
-      isScrollControlled: true,
-      useSafeArea: true,
-      builder: (_) => BlocProvider.value(
-        value: cubit,
-        child: _DestinationPickerSheet(onConfirmAdd: onConfirmAdd),
-      ),
-    );
-  }
-}
-
-/// Bar when no card is selected but cart has items — shows total + Add button.
+/// Bar showing cart total count, Clear button, and Add button.
 class _CartSummaryBar extends StatelessWidget {
   final QuickAddState state;
   final void Function(int? boxId) onConfirmAdd;
@@ -230,54 +117,6 @@ class _CartSummaryBar extends StatelessWidget {
         value: cubit,
         child: _DestinationPickerSheet(onConfirmAdd: onConfirmAdd),
       ),
-    );
-  }
-}
-
-/// Small cart badge that doubles as Add button.
-class _CartAddButton extends StatelessWidget {
-  final int totalCount;
-  final VoidCallback onCartTap;
-  final VoidCallback onAddTap;
-
-  const _CartAddButton({
-    required this.totalCount,
-    required this.onCartTap,
-    required this.onAddTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        InkWell(
-          onTap: onCartTap,
-          borderRadius: BorderRadius.circular(Dimensions.radiusSm),
-          child: Padding(
-            padding: const EdgeInsets.all(Dimensions.xs),
-            child: Badge(
-              label: Text('$totalCount'),
-              child: Icon(
-                Icons.shopping_cart_outlined,
-                size: 20,
-                color: theme.colorScheme.primary,
-              ),
-            ),
-          ),
-        ),
-        const SizedBox(width: Dimensions.xs),
-        FilledButton(
-          onPressed: onAddTap,
-          style: FilledButton.styleFrom(
-            padding: const EdgeInsets.symmetric(horizontal: Dimensions.md),
-            minimumSize: const Size(0, 36),
-          ),
-          child: const Text('Add'),
-        ),
-      ],
     );
   }
 }

@@ -3,7 +3,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:bulk_box/src/core/database/app_database.dart';
 import 'package:bulk_box/src/core/database/box_dao.dart';
 import 'package:bulk_box/src/core/database/card_dao.dart';
-import 'package:bulk_box/src/core/settings/settings_cubit.dart';
+import 'package:bulk_box/src/features/settings/presentation/cubit/settings_cubit.dart';
 import 'package:bulk_box/src/features/ygo_cards/data/datasources/local/image_local_datasource.dart';
 import 'package:bulk_box/src/features/ygo_cards/data/datasources/remote/ygopro_api_datasource.dart';
 import 'package:bulk_box/src/features/search/data/repositories/search_repository_impl.dart';
@@ -19,8 +19,10 @@ import 'package:bulk_box/src/features/collection/presentation/cubit/bulk_move_cu
 import 'package:bulk_box/src/features/collection/presentation/cubit/boxes_cubit.dart';
 import 'package:bulk_box/src/features/collection/presentation/cubit/collection_cubit.dart';
 import 'package:bulk_box/src/features/home/presentation/cubit/latest_sets_cubit.dart';
+import 'package:bulk_box/src/features/ygo_cards/data/repositories/image_repository_impl.dart';
 import 'package:bulk_box/src/features/ygo_cards/data/repositories/set_list_repository_impl.dart';
 import 'package:bulk_box/src/features/ygo_cards/data/services/archetype_backfill_service.dart';
+import 'package:bulk_box/src/features/ygo_cards/domain/repositories/image_repository.dart';
 import 'package:bulk_box/src/features/ygo_cards/domain/repositories/set_list_repository.dart';
 
 final getIt = GetIt.instance;
@@ -36,7 +38,7 @@ Future<void> initializeDependencies() async {
 Future<void> _initializeCore() async {
   // External
   final prefs = await SharedPreferences.getInstance();
-  getIt.registerSingleton(prefs);
+  getIt.registerSingleton<SharedPreferences>(prefs);
 
   // Database
   getIt.registerLazySingleton<AppDatabase>(
@@ -44,27 +46,35 @@ Future<void> _initializeCore() async {
   );
 
   // Datasources
-  getIt.registerLazySingleton(
+  getIt.registerLazySingleton<YGOProApiDatasource>(
     () => YGOProApiDatasource(),
   );
 
-  getIt.registerLazySingleton(
+  getIt.registerLazySingleton<ImageLocalDatasource>(
     () => ImageLocalDatasource(),
   );
 
-  getIt.registerLazySingleton(
+  getIt.registerLazySingleton<CardDao>(
     () => CardDao(getIt<AppDatabase>()),
   );
 
-  getIt.registerLazySingleton(
+  getIt.registerLazySingleton<BoxDao>(
     () => BoxDao(getIt<AppDatabase>()),
   );
 
-  getIt.registerLazySingleton(
+  getIt.registerLazySingleton<ArchetypeBackfillService>(
     () => ArchetypeBackfillService(
       getIt<YGOProApiDatasource>(),
       getIt<CardDao>(),
       getIt<SharedPreferences>(),
+    ),
+  );
+
+  getIt.registerLazySingleton<ImageRepository>(
+    () => ImageRepositoryImpl(
+      getIt<ImageLocalDatasource>(),
+      getIt<YGOProApiDatasource>(),
+      getIt<CardDao>(),
     ),
   );
 }
@@ -88,7 +98,7 @@ void _initializeHomeFeature() {
     () => SetListRepositoryImpl(getIt<YGOProApiDatasource>()),
   );
 
-  getIt.registerFactory(
+  getIt.registerFactory<LatestSetsCubit>(
     () => LatestSetsCubit(getIt<SetListRepository>()),
   );
 }
@@ -97,25 +107,25 @@ void _initializeSearchFeature() {
   // Repository
   getIt.registerLazySingleton<SearchRepository>(
     () => SearchRepositoryImpl(
-      getIt(), // YGOProApiDatasource
-      getIt(), // ImageLocalDatasource
-      getIt(), // CardDao
+      getIt<YGOProApiDatasource>(),
+      getIt<ImageRepository>(),
+      getIt<CardDao>(),
     ),
   );
 
   // Cubits
-  getIt.registerFactory(
-    () => SearchCubit(getIt()),
+  getIt.registerFactory<SearchCubit>(
+    () => SearchCubit(getIt<SearchRepository>()),
   );
 
-  getIt.registerFactory(
-    () => QuickAddCubit(getIt()),
+  getIt.registerFactory<QuickAddCubit>(
+    () => QuickAddCubit(getIt<CollectionRepository>()),
   );
 }
 
 void _initializeCollectionFeature() {
   // Datasource
-  getIt.registerLazySingleton(
+  getIt.registerLazySingleton<CollectionLocalDatasource>(
     () => CollectionLocalDatasource(getIt<AppDatabase>()),
   );
 
@@ -125,27 +135,30 @@ void _initializeCollectionFeature() {
   );
 
   getIt.registerLazySingleton<CollectionRepository>(
-    () => CollectionRepositoryImpl(getIt()),
+    () => CollectionRepositoryImpl(
+      getIt<CollectionLocalDatasource>(),
+      getIt<CardDao>(),
+    ),
   );
 
   // Cubits (BoxesCubit singleton so box list/counts refresh after moving cards)
-  getIt.registerLazySingleton(
+  getIt.registerLazySingleton<BoxesCubit>(
     () => BoxesCubit(getIt<BoxRepository>()),
   );
 
   // CollectionCubit singleton so collection changes propagate across screens
   // (e.g., search screen can react to collection updates)
-  getIt.registerLazySingleton(
-    () => CollectionCubit(getIt()),
+  getIt.registerLazySingleton<CollectionCubit>(
+    () => CollectionCubit(getIt<CollectionRepository>()),
   );
 
-  getIt.registerFactory(
+  getIt.registerFactory<BulkMoveCubit>(
     () => BulkMoveCubit(),
   );
 }
 
 void _initializeSettings() {
-  getIt.registerLazySingleton(
+  getIt.registerLazySingleton<SettingsCubit>(
     () => SettingsCubit(),
   );
 }

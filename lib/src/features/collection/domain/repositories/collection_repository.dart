@@ -1,7 +1,11 @@
 import 'package:bulk_box/src/features/collection/domain/entities/collection_item.dart';
 import 'package:bulk_box/src/features/collection/domain/entities/collection_entry.dart';
+import 'package:bulk_box/src/features/ygo_cards/domain/entities/ygo_card.dart';
 
 abstract class CollectionRepository {
+  /// Ensure the card row exists in the local DB (for foreign key integrity).
+  Future<void> ensureCardExists(YgoCard card);
+
   /// [boxId] null = all slots; [unboxedOnly] true = only unboxed slots.
   Future<List<CollectionEntry>> getCollectionWithCards({
     int? boxId,
@@ -66,5 +70,13 @@ abstract class CollectionRepository {
   /// Delete multiple slots in a single transaction.
   Future<void> batchDeleteSlots(
     List<({int cardId, String setCode, String setRarity, int? boxId})> items,
+  );
+
+  /// Save card quantities from the add/edit bottom sheet.
+  /// Computes deltas vs existing slots and applies adds/removes.
+  Future<void> saveCardQuantities(
+    YgoCard card,
+    Map<String, int> quantities,
+    List<({String setCode, String setRarity})> sets,
   );
 }

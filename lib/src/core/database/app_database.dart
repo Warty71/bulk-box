@@ -3,6 +3,7 @@ import 'package:drift/drift.dart';
 import 'package:drift/native.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as p;
+import 'package:sentry_drift/sentry_drift.dart';
 
 import 'migrations/app_migrations.dart';
 
@@ -76,6 +77,7 @@ LazyDatabase _openConnection() {
   return LazyDatabase(() async {
     final dbFolder = await getApplicationDocumentsDirectory();
     final file = File(p.join(dbFolder.path, 'bulk_box.db'));
-    return NativeDatabase(file);
+    // ignore: deprecated_member_use
+    return SentryQueryExecutor(() => NativeDatabase(file), databaseName: 'bulk_box.db');
   });
 }

@@ -1,16 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:bulk_box/src/core/constants/dimensions.dart';
-import 'package:bulk_box/src/core/database/app_database.dart' as db;
-import 'package:bulk_box/src/core/database/card_dao.dart';
-import 'package:bulk_box/src/core/database/card_extensions.dart';
 import 'package:bulk_box/src/core/di/injection_container.dart' as di;
-import 'package:bulk_box/src/features/collection/domain/entities/collection_item.dart';
 import 'package:bulk_box/src/features/collection/presentation/cubit/collection_cubit.dart';
+import 'package:bulk_box/src/features/ygo_cards/domain/entities/card_set.dart';
+import 'package:bulk_box/src/features/ygo_cards/domain/entities/ygo_card.dart';
 
 /// Bottom sheet for adding/editing card quantities in collection.
 /// Works for both adding new cards and editing existing ones.
 class AddCardBottomSheet extends StatefulWidget {
-  final db.Card card;
+  final YgoCard card;
 
   const AddCardBottomSheet({
     super.key,
@@ -27,11 +25,11 @@ class _AddCardBottomSheetState extends State<AddCardBottomSheet> {
   bool _isSaving = false;
 
   /// Use API sets when present; otherwise one synthetic set so the user can still add the card.
-  List<ParsedCardSet> get _effectiveCardSets {
-    final p = widget.card.parsedCardSets;
+  List<CardSet> get _effectiveCardSets {
+    final p = widget.card.cardSets;
     if (p.isEmpty) {
       return [
-        ParsedCardSet(
+        const CardSet(
           setName: 'Unknown',
           setCode: 'N/A',
           setRarity: 'N/A',
@@ -81,58 +79,11 @@ class _AddCardBottomSheetState extends State<AddCardBottomSheet> {
     setState(() => _isSaving = true);
 
     try {
-      // Ensure card is in DB (e.g. when opened from search, insert may not have completed).
-      await di.getIt<CardDao>().insertOrUpdateCards([widget.card]);
-
       final cubit = di.getIt<CollectionCubit>();
-      final now = DateTime.now();
-
-      for (final set in _effectiveCardSets) {
-        final key = '${set.setCode}_${set.setRarity}';
-        final newTotal = _quantities[key] ?? 0;
-        final slots = await cubit.getSlotsForCard(
-          widget.card.id,
-          set.setCode,
-          set.setRarity,
-        );
-        final oldTotal = slots.fold<int>(0, (sum, s) => sum + s.quantity);
-        final delta = newTotal - oldTotal;
-
-        if (delta > 0) {
-          for (var i = 0; i < delta; i++) {
-            await cubit.addCollectionItem(
-              CollectionItemEntity(
-                cardId: widget.card.id,
-                setCode: set.setCode,
-                setRarity: set.setRarity,
-                quantity: 1,
-                dateAdded: now,
-                boxId: null,
-              ),
-            );
-          }
-        } else if (delta < 0) {
-          final selectedSlot = slots.isEmpty
-              ? null
-              : (slots.where((s) => s.boxId == null).firstOrNull ??
-                  slots.first);
-          if (selectedSlot != null) {
-            var remove = -delta;
-            var q = selectedSlot.quantity;
-            while (remove > 0 && q > 0) {
-              q--;
-              remove--;
-              await cubit.updateSlotQuantity(
-                widget.card.id,
-                set.setCode,
-                set.setRarity,
-                selectedSlot.boxId,
-                q,
-              );
-            }
-          }
-        }
-      }
+      final sets = _effectiveCardSets
+          .map((s) => (setCode: s.setCode, setRarity: s.setRarity))
+          .toList();
+      await cubit.saveCardQuantities(widget.card, _quantities, sets);
 
       if (mounted) {
         Navigator.of(context).pop();

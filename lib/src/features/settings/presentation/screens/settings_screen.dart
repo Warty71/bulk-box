@@ -1,15 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:bulk_box/src/core/constants/dimensions.dart';
-import 'package:bulk_box/src/core/settings/settings_cubit.dart';
-import 'package:bulk_box/src/core/settings/settings_state.dart';
+import 'package:bulk_box/src/features/settings/presentation/cubit/settings_cubit.dart';
+import 'package:bulk_box/src/features/settings/presentation/cubit/settings_state.dart';
 import 'package:bulk_box/src/core/theme/theme_extensions.dart';
 import 'package:bulk_box/src/features/settings/presentation/widgets/settings_section.dart';
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
-
-  static const _version = '1.0.0+5';
 
   @override
   Widget build(BuildContext context) {
@@ -103,24 +101,6 @@ class SettingsScreen extends StatelessWidget {
                 ],
               ),
 
-              const SizedBox(height: Dimensions.lg),
-
-              // About section
-              SettingsSection(
-                title: 'About',
-                children: [
-                  SettingsTile(
-                    title: 'Version',
-                    subtitle: 'Current app version and build number',
-                    trailing: Text(
-                      _version,
-                      style: theme.textTheme.bodyMedium?.copyWith(
-                        color: colorScheme.onSurface.withValues(alpha: 0.6),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
             ],
           );
         },

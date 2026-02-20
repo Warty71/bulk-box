@@ -2,6 +2,7 @@ import 'package:drift/drift.dart';
 import 'package:bulk_box/src/core/database/app_database.dart';
 import 'package:bulk_box/src/features/collection/domain/entities/collection_entry.dart';
 import 'package:bulk_box/src/features/collection/domain/entities/collection_item.dart';
+import 'package:bulk_box/src/features/ygo_cards/data/mappers/card_model_mapper.dart';
 
 class CollectionLocalDatasource {
   final AppDatabase _db;
@@ -25,10 +26,10 @@ class CollectionLocalDatasource {
     }
     return await query.map((row) {
       final item = row.readTable(_db.collectionItems);
-      final card = row.readTable(_db.cards);
+      final driftCard = row.readTable(_db.cards);
       final box = row.readTableOrNull(_db.boxes);
       return CollectionEntry(
-        card: card,
+        card: CardModelMapper.fromDriftCard(driftCard),
         setCode: item.setCode,
         setRarity: item.setRarity,
         quantity: item.quantity,
@@ -184,33 +185,35 @@ class CollectionLocalDatasource {
   ) async {
     if (amount <= 0 || (fromBoxId == toBoxId)) return;
 
-    final from = await getSlot(cardId, setCode, setRarity, fromBoxId);
-    if (from == null || from.quantity < amount) return;
+    await _db.transaction(() async {
+      final from = await getSlot(cardId, setCode, setRarity, fromBoxId);
+      if (from == null || from.quantity < amount) return;
 
-    final newFromQty = from.quantity - amount;
-    if (newFromQty <= 0) {
-      await deleteSlot(cardId, setCode, setRarity, fromBoxId);
-    } else {
-      await updateSlotQuantity(
-          cardId, setCode, setRarity, fromBoxId, newFromQty);
-    }
+      final newFromQty = from.quantity - amount;
+      if (newFromQty <= 0) {
+        await deleteSlot(cardId, setCode, setRarity, fromBoxId);
+      } else {
+        await updateSlotQuantity(
+            cardId, setCode, setRarity, fromBoxId, newFromQty);
+      }
 
-    final to = await getSlot(cardId, setCode, setRarity, toBoxId);
-    if (to != null) {
-      await updateSlotQuantity(
-          cardId, setCode, setRarity, toBoxId, to.quantity + amount);
-    } else {
-      await insertOrUpdateCollectionItem(
-        CollectionItemEntity(
-          cardId: cardId,
-          setCode: setCode,
-          setRarity: setRarity,
-          quantity: amount,
-          dateAdded: from.dateAdded,
-          boxId: toBoxId,
-        ),
-      );
-    }
+      final to = await getSlot(cardId, setCode, setRarity, toBoxId);
+      if (to != null) {
+        await updateSlotQuantity(
+            cardId, setCode, setRarity, toBoxId, to.quantity + amount);
+      } else {
+        await insertOrUpdateCollectionItem(
+          CollectionItemEntity(
+            cardId: cardId,
+            setCode: setCode,
+            setRarity: setRarity,
+            quantity: amount,
+            dateAdded: from.dateAdded,
+            boxId: toBoxId,
+          ),
+        );
+      }
+    });
   }
 
   /// Move multiple slots to [toBoxId] in a single transaction.

@@ -41,7 +41,7 @@ class _SearchSectionedListViewState extends State<SearchSectionedListView> {
     return BlocBuilder<QuickAddCubit, QuickAddState>(
       builder: (context, quickAddState) {
         // Add bottom padding when quick add bar is visible to prevent content from being hidden
-        final bottomPadding = quickAddState.barVisible ? 80.0 : 0.0;
+        final bottomPadding = quickAddState.hasItems ? 80.0 : 0.0;
 
         return CustomScrollView(
           slivers: [

@@ -9,14 +9,18 @@ class AppSearchBar extends StatefulWidget {
   final TextEditingController controller;
   final String hintText;
   final ValueChanged<String>? onChanged;
+  final ValueChanged<String>? onSubmitted;
   final VoidCallback? onClear;
+  final TextInputAction? textInputAction;
 
   const AppSearchBar({
     super.key,
     required this.controller,
     required this.hintText,
     this.onChanged,
+    this.onSubmitted,
     this.onClear,
+    this.textInputAction,
   });
 
   @override
@@ -53,6 +57,8 @@ class _AppSearchBarState extends State<AppSearchBar> {
     return TextField(
       controller: widget.controller,
       onChanged: widget.onChanged,
+      onSubmitted: widget.onSubmitted,
+      textInputAction: widget.textInputAction ?? TextInputAction.done,
       style: theme.textTheme.bodyMedium,
       decoration: InputDecoration(
         hintText: widget.hintText,
