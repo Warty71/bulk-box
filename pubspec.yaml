@@ -1,7 +1,7 @@
 name: bulk_box
 description: "Bulk Box is a collection manager for Yu-Gi-Oh! cards."
 publish_to: 'none'
-version: 1.0.0+7
+version: 1.0.1+8
 
 environment:
   sdk: ^3.6.2
