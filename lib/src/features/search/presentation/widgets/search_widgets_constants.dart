@@ -1,5 +1,3 @@
-/// Constants used by search presentation widgets.
-
 /// Max items shown per section before requiring "See More".
 const int searchSectionInitialLimit = 5;
 
