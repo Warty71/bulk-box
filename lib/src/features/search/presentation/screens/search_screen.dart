@@ -106,10 +106,20 @@ class _SearchViewState extends State<SearchView> {
                       hintText: 'Search by card name...',
                       textInputAction: TextInputAction.search,
                       onSubmitted: (query) {
-                        context.read<SearchCubit>().searchCards(query);
+                        final cubit = context.read<SearchCubit>();
+                        final filters = cubit.state.maybeWhen(
+                          loaded: (_, __, ___, lastFilters) => lastFilters,
+                          orElse: () => null,
+                        );
+                        cubit.searchCards(query, filters: filters);
                       },
                       onClear: () {
-                        context.read<SearchCubit>().searchCards('');
+                        final cubit = context.read<SearchCubit>();
+                        final filters = cubit.state.maybeWhen(
+                          loaded: (_, __, ___, lastFilters) => lastFilters,
+                          orElse: () => null,
+                        );
+                        cubit.searchCards('', filters: filters);
                       },
                     ),
                   ),
