@@ -23,7 +23,7 @@ class SearchCubit extends Cubit<SearchState> {
 
       final apiCards =
           await _searchRepository.searchCards(query, filters: filters);
-      final entries = _explodeCards(apiCards, sortByApi: filters?.sortBy != null);
+      final entries = _explodeCards(apiCards);
       emit(SearchState.loaded(
         entries: entries,
         grouped: _groupByCardName(entries),
@@ -44,10 +44,7 @@ class SearchCubit extends Cubit<SearchState> {
   }
 
   /// Explode each card's cardSets into individual SearchResultEntry objects.
-  List<SearchResultEntry> _explodeCards(
-    List<YgoCard> cards, {
-    bool sortByApi = false,
-  }) {
+  List<SearchResultEntry> _explodeCards(List<YgoCard> cards) {
     final entries = <SearchResultEntry>[];
     for (final card in cards) {
       if (card.cardSets.isEmpty) {
@@ -68,13 +65,11 @@ class SearchCubit extends Cubit<SearchState> {
         }
       }
     }
-    if (!sortByApi) {
-      entries.sort((a, b) {
-        final nameCompare = a.card.name.compareTo(b.card.name);
-        if (nameCompare != 0) return nameCompare;
-        return a.setCode.compareTo(b.setCode);
-      });
-    }
+    entries.sort((a, b) {
+      final nameCompare = a.card.name.compareTo(b.card.name);
+      if (nameCompare != 0) return nameCompare;
+      return a.setCode.compareTo(b.setCode);
+    });
     return entries;
   }
 

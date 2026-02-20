@@ -3,6 +3,41 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:bulk_box/src/features/search/domain/entities/card_search_filters.dart';
 import 'package:bulk_box/src/features/search/presentation/cubit/search_cubit.dart';
 
+/// Monster types (i.e. the `race` field on a monster card).
+const _monsterRaces = [
+  CardRace.dragon,
+  CardRace.warrior,
+  CardRace.spellcaster,
+  CardRace.beast,
+  CardRace.beastWarrior,
+  CardRace.wingedBeast,
+  CardRace.fiend,
+  CardRace.fairy,
+  CardRace.insect,
+  CardRace.dinosaur,
+  CardRace.machine,
+  CardRace.aqua,
+  CardRace.pyro,
+  CardRace.thunder,
+  CardRace.rock,
+  CardRace.plant,
+  CardRace.psychic,
+  CardRace.cyberse,
+  CardRace.zombie,
+  CardRace.wyrm,
+];
+
+/// Spell / Trap sub-categories (also mapped to the `race` API param).
+const _spellTrapRaces = [
+  CardRace.continuous,
+  CardRace.counter,
+  CardRace.equip,
+  CardRace.field,
+  CardRace.normalSub,
+  CardRace.quickPlay,
+  CardRace.ritual,
+];
+
 class SearchFiltersSheet extends StatefulWidget {
   const SearchFiltersSheet({super.key, this.initialFilters});
 
@@ -20,10 +55,6 @@ class _SearchFiltersSheetState extends State<SearchFiltersSheet> {
   CardAttribute? _attribute;
   CardRace? _race;
   int? _level;
-  final _archetypeController = TextEditingController();
-  BanlistFilter? _banlist;
-  bool _staplesOnly = false;
-  CardSortBy? _sortBy;
 
   @override
   void initState() {
@@ -35,17 +66,7 @@ class _SearchFiltersSheetState extends State<SearchFiltersSheet> {
       _attribute = f.attribute;
       _race = f.race;
       _level = f.level;
-      _archetypeController.text = f.archetype ?? '';
-      _banlist = f.banlist;
-      _staplesOnly = f.staplesOnly;
-      _sortBy = f.sortBy;
     }
-  }
-
-  @override
-  void dispose() {
-    _archetypeController.dispose();
-    super.dispose();
   }
 
   void _toggleType(CardType t) {
@@ -67,10 +88,6 @@ class _SearchFiltersSheetState extends State<SearchFiltersSheet> {
       _attribute = null;
       _race = null;
       _level = null;
-      _archetypeController.clear();
-      _banlist = null;
-      _staplesOnly = false;
-      _sortBy = null;
     });
   }
 
@@ -81,12 +98,6 @@ class _SearchFiltersSheetState extends State<SearchFiltersSheet> {
       attribute: _attribute,
       race: _race,
       level: _level,
-      archetype: _archetypeController.text.trim().isEmpty
-          ? null
-          : _archetypeController.text.trim(),
-      banlist: _banlist,
-      staplesOnly: _staplesOnly,
-      sortBy: _sortBy,
     );
     context.read<SearchCubit>().updateFilters(filters);
     Navigator.of(context).pop();
@@ -169,9 +180,10 @@ class _SearchFiltersSheetState extends State<SearchFiltersSheet> {
                         setState(() => _level = _level == v ? null : v),
                   ),
                   const SizedBox(height: 16),
-                  _SectionLabel('Monster Type / Spell-Trap Subtype'),
+                  // Monster races
+                  _SectionLabel('Monster Type'),
                   _SingleChipWrap<CardRace>(
-                    values: CardRace.values,
+                    values: _monsterRaces,
                     selected: _race,
                     label: (v) => v.displayName,
                     onSelected: (v) => setState(
@@ -179,47 +191,14 @@ class _SearchFiltersSheetState extends State<SearchFiltersSheet> {
                     ),
                   ),
                   const SizedBox(height: 16),
-                  _SectionLabel('Archetype'),
-                  TextField(
-                    controller: _archetypeController,
-                    decoration: InputDecoration(
-                      hintText: 'e.g. Blue-Eyes',
-                      border: const OutlineInputBorder(),
-                      isDense: true,
-                      suffixIcon: _archetypeController.text.isNotEmpty
-                          ? IconButton(
-                              icon: const Icon(Icons.clear, size: 18),
-                              onPressed: () =>
-                                  setState(() => _archetypeController.clear()),
-                            )
-                          : null,
-                    ),
-                    onChanged: (_) => setState(() {}),
-                  ),
-                  const SizedBox(height: 16),
-                  _SectionLabel('Banlist'),
-                  _SingleChipWrap<BanlistFilter>(
-                    values: BanlistFilter.values,
-                    selected: _banlist,
+                  // Spell / Trap sub-categories
+                  _SectionLabel('Spell / Trap Subtype'),
+                  _SingleChipWrap<CardRace>(
+                    values: _spellTrapRaces,
+                    selected: _race,
                     label: (v) => v.displayName,
                     onSelected: (v) => setState(
-                      () => _banlist = _banlist == v ? null : v,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  SwitchListTile(
-                    contentPadding: EdgeInsets.zero,
-                    title: const Text('Staples Only'),
-                    value: _staplesOnly,
-                    onChanged: (v) => setState(() => _staplesOnly = v),
-                  ),
-                  _SectionLabel('Sort By'),
-                  _SingleChipWrap<CardSortBy>(
-                    values: CardSortBy.values,
-                    selected: _sortBy,
-                    label: (v) => v.displayName,
-                    onSelected: (v) => setState(
-                      () => _sortBy = _sortBy == v ? null : v,
+                      () => _race = _race == v ? null : v,
                     ),
                   ),
                   const SizedBox(height: 16),

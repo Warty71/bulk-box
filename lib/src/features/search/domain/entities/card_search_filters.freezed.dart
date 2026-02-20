@@ -22,10 +22,6 @@ mixin _$CardSearchFilters {
   CardAttribute? get attribute;
   CardRace? get race;
   int? get level;
-  String? get archetype;
-  BanlistFilter? get banlist;
-  bool get staplesOnly;
-  CardSortBy? get sortBy;
 
   /// Create a copy of CardSearchFilters
   /// with the given fields replaced by the non-null parameter values.
@@ -45,13 +41,7 @@ mixin _$CardSearchFilters {
             (identical(other.attribute, attribute) ||
                 other.attribute == attribute) &&
             (identical(other.race, race) || other.race == race) &&
-            (identical(other.level, level) || other.level == level) &&
-            (identical(other.archetype, archetype) ||
-                other.archetype == archetype) &&
-            (identical(other.banlist, banlist) || other.banlist == banlist) &&
-            (identical(other.staplesOnly, staplesOnly) ||
-                other.staplesOnly == staplesOnly) &&
-            (identical(other.sortBy, sortBy) || other.sortBy == sortBy));
+            (identical(other.level, level) || other.level == level));
   }
 
   @override
@@ -61,15 +51,11 @@ mixin _$CardSearchFilters {
       const DeepCollectionEquality().hash(subtypes),
       attribute,
       race,
-      level,
-      archetype,
-      banlist,
-      staplesOnly,
-      sortBy);
+      level);
 
   @override
   String toString() {
-    return 'CardSearchFilters(types: $types, subtypes: $subtypes, attribute: $attribute, race: $race, level: $level, archetype: $archetype, banlist: $banlist, staplesOnly: $staplesOnly, sortBy: $sortBy)';
+    return 'CardSearchFilters(types: $types, subtypes: $subtypes, attribute: $attribute, race: $race, level: $level)';
   }
 }
 
@@ -84,11 +70,7 @@ abstract mixin class $CardSearchFiltersCopyWith<$Res> {
       List<MonsterSubtype> subtypes,
       CardAttribute? attribute,
       CardRace? race,
-      int? level,
-      String? archetype,
-      BanlistFilter? banlist,
-      bool staplesOnly,
-      CardSortBy? sortBy});
+      int? level});
 }
 
 /// @nodoc
@@ -109,10 +91,6 @@ class _$CardSearchFiltersCopyWithImpl<$Res>
     Object? attribute = freezed,
     Object? race = freezed,
     Object? level = freezed,
-    Object? archetype = freezed,
-    Object? banlist = freezed,
-    Object? staplesOnly = null,
-    Object? sortBy = freezed,
   }) {
     return _then(_self.copyWith(
       types: null == types
@@ -135,22 +113,6 @@ class _$CardSearchFiltersCopyWithImpl<$Res>
           ? _self.level
           : level // ignore: cast_nullable_to_non_nullable
               as int?,
-      archetype: freezed == archetype
-          ? _self.archetype
-          : archetype // ignore: cast_nullable_to_non_nullable
-              as String?,
-      banlist: freezed == banlist
-          ? _self.banlist
-          : banlist // ignore: cast_nullable_to_non_nullable
-              as BanlistFilter?,
-      staplesOnly: null == staplesOnly
-          ? _self.staplesOnly
-          : staplesOnly // ignore: cast_nullable_to_non_nullable
-              as bool,
-      sortBy: freezed == sortBy
-          ? _self.sortBy
-          : sortBy // ignore: cast_nullable_to_non_nullable
-              as CardSortBy?,
     ));
   }
 }
@@ -248,32 +210,16 @@ extension CardSearchFiltersPatterns on CardSearchFilters {
 
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>(
-    TResult Function(
-            List<CardType> types,
-            List<MonsterSubtype> subtypes,
-            CardAttribute? attribute,
-            CardRace? race,
-            int? level,
-            String? archetype,
-            BanlistFilter? banlist,
-            bool staplesOnly,
-            CardSortBy? sortBy)?
+    TResult Function(List<CardType> types, List<MonsterSubtype> subtypes,
+            CardAttribute? attribute, CardRace? race, int? level)?
         $default, {
     required TResult orElse(),
   }) {
     final _that = this;
     switch (_that) {
       case _CardSearchFilters() when $default != null:
-        return $default(
-            _that.types,
-            _that.subtypes,
-            _that.attribute,
-            _that.race,
-            _that.level,
-            _that.archetype,
-            _that.banlist,
-            _that.staplesOnly,
-            _that.sortBy);
+        return $default(_that.types, _that.subtypes, _that.attribute,
+            _that.race, _that.level);
       case _:
         return orElse();
     }
@@ -294,31 +240,15 @@ extension CardSearchFiltersPatterns on CardSearchFilters {
 
   @optionalTypeArgs
   TResult when<TResult extends Object?>(
-    TResult Function(
-            List<CardType> types,
-            List<MonsterSubtype> subtypes,
-            CardAttribute? attribute,
-            CardRace? race,
-            int? level,
-            String? archetype,
-            BanlistFilter? banlist,
-            bool staplesOnly,
-            CardSortBy? sortBy)
+    TResult Function(List<CardType> types, List<MonsterSubtype> subtypes,
+            CardAttribute? attribute, CardRace? race, int? level)
         $default,
   ) {
     final _that = this;
     switch (_that) {
       case _CardSearchFilters():
-        return $default(
-            _that.types,
-            _that.subtypes,
-            _that.attribute,
-            _that.race,
-            _that.level,
-            _that.archetype,
-            _that.banlist,
-            _that.staplesOnly,
-            _that.sortBy);
+        return $default(_that.types, _that.subtypes, _that.attribute,
+            _that.race, _that.level);
       case _:
         throw StateError('Unexpected subclass');
     }
@@ -338,31 +268,15 @@ extension CardSearchFiltersPatterns on CardSearchFilters {
 
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>(
-    TResult? Function(
-            List<CardType> types,
-            List<MonsterSubtype> subtypes,
-            CardAttribute? attribute,
-            CardRace? race,
-            int? level,
-            String? archetype,
-            BanlistFilter? banlist,
-            bool staplesOnly,
-            CardSortBy? sortBy)?
+    TResult? Function(List<CardType> types, List<MonsterSubtype> subtypes,
+            CardAttribute? attribute, CardRace? race, int? level)?
         $default,
   ) {
     final _that = this;
     switch (_that) {
       case _CardSearchFilters() when $default != null:
-        return $default(
-            _that.types,
-            _that.subtypes,
-            _that.attribute,
-            _that.race,
-            _that.level,
-            _that.archetype,
-            _that.banlist,
-            _that.staplesOnly,
-            _that.sortBy);
+        return $default(_that.types, _that.subtypes, _that.attribute,
+            _that.race, _that.level);
       case _:
         return null;
     }
@@ -377,11 +291,7 @@ class _CardSearchFilters extends CardSearchFilters {
       final List<MonsterSubtype> subtypes = const <MonsterSubtype>[],
       this.attribute,
       this.race,
-      this.level,
-      this.archetype,
-      this.banlist,
-      this.staplesOnly = false,
-      this.sortBy})
+      this.level})
       : _types = types,
         _subtypes = subtypes,
         super._();
@@ -416,15 +326,6 @@ class _CardSearchFilters extends CardSearchFilters {
   final CardRace? race;
   @override
   final int? level;
-  @override
-  final String? archetype;
-  @override
-  final BanlistFilter? banlist;
-  @override
-  @JsonKey()
-  final bool staplesOnly;
-  @override
-  final CardSortBy? sortBy;
 
   /// Create a copy of CardSearchFilters
   /// with the given fields replaced by the non-null parameter values.
@@ -444,13 +345,7 @@ class _CardSearchFilters extends CardSearchFilters {
             (identical(other.attribute, attribute) ||
                 other.attribute == attribute) &&
             (identical(other.race, race) || other.race == race) &&
-            (identical(other.level, level) || other.level == level) &&
-            (identical(other.archetype, archetype) ||
-                other.archetype == archetype) &&
-            (identical(other.banlist, banlist) || other.banlist == banlist) &&
-            (identical(other.staplesOnly, staplesOnly) ||
-                other.staplesOnly == staplesOnly) &&
-            (identical(other.sortBy, sortBy) || other.sortBy == sortBy));
+            (identical(other.level, level) || other.level == level));
   }
 
   @override
@@ -460,15 +355,11 @@ class _CardSearchFilters extends CardSearchFilters {
       const DeepCollectionEquality().hash(_subtypes),
       attribute,
       race,
-      level,
-      archetype,
-      banlist,
-      staplesOnly,
-      sortBy);
+      level);
 
   @override
   String toString() {
-    return 'CardSearchFilters(types: $types, subtypes: $subtypes, attribute: $attribute, race: $race, level: $level, archetype: $archetype, banlist: $banlist, staplesOnly: $staplesOnly, sortBy: $sortBy)';
+    return 'CardSearchFilters(types: $types, subtypes: $subtypes, attribute: $attribute, race: $race, level: $level)';
   }
 }
 
@@ -485,11 +376,7 @@ abstract mixin class _$CardSearchFiltersCopyWith<$Res>
       List<MonsterSubtype> subtypes,
       CardAttribute? attribute,
       CardRace? race,
-      int? level,
-      String? archetype,
-      BanlistFilter? banlist,
-      bool staplesOnly,
-      CardSortBy? sortBy});
+      int? level});
 }
 
 /// @nodoc
@@ -510,10 +397,6 @@ class __$CardSearchFiltersCopyWithImpl<$Res>
     Object? attribute = freezed,
     Object? race = freezed,
     Object? level = freezed,
-    Object? archetype = freezed,
-    Object? banlist = freezed,
-    Object? staplesOnly = null,
-    Object? sortBy = freezed,
   }) {
     return _then(_CardSearchFilters(
       types: null == types
@@ -536,22 +419,6 @@ class __$CardSearchFiltersCopyWithImpl<$Res>
           ? _self.level
           : level // ignore: cast_nullable_to_non_nullable
               as int?,
-      archetype: freezed == archetype
-          ? _self.archetype
-          : archetype // ignore: cast_nullable_to_non_nullable
-              as String?,
-      banlist: freezed == banlist
-          ? _self.banlist
-          : banlist // ignore: cast_nullable_to_non_nullable
-              as BanlistFilter?,
-      staplesOnly: null == staplesOnly
-          ? _self.staplesOnly
-          : staplesOnly // ignore: cast_nullable_to_non_nullable
-              as bool,
-      sortBy: freezed == sortBy
-          ? _self.sortBy
-          : sortBy // ignore: cast_nullable_to_non_nullable
-              as CardSortBy?,
     ));
   }
 }

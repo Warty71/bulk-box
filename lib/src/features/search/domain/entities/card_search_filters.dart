@@ -199,54 +199,6 @@ enum CardRace {
       };
 }
 
-enum BanlistFilter {
-  tcg,
-  ocg,
-  goat;
-
-  String get apiValue => switch (this) {
-        BanlistFilter.tcg => 'TCG',
-        BanlistFilter.ocg => 'OCG',
-        BanlistFilter.goat => 'Goat',
-      };
-
-  String get displayName => switch (this) {
-        BanlistFilter.tcg => 'TCG',
-        BanlistFilter.ocg => 'OCG',
-        BanlistFilter.goat => 'Goat',
-      };
-}
-
-enum CardSortBy {
-  atk,
-  def,
-  name,
-  type,
-  level,
-  id,
-  newest;
-
-  String get apiValue => switch (this) {
-        CardSortBy.newest => 'new',
-        CardSortBy.atk => 'atk',
-        CardSortBy.def => 'def',
-        CardSortBy.name => 'name',
-        CardSortBy.type => 'type',
-        CardSortBy.level => 'level',
-        CardSortBy.id => 'id',
-      };
-
-  String get displayName => switch (this) {
-        CardSortBy.atk => 'ATK',
-        CardSortBy.def => 'DEF',
-        CardSortBy.name => 'Name',
-        CardSortBy.type => 'Type',
-        CardSortBy.level => 'Level',
-        CardSortBy.id => 'ID',
-        CardSortBy.newest => 'Newest',
-      };
-}
-
 @freezed
 abstract class CardSearchFilters with _$CardSearchFilters {
   const CardSearchFilters._();
@@ -261,10 +213,6 @@ abstract class CardSearchFilters with _$CardSearchFilters {
     CardAttribute? attribute,
     CardRace? race,
     int? level,
-    String? archetype,
-    BanlistFilter? banlist,
-    @Default(false) bool staplesOnly,
-    CardSortBy? sortBy,
   }) = _CardSearchFilters;
 
   bool get isEmpty =>
@@ -272,11 +220,7 @@ abstract class CardSearchFilters with _$CardSearchFilters {
       subtypes.isEmpty &&
       attribute == null &&
       race == null &&
-      level == null &&
-      (archetype == null || archetype!.isEmpty) &&
-      banlist == null &&
-      !staplesOnly &&
-      sortBy == null;
+      level == null;
 
   int get activeCount => [
         types.isNotEmpty,
@@ -284,9 +228,5 @@ abstract class CardSearchFilters with _$CardSearchFilters {
         attribute != null,
         race != null,
         level != null,
-        archetype != null && archetype!.isNotEmpty,
-        banlist != null,
-        staplesOnly,
-        sortBy != null,
       ].where((v) => v).length;
 }

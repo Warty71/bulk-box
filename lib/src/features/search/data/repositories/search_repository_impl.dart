@@ -47,12 +47,6 @@ class SearchRepositoryImpl implements SearchRepository {
       }
       if (filters.race != null) params['race'] = filters.race!.apiValue;
       if (filters.level != null) params['level'] = filters.level.toString();
-      if (filters.archetype?.isNotEmpty ?? false) {
-        params['archetype'] = filters.archetype;
-      }
-      if (filters.banlist != null) params['banlist'] = filters.banlist!.apiValue;
-      if (filters.staplesOnly) params['staple'] = 'yes';
-      if (filters.sortBy != null) params['sort'] = filters.sortBy!.apiValue;
     }
 
     // Guard: never call the API with no meaningful server-side filter — it
