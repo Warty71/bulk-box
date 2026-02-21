@@ -156,8 +156,11 @@ extension SearchStatePatterns on SearchState {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? initial,
     TResult Function()? loading,
-    TResult Function(List<SearchResultEntry> entries,
-            Map<String, List<SearchResultEntry>> grouped, String lastQuery)?
+    TResult Function(
+            List<SearchResultEntry> entries,
+            Map<String, List<SearchResultEntry>> grouped,
+            String lastQuery,
+            CardSearchFilters? lastFilters)?
         loaded,
     TResult Function(String message)? error,
     required TResult orElse(),
@@ -169,7 +172,8 @@ extension SearchStatePatterns on SearchState {
       case _Loading() when loading != null:
         return loading();
       case _Loaded() when loaded != null:
-        return loaded(_that.entries, _that.grouped, _that.lastQuery);
+        return loaded(
+            _that.entries, _that.grouped, _that.lastQuery, _that.lastFilters);
       case _Error() when error != null:
         return error(_that.message);
       case _:
@@ -194,8 +198,11 @@ extension SearchStatePatterns on SearchState {
   TResult when<TResult extends Object?>({
     required TResult Function() initial,
     required TResult Function() loading,
-    required TResult Function(List<SearchResultEntry> entries,
-            Map<String, List<SearchResultEntry>> grouped, String lastQuery)
+    required TResult Function(
+            List<SearchResultEntry> entries,
+            Map<String, List<SearchResultEntry>> grouped,
+            String lastQuery,
+            CardSearchFilters? lastFilters)
         loaded,
     required TResult Function(String message) error,
   }) {
@@ -206,7 +213,8 @@ extension SearchStatePatterns on SearchState {
       case _Loading():
         return loading();
       case _Loaded():
-        return loaded(_that.entries, _that.grouped, _that.lastQuery);
+        return loaded(
+            _that.entries, _that.grouped, _that.lastQuery, _that.lastFilters);
       case _Error():
         return error(_that.message);
       case _:
@@ -230,8 +238,11 @@ extension SearchStatePatterns on SearchState {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? initial,
     TResult? Function()? loading,
-    TResult? Function(List<SearchResultEntry> entries,
-            Map<String, List<SearchResultEntry>> grouped, String lastQuery)?
+    TResult? Function(
+            List<SearchResultEntry> entries,
+            Map<String, List<SearchResultEntry>> grouped,
+            String lastQuery,
+            CardSearchFilters? lastFilters)?
         loaded,
     TResult? Function(String message)? error,
   }) {
@@ -242,7 +253,8 @@ extension SearchStatePatterns on SearchState {
       case _Loading() when loading != null:
         return loading();
       case _Loaded() when loaded != null:
-        return loaded(_that.entries, _that.grouped, _that.lastQuery);
+        return loaded(
+            _that.entries, _that.grouped, _that.lastQuery, _that.lastFilters);
       case _Error() when error != null:
         return error(_that.message);
       case _:
@@ -297,7 +309,8 @@ class _Loaded implements SearchState {
   const _Loaded(
       {required final List<SearchResultEntry> entries,
       required final Map<String, List<SearchResultEntry>> grouped,
-      required this.lastQuery})
+      required this.lastQuery,
+      this.lastFilters})
       : _entries = entries,
         _grouped = grouped;
 
@@ -316,6 +329,7 @@ class _Loaded implements SearchState {
   }
 
   final String lastQuery;
+  final CardSearchFilters? lastFilters;
 
   /// Create a copy of SearchState
   /// with the given fields replaced by the non-null parameter values.
@@ -332,7 +346,9 @@ class _Loaded implements SearchState {
             const DeepCollectionEquality().equals(other._entries, _entries) &&
             const DeepCollectionEquality().equals(other._grouped, _grouped) &&
             (identical(other.lastQuery, lastQuery) ||
-                other.lastQuery == lastQuery));
+                other.lastQuery == lastQuery) &&
+            (identical(other.lastFilters, lastFilters) ||
+                other.lastFilters == lastFilters));
   }
 
   @override
@@ -340,11 +356,12 @@ class _Loaded implements SearchState {
       runtimeType,
       const DeepCollectionEquality().hash(_entries),
       const DeepCollectionEquality().hash(_grouped),
-      lastQuery);
+      lastQuery,
+      lastFilters);
 
   @override
   String toString() {
-    return 'SearchState.loaded(entries: $entries, grouped: $grouped, lastQuery: $lastQuery)';
+    return 'SearchState.loaded(entries: $entries, grouped: $grouped, lastQuery: $lastQuery, lastFilters: $lastFilters)';
   }
 }
 
@@ -357,7 +374,10 @@ abstract mixin class _$LoadedCopyWith<$Res>
   $Res call(
       {List<SearchResultEntry> entries,
       Map<String, List<SearchResultEntry>> grouped,
-      String lastQuery});
+      String lastQuery,
+      CardSearchFilters? lastFilters});
+
+  $CardSearchFiltersCopyWith<$Res>? get lastFilters;
 }
 
 /// @nodoc
@@ -374,6 +394,7 @@ class __$LoadedCopyWithImpl<$Res> implements _$LoadedCopyWith<$Res> {
     Object? entries = null,
     Object? grouped = null,
     Object? lastQuery = null,
+    Object? lastFilters = freezed,
   }) {
     return _then(_Loaded(
       entries: null == entries
@@ -388,7 +409,25 @@ class __$LoadedCopyWithImpl<$Res> implements _$LoadedCopyWith<$Res> {
           ? _self.lastQuery
           : lastQuery // ignore: cast_nullable_to_non_nullable
               as String,
+      lastFilters: freezed == lastFilters
+          ? _self.lastFilters
+          : lastFilters // ignore: cast_nullable_to_non_nullable
+              as CardSearchFilters?,
     ));
+  }
+
+  /// Create a copy of SearchState
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $CardSearchFiltersCopyWith<$Res>? get lastFilters {
+    if (_self.lastFilters == null) {
+      return null;
+    }
+
+    return $CardSearchFiltersCopyWith<$Res>(_self.lastFilters!, (value) {
+      return _then(_self.copyWith(lastFilters: value));
+    });
   }
 }
 

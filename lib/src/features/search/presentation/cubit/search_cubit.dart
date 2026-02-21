@@ -1,4 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:bulk_box/src/features/search/domain/entities/card_search_filters.dart';
 import 'package:bulk_box/src/features/search/domain/entities/search_result_entry.dart';
 import 'package:bulk_box/src/features/search/domain/repositories/search_repository.dart';
 import 'package:bulk_box/src/features/search/presentation/cubit/search_state.dart';
@@ -10,8 +11,9 @@ class SearchCubit extends Cubit<SearchState> {
   SearchCubit(this._searchRepository) : super(const SearchState.initial());
 
   /// Always fetches fresh results from the API.
-  Future<void> searchCards(String query) async {
-    if (query.isEmpty) {
+  Future<void> searchCards(String query, {CardSearchFilters? filters}) async {
+    final hasFilters = filters != null && !filters.isEmpty;
+    if (query.isEmpty && !hasFilters) {
       emit(const SearchState.initial());
       return;
     }
@@ -19,16 +21,26 @@ class SearchCubit extends Cubit<SearchState> {
     try {
       emit(const SearchState.loading());
 
-      final apiCards = await _searchRepository.searchCards(query);
+      final apiCards =
+          await _searchRepository.searchCards(query, filters: filters);
       final entries = _explodeCards(apiCards);
       emit(SearchState.loaded(
         entries: entries,
         grouped: _groupByCardName(entries),
         lastQuery: query,
+        lastFilters: filters,
       ));
     } catch (e) {
       emit(SearchState.error(e.toString()));
     }
+  }
+
+  Future<void> updateFilters(CardSearchFilters filters) async {
+    final currentQuery = state.maybeWhen(
+      loaded: (_, __, lastQuery, ____) => lastQuery,
+      orElse: () => '',
+    );
+    await searchCards(currentQuery, filters: filters);
   }
 
   /// Explode each card's cardSets into individual SearchResultEntry objects.

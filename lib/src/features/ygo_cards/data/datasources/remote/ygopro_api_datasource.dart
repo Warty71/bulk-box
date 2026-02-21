@@ -22,37 +22,12 @@ class YGOProApiDatasource {
           ),
         )..addSentry();
 
-  Future<Map<String, dynamic>> searchCards(String query) async {
-    final Map<String, dynamic> params = {'tcgplayer_data': 'yes'};
-    if (query.isNotEmpty) {
-      if (query.contains('=')) {
-        // Advanced search parameters
-        final queryParts = query.split('&');
-        for (final part in queryParts) {
-          final keyValue = part.split('=');
-          if (keyValue.length == 2) {
-            params[keyValue[0].trim()] = keyValue[1].trim();
-          }
-        }
-      } else {
-        // Simple name search - use fname for fuzzy search
-        params['fname'] = query;
-      }
-    }
-
+  Future<Map<String, dynamic>> searchCards(Map<String, dynamic> params) async {
     try {
-      final response = await _dio.get(
-        '/cardinfo.php',
-        queryParameters: params,
-      );
+      final response = await _dio.get('/cardinfo.php', queryParameters: params);
       return response.data;
     } catch (e) {
-      if (e is DioException) {
-        if (e.response?.statusCode == 400) {
-          // Handle "no cards found" case
-          return {'data': []};
-        }
-      }
+      if (e is DioException && e.response?.statusCode == 400) return {'data': []};
       rethrow;
     }
   }

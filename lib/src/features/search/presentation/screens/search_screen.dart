@@ -9,6 +9,7 @@ import 'package:bulk_box/src/features/collection/presentation/cubit/collection_c
 import 'package:bulk_box/src/features/search/presentation/cubit/search_cubit.dart';
 import 'package:bulk_box/src/features/search/presentation/cubit/search_state.dart';
 import 'package:bulk_box/src/features/search/presentation/cubit/quick_add_cubit.dart';
+import 'package:bulk_box/src/features/search/presentation/widgets/search_filters_sheet.dart';
 import 'package:bulk_box/src/features/search/presentation/widgets/search_sectioned_list_view.dart';
 import 'package:bulk_box/src/features/search/presentation/widgets/quick_add_bar.dart';
 
@@ -44,6 +45,23 @@ class _SearchViewState extends State<SearchView> {
     super.dispose();
   }
 
+  void _showFiltersSheet(BuildContext context) {
+    final cubit = context.read<SearchCubit>();
+    final currentFilters = cubit.state.maybeWhen(
+      loaded: (_, __, ___, lastFilters) => lastFilters,
+      orElse: () => null,
+    );
+    showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      useSafeArea: true,
+      builder: (_) => BlocProvider.value(
+        value: cubit,
+        child: SearchFiltersSheet(initialFilters: currentFilters),
+      ),
+    );
+  }
+
   void _onConfirmAdd(int? boxId) async {
     final quickAddCubit = context.read<QuickAddCubit>();
 
@@ -75,21 +93,58 @@ class _SearchViewState extends State<SearchView> {
         ),
         body: Column(
           children: [
-            // Search bar
+            // Search bar + filter button
             Padding(
               padding: const EdgeInsets.fromLTRB(
-                Dimensions.md, Dimensions.sm, Dimensions.md, Dimensions.sm,
+                Dimensions.md, Dimensions.sm, Dimensions.sm, Dimensions.sm,
               ),
-              child: AppSearchBar(
-                controller: _searchController,
-                hintText: 'Search by card name...',
-                textInputAction: TextInputAction.search,
-                onSubmitted: (query) {
-                  context.read<SearchCubit>().searchCards(query);
-                },
-                onClear: () {
-                  context.read<SearchCubit>().searchCards('');
-                },
+              child: Row(
+                children: [
+                  Expanded(
+                    child: AppSearchBar(
+                      controller: _searchController,
+                      hintText: 'Search by card name...',
+                      textInputAction: TextInputAction.search,
+                      onSubmitted: (query) {
+                        final cubit = context.read<SearchCubit>();
+                        final filters = cubit.state.maybeWhen(
+                          loaded: (_, __, ___, lastFilters) => lastFilters,
+                          orElse: () => null,
+                        );
+                        cubit.searchCards(query, filters: filters);
+                      },
+                      onClear: () {
+                        final cubit = context.read<SearchCubit>();
+                        final filters = cubit.state.maybeWhen(
+                          loaded: (_, __, ___, lastFilters) => lastFilters,
+                          orElse: () => null,
+                        );
+                        cubit.searchCards('', filters: filters);
+                      },
+                    ),
+                  ),
+                  BlocBuilder<SearchCubit, SearchState>(
+                    builder: (context, state) {
+                      final filters = state.maybeWhen(
+                        loaded: (_, __, ___, lastFilters) => lastFilters,
+                        orElse: () => null,
+                      );
+                      final activeCount =
+                          (filters != null && !filters.isEmpty)
+                              ? filters.activeCount
+                              : 0;
+                      return Badge(
+                        isLabelVisible: activeCount > 0,
+                        label: Text('$activeCount'),
+                        child: IconButton(
+                          icon: const Icon(Icons.tune_rounded),
+                          onPressed: () => _showFiltersSheet(context),
+                          tooltip: 'Filter',
+                        ),
+                      );
+                    },
+                  ),
+                ],
               ),
             ),
 
@@ -104,7 +159,7 @@ class _SearchViewState extends State<SearchView> {
                     loading: () => const Center(
                       child: CircularProgressIndicator(),
                     ),
-                    loaded: (entries, grouped, lastQuery) {
+                    loaded: (entries, grouped, lastQuery, lastFilters) {
                       if (entries.isEmpty) {
                         return Center(
                           child: Column(
