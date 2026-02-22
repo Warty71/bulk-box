@@ -39,6 +39,10 @@ dependencies:
   path_provider: ^2.1.5
   shared_preferences: ^2.5.2
 
+  # Import / Export
+  share_plus: ^10.0.0
+  file_picker: ^8.0.0
+
   # Monitoring
   sentry_flutter: ^8.14.0
   sentry_dio: ^8.14.0

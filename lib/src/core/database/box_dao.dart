@@ -37,6 +37,11 @@ class BoxDao {
         .write(const CollectionItemsCompanion(boxId: Value(null)));
   }
 
+  /// Delete all boxes (used for replace-mode import; call after deleteAllItems).
+  Future<void> deleteAll() async {
+    await _db.delete(_db.boxes).go();
+  }
+
   Future<int> countItemsInBox(int boxId) async {
     final result = await (_db.selectOnly(_db.collectionItems)
           ..addColumns([_db.collectionItems.quantity.sum()])

@@ -238,6 +238,11 @@ class CollectionLocalDatasource {
     });
   }
 
+  /// Delete all collection items (used for replace-mode import).
+  Future<void> deleteAllItems() async {
+    await _db.delete(_db.collectionItems).go();
+  }
+
   /// Delete multiple slots in a single transaction.
   Future<void> batchDeleteSlots(
     List<({int cardId, String setCode, String setRarity, int? boxId})> items,

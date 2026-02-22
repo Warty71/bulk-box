@@ -18,6 +18,10 @@ import 'package:bulk_box/src/features/collection/domain/repositories/collection_
 import 'package:bulk_box/src/features/collection/presentation/cubit/bulk_move_cubit.dart';
 import 'package:bulk_box/src/features/collection/presentation/cubit/boxes_cubit.dart';
 import 'package:bulk_box/src/features/collection/presentation/cubit/collection_cubit.dart';
+import 'package:bulk_box/src/features/backup/data/datasources/backup_datasource.dart';
+import 'package:bulk_box/src/features/backup/data/repositories/backup_repository_impl.dart';
+import 'package:bulk_box/src/features/backup/domain/repositories/backup_repository.dart';
+import 'package:bulk_box/src/features/backup/presentation/cubit/backup_cubit.dart';
 import 'package:bulk_box/src/features/home/presentation/cubit/latest_sets_cubit.dart';
 import 'package:bulk_box/src/features/ygo_cards/data/repositories/image_repository_impl.dart';
 import 'package:bulk_box/src/features/ygo_cards/data/repositories/set_list_repository_impl.dart';
@@ -33,6 +37,9 @@ Future<void> initializeDependencies() async {
 
   // Features
   await _initializeFeatures();
+
+  // Backup feature
+  _initializeBackupFeature();
 }
 
 Future<void> _initializeCore() async {
@@ -160,5 +167,25 @@ void _initializeCollectionFeature() {
 void _initializeSettings() {
   getIt.registerLazySingleton<SettingsCubit>(
     () => SettingsCubit(),
+  );
+}
+
+void _initializeBackupFeature() {
+  getIt.registerLazySingleton<BackupDatasource>(
+    () => BackupDatasource(),
+  );
+
+  getIt.registerLazySingleton<BackupRepository>(
+    () => BackupRepositoryImpl(
+      cardDao: getIt<CardDao>(),
+      collectionDatasource: getIt<CollectionLocalDatasource>(),
+      boxDao: getIt<BoxDao>(),
+      database: getIt<AppDatabase>(),
+      backupDatasource: getIt<BackupDatasource>(),
+    ),
+  );
+
+  getIt.registerFactory<BackupCubit>(
+    () => BackupCubit(getIt<BackupRepository>()),
   );
 }
