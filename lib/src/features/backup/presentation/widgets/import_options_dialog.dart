@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-
-enum ImportMode { replace, merge }
+import 'package:bulk_box/src/features/backup/presentation/cubit/import_mode.dart';
 
 class ImportOptionsDialog extends StatelessWidget {
   const ImportOptionsDialog({super.key});

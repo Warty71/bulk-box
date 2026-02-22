@@ -5,6 +5,7 @@ import 'package:share_plus/share_plus.dart';
 import 'package:bulk_box/src/features/backup/domain/entities/backup_manifest.dart';
 import 'package:bulk_box/src/features/backup/domain/repositories/backup_repository.dart';
 import 'package:bulk_box/src/features/backup/presentation/cubit/backup_state.dart';
+import 'package:bulk_box/src/features/backup/presentation/cubit/import_mode.dart';
 import 'package:bulk_box/src/features/backup/presentation/widgets/import_options_dialog.dart';
 
 class BackupCubit extends Cubit<BackupState> {
@@ -24,6 +25,13 @@ class BackupCubit extends Cubit<BackupState> {
     } catch (e) {
       emit(BackupState.error('Export failed: $e'));
     }
+  }
+
+  /// DEBUG: simulates the importing state for 5 seconds.
+  Future<void> debugSimulateImport() async {
+    emit(const BackupState.importing());
+    await Future.delayed(const Duration(seconds: 5));
+    emit(const BackupState.initial());
   }
 
   Future<void> pickAndImport(BuildContext context) async {

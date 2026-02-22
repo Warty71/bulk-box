@@ -3,13 +3,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:bulk_box/src/core/constants/dimensions.dart';
 import 'package:bulk_box/src/core/di/injection_container.dart';
+import 'package:bulk_box/src/core/theme/theme_extensions.dart';
 import 'package:bulk_box/src/features/backup/presentation/cubit/backup_cubit.dart';
 import 'package:bulk_box/src/features/backup/presentation/cubit/backup_state.dart';
+import 'package:bulk_box/src/features/backup/presentation/widgets/backup_loading_overlay.dart';
 import 'package:bulk_box/src/features/collection/presentation/cubit/boxes_cubit.dart';
 import 'package:bulk_box/src/features/collection/presentation/cubit/collection_cubit.dart';
 import 'package:bulk_box/src/features/settings/presentation/cubit/settings_cubit.dart';
 import 'package:bulk_box/src/features/settings/presentation/cubit/settings_state.dart';
-import 'package:bulk_box/src/core/theme/theme_extensions.dart';
 import 'package:bulk_box/src/features/settings/presentation/widgets/settings_section.dart';
 
 class SettingsScreen extends StatelessWidget {
@@ -198,6 +199,17 @@ class _SettingsScreenContent extends StatelessWidget {
                                           .read<BackupCubit>()
                                           .pickAndImport(context),
                                 ),
+                                // DEBUG: remove before release
+                                SettingsTile(
+                                  title: '[DEBUG] Simulate import',
+                                  subtitle:
+                                      'Shows the loading overlay for 5 s',
+                                  onTap: isBusy
+                                      ? null
+                                      : () => context
+                                          .read<BackupCubit>()
+                                          .debugSimulateImport(),
+                                ),
                               ],
                             );
                           },
@@ -213,45 +225,15 @@ class _SettingsScreenContent extends StatelessWidget {
             BlocBuilder<BackupCubit, BackupState>(
               builder: (context, backupState) {
                 return backupState.maybeWhen(
-                  exporting: () => _LoadingOverlay(label: 'Exporting…'),
-                  importing: () => _LoadingOverlay(label: 'Importing…'),
+                  exporting: () =>
+                      const BackupLoadingOverlay.exporting(),
+                  importing: () =>
+                      const BackupLoadingOverlay.importing(),
                   orElse: () => const SizedBox.shrink(),
                 );
               },
             ),
           ],
-        ),
-      ),
-    );
-  }
-}
-
-class _LoadingOverlay extends StatelessWidget {
-  const _LoadingOverlay({required this.label});
-
-  final String label;
-
-  @override
-  Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-    return ColoredBox(
-      color: Colors.black45,
-      child: Center(
-        child: Card(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: Dimensions.xl,
-              vertical: Dimensions.lg,
-            ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              spacing: Dimensions.md,
-              children: [
-                CircularProgressIndicator(color: colorScheme.primary),
-                Text(label, style: Theme.of(context).textTheme.bodyMedium),
-              ],
-            ),
-          ),
         ),
       ),
     );
